@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { safeNext } from "@/lib/safe-next";
 
 /** Lazy-load the Supabase browser client so it never ships with public pages. */
 const supabase = () => import("@/lib/supabase/browser").then((m) => m.createClient());
 
 export function LoginForm() {
   const params = useSearchParams();
-  const rawNext = params.get("next") ?? "/register";
-  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/register";
+  const next = safeNext(params.get("next"));
   const linkError = params.get("error") === "link";
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");

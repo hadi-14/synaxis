@@ -249,8 +249,11 @@ export async function addRole(_: FormResult | null, f: FormData): Promise<FormRe
     const role = z.enum(["super_admin", "finance", "module_head"]).parse(str(f, "role"));
     const moduleId = role === "module_head" ? z.coerce.number().int().positive().parse(str(f, "module_id")) : null;
     const admin = createAdminClient();
-    const { data: profile } = await admin.from("profiles").select("id").ilike("email", email).maybeSingle();
-    if (!profile) return { ok: false, message: `${email} hasn't signed in yet. Ask them to sign in once at /login, then add them.` };
+    // Exact (case-insensitive) match: escape LIKE wildcards so "_" or "%" can't match other accounts.
+    const literal = email.replace(/[\\%_]/g, (c) => `\\${c}`);
+    const { data: matches } = await admin.from("profiles").select("id, email").ilike("email", literal).limit(2);
+    const profile = matches?.find((p) => p.email.toLowerCase() === email);
+    if (!profile || (matches?.length ?? 0) > 1) return { ok: false, message: `${email} hasn't signed in yet. Ask them to sign in once at /login, then add them.` };
     const { error } = await admin.from("user_roles").insert({ user_id: profile.id, role, module_id: moduleId });
     if (error) return { ok: false, message: error.code === "23505" ? "They already have that role." : error.message };
     await audit({ actor: { id: staff.id, email: staff.email }, action: "role.granted", entity: "user_roles", entityId: profile.id, after: { email, role, moduleId } });

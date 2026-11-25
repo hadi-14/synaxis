@@ -93,3 +93,11 @@ test("allocation: tops up teams whose preferences are full", () => {
   assert.equal(r.byTeam.x.modules.length, 4);
   assert.deepEqual(r.byTeam.x.filled, [5]);
 });
+
+import { safeNext } from "../src/lib/safe-next";
+test("safeNext: only same-origin paths", () => {
+  assert.equal(safeNext("/dashboard?x=1#a"), "/dashboard?x=1#a");
+  assert.equal(safeNext("/admin"), "/admin");
+  for (const bad of ["//evil.com", "/\\evil.com", "/\\/evil.com", "https://evil.com", "evil.com", "/%0d%0aLocation:x".replace("%0d%0a", "\r\n"), "", null, undefined, "javascript:alert(1)"])
+    assert.equal(safeNext(bad as string), "/register", String(bad));
+});
