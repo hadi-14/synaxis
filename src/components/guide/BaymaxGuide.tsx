@@ -1,0 +1,124 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { Baymax, type BaymaxPose } from "@/components/brand/Baymax";
+import { onSay, type GuideMessage } from "./guide-store";
+import { foundSecret } from "@/components/eggs/secrets";
+
+const OPENING = "Hello. I am Baymax, your personal registration companion.";
+
+/**
+ * Floating helper. Squishy inflated body (squash-and-stretch on appear/click), wave/point/fist poses,
+ * a speech bubble, low-battery droop after inactivity, and it can be minimised (remembered).
+ */
+export function BaymaxGuide() {
+  const [msg, setMsg] = useState<GuideMessage>({ text: OPENING, pose: "wave", tone: "info", at: 0 });
+  const [min, setMin] = useState(false);
+  const [bubble, setBubble] = useState(true);
+  const [squish, setSquish] = useState(0);
+  const [droop, setDroop] = useState(false);
+  const idle = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads localStorage after hydration
+    setMin(localStorage.getItem("synaxis-guide-min") === "1");
+    const off = onSay((m) => {
+      setMsg(m);
+      setBubble(true);
+      setSquish((s) => s + 1);
+      setDroop(false);
+    });
+    const wake = () => {
+      setDroop(false);
+      clearTimeout(idle.current);
+      idle.current = setTimeout(() => {
+        setDroop(true);
+        foundSecret("low-battery");
+      }, 60000);
+    };
+    wake();
+    const evs = ["pointerdown", "keydown", "scroll"] as const;
+    evs.forEach((e) => addEventListener(e, wake, { passive: true }));
+    return () => {
+      off();
+      clearTimeout(idle.current);
+      evs.forEach((e) => removeEventListener(e, wake));
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!bubble || msg.tone === "warn") return;
+    const t = setTimeout(() => setBubble(false), 6500);
+    return () => clearTimeout(t);
+  }, [bubble, msg]);
+
+  const toggleMin = (v: boolean) => {
+    setMin(v);
+    localStorage.setItem("synaxis-guide-min", v ? "1" : "0");
+  };
+
+  const pose: BaymaxPose = droop ? "idle" : msg.pose;
+
+  if (min) {
+    return (
+      <button
+        type="button"
+        onClick={() => toggleMin(false)}
+        className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-3 z-[70] grid h-12 w-12 place-items-center rounded-full border-2 border-[var(--line)] bg-white shadow-lg"
+        aria-label="Open Baymax guide"
+      >
+        <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden>
+          <ellipse cx="16" cy="16" rx="13" ry="9" fill="#fff" stroke="#18243A" strokeWidth="1.4" />
+          <circle cx="11" cy="16" r="2" fill="#18243A" /><circle cx="21" cy="16" r="2" fill="#18243A" />
+          <line x1="11" y1="16" x2="21" y2="16" stroke="#18243A" strokeWidth="1.2" />
+        </svg>
+      </button>
+    );
+  }
+
+  return (
+    <aside
+      aria-label="Baymax registration guide"
+      className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] right-2 z-[70] flex max-w-[calc(100vw-1rem)] items-end gap-1 sm:right-4"
+    >
+      {bubble && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`chest-toast relative mb-10 max-w-[240px] rounded-[22px] border-2 bg-[var(--surface)] px-4 py-3 text-sm font-semibold shadow-lg sm:max-w-[280px] ${
+            msg.tone === "warn" ? "border-[var(--danger)]" : msg.tone === "success" ? "border-[var(--success)]" : "border-[var(--line)]"
+          }`}
+        >
+          {droop ? "Low battery… still here if you need me." : msg.text}
+          <span aria-hidden className="absolute -right-2 bottom-4 h-4 w-4 rotate-45 border-r-2 border-t-2 border-inherit bg-[var(--surface)]" />
+          <button onClick={() => setBubble(false)} className="ml-2 text-[var(--ink-muted)] underline-offset-2 hover:underline" aria-label="Hide message">
+            Hide
+          </button>
+        </div>
+      )}
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => {
+            setBubble((b) => !b);
+            setSquish((s) => s + 1);
+          }}
+          aria-label={bubble ? "Hide Baymax's message" : "Show Baymax's message"}
+          className="block w-[72px] sm:w-[84px]"
+        >
+          <span key={squish} className="block origin-bottom motion-safe:animate-[squish_520ms_cubic-bezier(.34,1.56,.64,1)]">
+            <Baymax pose={pose} droop={droop} className="w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" />
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => toggleMin(true)}
+          className="absolute -top-1 right-0 grid h-6 w-6 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-xs"
+          aria-label="Minimise Baymax guide"
+        >
+          –
+        </button>
+      </div>
+      <style>{`@keyframes squish{0%{transform:scale(.6,.4)}40%{transform:scale(1.12,.9)}70%{transform:scale(.95,1.06)}100%{transform:scale(1)}}`}</style>
+    </aside>
+  );
+}
