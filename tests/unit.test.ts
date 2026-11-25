@@ -98,6 +98,7 @@ import { safeNext } from "../src/lib/safe-next";
 test("safeNext: only same-origin paths", () => {
   assert.equal(safeNext("/dashboard?x=1#a"), "/dashboard?x=1#a");
   assert.equal(safeNext("/admin"), "/admin");
-  for (const bad of ["//evil.com", "/\\evil.com", "/\\/evil.com", "https://evil.com", "evil.com", "/%0d%0aLocation:x".replace("%0d%0a", "\r\n"), "", null, undefined, "javascript:alert(1)"])
+  assert.equal(safeNext("/a/../dashboard"), "/dashboard");
+  for (const bad of ["//evil.com", "/\\evil.com", "/\\/evil.com", "https://evil.com", "evil.com", "/%0d%0aLocation:x".replace("%0d%0a", "\r\n"), "", null, undefined, "javascript:alert(1)", "/.//evil.com", "/a/..//evil.com", "/./\\evil.com", "/%2e//evil.com"])
     assert.equal(safeNext(bad as string), "/register", String(bad));
 });

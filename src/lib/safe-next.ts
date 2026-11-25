@@ -9,7 +9,10 @@ export function safeNext(raw: string | null | undefined, fallback = "/register")
     const base = "https://synaxis.invalid";
     const u = new URL(raw, base);
     if (u.origin !== base) return fallback;
-    return u.pathname + u.search + u.hash;
+    // Re-check AFTER normalisation: dot-segments like "/.//evil.com" collapse to "//evil.com".
+    const out = u.pathname + u.search + u.hash;
+    if (!out.startsWith("/") || out.startsWith("//") || out.startsWith("/\\")) return fallback;
+    return out;
   } catch {
     return fallback;
   }
