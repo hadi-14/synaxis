@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { LOGO_LETTERS, LOGO_X } from "@/components/brand/logo-paths";
+import { loadMicrobotSprite, microbotSprite } from "@/components/effects/microbot-sprite";
 
 /**
  * Landing: a swarm of microbots assembles the SYNAXIS logo (traced from /public/logo), then the spare
@@ -61,6 +62,7 @@ export function Entrance() {
       }
     })();
     const SPEED = seen ? 0.35 : 1;
+    loadMicrobotSprite();
     let W = 0, H = 0, dpr = 1;
     let bots: Bot[] = [];
     let raf = 0;
@@ -165,9 +167,13 @@ export function Entrance() {
           x += dir * leave * leave * W * 0.6;
           y += (y - H * 0.5) * leave * 0.4;
         }
-        ctx.fillStyle = b.c;
-        if (b.ring) ctx.fillRect(x - 2.6, y - 1.8, 5.2, 3.6);
-        else ctx.fillRect(x - 1.6, y - 1.1, 3.2, 2.2);
+        const spr = microbotSprite(b.c, b.ring ? 7 : 4.5, b.ring ? 5 : 3.2);
+        if (spr) ctx.drawImage(spr, x - (b.ring ? 3.5 : 2.25), y - (b.ring ? 2.5 : 1.6), b.ring ? 7 : 4.5, b.ring ? 5 : 3.2);
+        else {
+          ctx.fillStyle = b.c;
+          if (b.ring) ctx.fillRect(x - 2.6, y - 1.8, 5.2, 3.6);
+          else ctx.fillRect(x - 1.6, y - 1.1, 3.2, 2.2);
+        }
         if (prev && !b.ring && i % 2 === 0 && p > 0.2) {
           const ddx = prev.x - x, ddy = prev.y - y;
           if (ddx * ddx + ddy * ddy < 900) {

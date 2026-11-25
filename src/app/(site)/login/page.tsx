@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
-import { Baymax } from "@/components/brand/Baymax";
+import { BH6Image } from "@/components/brand/BH6Image";
 
 export const metadata: Metadata = { title: "Sign in", robots: { index: false } };
 
@@ -9,7 +9,7 @@ export default function LoginPage() {
   return (
     <div className="mx-auto grid max-w-4xl items-center gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1fr_1.1fr] md:py-20">
       <div className="hidden md:block">
-        <Baymax pose="wave" className="mx-auto w-48" />
+        <BH6Image id="baymax-wave" sizes="200px" className="mx-auto h-auto w-48" fallbackClassName="mx-auto w-48" />
         <p className="mt-6 text-center font-display text-lg font-bold">Hello. I am Baymax, your personal registration companion.</p>
       </div>
       <div className="card p-6 sm:p-8">

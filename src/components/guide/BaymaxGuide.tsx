@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Baymax, type BaymaxPose } from "@/components/brand/Baymax";
-import { onSay, type GuideMessage } from "./guide-store";
+import { BH6Image } from "@/components/brand/BH6Image";
+import { onSay, type BaymaxPose, type GuideMessage } from "./guide-store";
+
+const POSE_ART: Record<BaymaxPose, string> = { idle: "baymax-healthcare", point: "baymax-healthcare", wave: "baymax-wave", fist: "baymax-fistbump" };
 import { foundSecret } from "@/components/eggs/secrets";
 
 const OPENING = "Hello. I am Baymax, your personal registration companion.";
@@ -66,11 +68,7 @@ export function BaymaxGuide() {
         className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-3 z-[70] grid h-12 w-12 place-items-center rounded-full border-2 border-[var(--line)] bg-white shadow-lg"
         aria-label="Open Baymax guide"
       >
-        <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden>
-          <ellipse cx="16" cy="16" rx="13" ry="9" fill="#fff" stroke="#18243A" strokeWidth="1.4" />
-          <circle cx="11" cy="16" r="2" fill="#18243A" /><circle cx="21" cy="16" r="2" fill="#18243A" />
-          <line x1="11" y1="16" x2="21" y2="16" stroke="#18243A" strokeWidth="1.2" />
-        </svg>
+        <span className="h-9 w-9 overflow-hidden rounded-full"><BH6Image id="baymax-healthcare" decorative sizes="36px" className="h-full w-full object-cover object-top" fallbackClassName="h-full w-full" /></span>
       </button>
     );
   }
@@ -106,7 +104,13 @@ export function BaymaxGuide() {
           className="block w-[72px] sm:w-[84px]"
         >
           <span key={squish} className="block origin-bottom motion-safe:animate-[squish_520ms_cubic-bezier(.34,1.56,.64,1)]">
-            <Baymax pose={pose} droop={droop} className="w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" />
+            {/* real art per pose; droop + gesture wiggle are done in code */}
+            <span
+              className={`block transition-transform duration-500 ${droop ? "translate-y-1 rotate-[10deg] saturate-50" : ""} ${pose === "wave" ? "motion-safe:animate-[wiggle_700ms_ease-in-out_2]" : pose === "point" ? "motion-safe:animate-[nudge_500ms_ease-out_1]" : ""}`}
+              style={{ transformOrigin: "50% 90%" }}
+            >
+              <BH6Image id={POSE_ART[pose]} decorative sizes="84px" className="h-auto w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" fallbackClassName="w-full" />
+            </span>
           </span>
         </button>
         <button
@@ -118,7 +122,7 @@ export function BaymaxGuide() {
           –
         </button>
       </div>
-      <style>{`@keyframes squish{0%{transform:scale(.6,.4)}40%{transform:scale(1.12,.9)}70%{transform:scale(.95,1.06)}100%{transform:scale(1)}}`}</style>
+      <style>{`@keyframes squish{0%{transform:scale(.6,.4)}40%{transform:scale(1.12,.9)}70%{transform:scale(.95,1.06)}100%{transform:scale(1)}}@keyframes wiggle{0%,100%{transform:rotate(0)}30%{transform:rotate(-6deg)}70%{transform:rotate(6deg)}}@keyframes nudge{0%{transform:translateX(0)}50%{transform:translateX(-5px)}100%{transform:translateX(0)}}`}</style>
     </aside>
   );
 }

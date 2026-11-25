@@ -13,6 +13,7 @@ const ITEMS: { href: string; label: string; roles: AppRole[] }[] = [
   { href: "/admin/settings", label: "Settings", roles: ["super_admin"] },
   { href: "/admin/roles", label: "Roles", roles: ["super_admin"] },
   { href: "/admin/exports", label: "Exports", roles: ["super_admin", "finance"] },
+  { href: "/admin/assets", label: "Assets", roles: ["super_admin", "module_head"] },
   { href: "/admin/audit", label: "Audit log", roles: ["super_admin", "finance"] },
 ];
 

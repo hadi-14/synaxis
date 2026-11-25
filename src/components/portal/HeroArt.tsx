@@ -1,58 +1,52 @@
-import { Baymax } from "@/components/brand/Baymax";
+"use client";
+import { useEffect, useRef } from "react";
+import { BH6Image } from "@/components/brand/BH6Image";
 
-/** San Fransokyo at a glance: torii-topped bridge towers, skyline, a lantern, and Baymax hovering. Original art. */
+/**
+ * Hero: real Baymax over the San Fransokyo skyline with three parallax layers.
+ * Healthcare Baymax + day skyline in Medical Mode; armoured Baymax + night skyline in Battle Mode
+ * (theme-swapped with CSS; only the visible pair is fetched because both are lazy).
+ */
 export function HeroArt() {
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = [...(root.current?.querySelectorAll<HTMLElement>("[data-depth]") ?? [])];
+    let raf = 0;
+    const on = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const y = Math.min(scrollY, 900);
+        for (const l of layers) l.style.transform = `translate3d(0, ${(y * Number(l.dataset.depth)).toFixed(1)}px, 0)`;
+      });
+    };
+    addEventListener("scroll", on, { passive: true });
+    return () => removeEventListener("scroll", on);
+  }, []);
+
   return (
-    <div className="relative mx-auto aspect-[5/4] w-full max-w-[520px]" aria-hidden>
-      <svg viewBox="0 0 500 400" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="var(--primary)" stopOpacity=".22" />
-            <stop offset="1" stopColor="var(--accent)" stopOpacity=".08" />
-          </linearGradient>
-        </defs>
-        <circle cx="250" cy="210" r="170" fill="url(#sky)" />
-        {/* skyline */}
-        <g fill="var(--ink)" opacity=".14">
-          <rect x="70" y="230" width="34" height="90" rx="4" />
-          <rect x="110" y="200" width="26" height="120" rx="4" />
-          <rect x="350" y="215" width="30" height="105" rx="4" />
-          <rect x="386" y="245" width="40" height="75" rx="4" />
-          <path d="M150 320v-80l14-16 14 16v80z" />
-        </g>
-        {/* bridge with torii towers */}
-        <g stroke="var(--primary)" strokeWidth="6" fill="none" strokeLinecap="round">
-          <path d="M40 300 Q140 220 250 300 Q360 220 460 300" strokeWidth="3" />
-          <path d="M20 300h460" />
-        </g>
-        {[140, 360].map((x) => (
-          <g key={x} fill="var(--primary)">
-            <rect x={x - 22} y="220" width="44" height="7" rx="3" />
-            <rect x={x - 17} y="232" width="34" height="5" rx="2" />
-            <rect x={x - 15} y="222" width="7" height="80" />
-            <rect x={x + 8} y="222" width="7" height="80" />
-          </g>
-        ))}
-        {/* lantern */}
-        <g transform="translate(410 120)">
-          <line x1="0" y1="-30" x2="0" y2="0" stroke="var(--ink)" strokeOpacity=".4" />
-          <rect x="-12" y="0" width="24" height="30" rx="10" fill="var(--primary)" opacity=".85" />
-          <rect x="-8" y="-2" width="16" height="4" rx="1" fill="var(--ink)" opacity=".5" />
-        </g>
-        {/* sakura petals */}
-        {[[90, 120], [120, 90], [70, 160], [430, 220]].map(([x, y], i) => (
-          <ellipse key={i} cx={x} cy={y} rx="5" ry="3" fill="#FFB7C5" transform={`rotate(${i * 40} ${x} ${y})`} />
-        ))}
-        {/* microbot ring */}
-        <g fill="var(--ink)" opacity=".5">
-          {Array.from({ length: 22 }, (_, i) => {
-            const a = (i / 22) * Math.PI * 2;
-            return <rect key={i} x={250 + Math.cos(a) * 150 - 3} y={210 + Math.sin(a) * 150 - 2} width="6" height="4" rx="1" />;
+    <div ref={root} className="relative mx-auto aspect-[5/4] w-full max-w-[560px]">
+      {/* layer 1: skyline (slowest) */}
+      <div data-depth="0.12" className="absolute inset-0 overflow-hidden rounded-[var(--radius)] will-change-transform">
+        <div className="medical-only absolute inset-0"><BH6Image id="san-fransokyo-day" fill decorative sizes="(max-width: 768px) 100vw, 560px" className="object-cover" fallbackClassName="h-full w-full" /></div>
+        <div className="battle-only absolute inset-0"><BH6Image id="san-fransokyo-night" fill decorative sizes="(max-width: 768px) 100vw, 560px" className="object-cover" fallbackClassName="h-full w-full" /></div>
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-transparent to-transparent" />
+      </div>
+      {/* layer 2: microbot ring */}
+      <svg data-depth="0.06" viewBox="0 0 500 400" aria-hidden className="absolute inset-0 h-full w-full will-change-transform">
+        <g fill="var(--primary)" opacity=".55">
+          {Array.from({ length: 26 }, (_, i) => {
+            const a = (i / 26) * Math.PI * 2;
+            return <rect key={i} x={250 + Math.cos(a) * 190 - 4} y={215 + Math.sin(a) * 150 - 2.5} width="8" height="5" rx="1.5" />;
           })}
         </g>
       </svg>
-      <div className="absolute left-1/2 top-[12%] w-[34%] -translate-x-1/2 motion-safe:animate-[bob_3.2s_ease-in-out_infinite]">
-        <Baymax armour flame={0.7} className="w-full drop-shadow-xl" />
+      {/* layer 3: Baymax (fastest, bobbing) */}
+      <div data-depth="-0.05" className="absolute inset-x-[16%] bottom-[2%] top-[6%] will-change-transform">
+        <div className="h-full motion-safe:animate-[bob_3.2s_ease-in-out_infinite]">
+          <div className="medical-only h-full"><BH6Image id="baymax-healthcare" className="mx-auto h-full w-auto object-contain drop-shadow-2xl" sizes="(max-width: 768px) 70vw, 380px" fallbackClassName="mx-auto h-full" /></div>
+          <div className="battle-only h-full"><BH6Image id="baymax-armor" className="mx-auto h-full w-auto object-contain drop-shadow-[0_0_40px_rgba(242,75,89,.45)]" sizes="(max-width: 768px) 70vw, 380px" fallbackClassName="mx-auto h-full" /></div>
+        </div>
       </div>
       <style>{`@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}`}</style>
     </div>

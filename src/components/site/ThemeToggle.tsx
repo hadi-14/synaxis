@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 type Mode = "medical" | "battle";
 
-/** "Healthcare / Combat" chip: Baymax suits up (visor + armour plates) or takes the armour off. */
+/** "Healthcare / Combat" chip: the healthcare cross suits up into a combat shield (and back). */
 export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   const [mode, setMode] = useState<Mode | null>(null);
   useEffect(() => {
@@ -42,17 +42,16 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       data-burst
     >
       <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-[var(--bg)]">
-        {/* Baymax face. In battle: red helmet + indigo visor slide in. */}
+        {/* Healthcare cross morphs into a combat shield. */}
         <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden>
-          <ellipse cx="16" cy="17" rx="13" ry="10" fill={battle ? "#DC2A35" : "#fff"} stroke="#18243A" strokeWidth="1.2" style={{ transition: "fill 300ms" }} />
-          <rect
-            x="5" y="12" width="22" height="9" rx="4.5"
-            fill="#424CBC"
-            style={{ transform: battle ? "translateY(0)" : "translateY(-22px)", transition: "transform 380ms cubic-bezier(.34,1.56,.64,1)" }}
+          <path
+            d="M16 4 L26 8 V16 C26 22 21.5 26.5 16 28 C10.5 26.5 6 22 6 16 V8 Z"
+            fill={battle ? "#DC2A35" : "transparent"}
+            stroke={battle ? "#8B93F0" : "transparent"}
+            strokeWidth="1.5"
+            style={{ transform: battle ? "scale(1)" : "scale(.4)", transformOrigin: "16px 16px", transition: "transform 380ms cubic-bezier(.34,1.56,.64,1), fill 300ms" }}
           />
-          <circle cx="11" cy="16.5" r="2" fill={battle ? "#8B93F0" : "#18243A"} />
-          <circle cx="21" cy="16.5" r="2" fill={battle ? "#8B93F0" : "#18243A"} />
-          <line x1="11" y1="16.5" x2="21" y2="16.5" stroke={battle ? "#8B93F0" : "#18243A"} strokeWidth="1.2" />
+          <path d="M16 10v12M10 16h12" stroke={battle ? "#fff" : "#F24B59"} strokeWidth="3.5" strokeLinecap="round" style={{ transition: "stroke 300ms" }} />
         </svg>
       </span>
       {!compact && (

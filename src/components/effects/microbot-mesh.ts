@@ -5,6 +5,8 @@
  * into those points while the real text fades in underneath, then the mesh fades out.
  * Hover makes the swarm ripple and re-form. Reduced motion: nothing runs.
  */
+import { loadMicrobotSprite, microbotSprite } from "./microbot-sprite";
+
 type Bot = { x: number; y: number; tx: number; ty: number; vx: number; vy: number };
 type Entry = { el: HTMLElement; canvas: HTMLCanvasElement; bots: Bot[]; t0: number; active: boolean; done: boolean; hoverAt: number };
 
@@ -64,7 +66,9 @@ function tick(now: number) {
       const wob = ripple * Math.sin(now / 60 + i) * 6;
       const x = b.x + (b.tx - b.x) * ease + wob;
       const y = b.y + (b.ty - b.y) * ease + wob * 0.6;
-      ctx.fillRect(x - 1.5, y - 1, 3, 2);
+      const spr = microbotSprite(color, 4, 3);
+      if (spr) ctx.drawImage(spr, x - 2, y - 1.5, 4, 3);
+      else ctx.fillRect(x - 1.5, y - 1, 3, 2);
       if (i % 3 === 0 && i + 3 < e.bots.length) {
         const n = e.bots[i + 3];
         ctx.globalAlpha *= 0.25;
@@ -90,6 +94,7 @@ const kick = () => {
 export function registerHeading(el: HTMLElement) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (sessionStorage.getItem("synaxis-skip-fx") === "1") return;
+  loadMicrobotSprite();
   const canvas = document.createElement("canvas");
   canvas.setAttribute("aria-hidden", "true");
   canvas.className = "pointer-events-none absolute left-0 top-0";

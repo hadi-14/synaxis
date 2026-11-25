@@ -43,10 +43,13 @@ export function Battery({
   );
 }
 
+import { BH6Image } from "@/components/brand/BH6Image";
+
 /** Loader: Baymax charging station. */
 export function ChargingLoader({ label = "Charging…" }: { label?: string }) {
   return (
     <div className="flex flex-col items-center gap-3 py-10 text-[var(--ink-muted)]" role="status" aria-live="polite">
+      <BH6Image id="baymax-charging-case" decorative sizes="72px" className="h-16 w-auto object-contain motion-safe:animate-[bh-charge_1.6s_ease-in-out_infinite]" fallbackClassName="h-16 w-16" />
       <div className="flex h-8 w-20 items-center gap-1 rounded-[9px] border-2 border-current p-1">
         {[0, 1, 2, 3].map((i) => (
           <span

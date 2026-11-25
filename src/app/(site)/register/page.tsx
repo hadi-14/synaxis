@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getModules, getSettings, registrationState, rulesFrom } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { ChargingLoader } from "@/components/ui/Battery";
-import { Baymax } from "@/components/brand/Baymax";
+import { BH6Image } from "@/components/brand/BH6Image";
 import { RegisterWizard, type WizardValues } from "./RegisterWizard";
 
 export const metadata: Metadata = { title: "Register your team", robots: { index: false } };
@@ -43,7 +43,7 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
   if (state !== "open") {
     return (
       <div className="card mt-6 flex flex-col items-center p-8 text-center">
-        <Baymax pose="idle" droop className="w-28" />
+        <BH6Image id="baymax-healthcare" decorative sizes="112px" className="h-auto w-28 rotate-[8deg] saturate-50" fallbackClassName="w-28" />
         <h1 className="mt-4 font-display text-2xl font-extrabold">
           {state === "not_yet" ? "Registration opens soon" : "Registration is closed"}
         </h1>

@@ -3,6 +3,7 @@ import { getSettings, getSponsors } from "@/lib/content";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { InquiryForm } from "./InquiryForm";
 import type { Sponsor } from "@/lib/types";
+import { BH6Image } from "@/components/brand/BH6Image";
 
 export const metadata: Metadata = { title: "Sponsors", description: "Partner with Synaxis Season 1, a science olympiad for Pakistan's brightest school students.", alternates: { canonical: "/sponsors" } };
 
@@ -19,6 +20,9 @@ export default async function SponsorsPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-20">
       <SectionHeading eyebrow="Sponsors" title="Fuel the next generation of Hiros" intro={<p>Synaxis brings school teams from across Pakistan together for three days of science, logic and teamwork. Put your brand in front of them.</p>} />
+      <div className="mb-6 overflow-hidden rounded-[var(--radius)]">
+        <BH6Image id="team" sizes="(max-width: 1024px) 100vw, 1100px" className="h-auto max-h-80 w-full object-contain" fallbackClassName="w-full !aspect-[16/5] !rounded-[var(--radius)]" />
+      </div>
       {TIERS.map((t) => {
         const list = sponsors.filter((s) => s.tier === t.key);
         if (!list.length) return null;

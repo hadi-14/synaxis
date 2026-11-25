@@ -338,3 +338,8 @@ html[data-vt="suit"]::view-transition-new(root) {
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+/* Theme-swapped artwork (Medical vs Battle) */
+.battle-only { display: none; }
+[data-theme="battle"] .battle-only { display: block; }
+[data-theme="battle"] .medical-only { display: none; }

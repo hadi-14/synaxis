@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Baymax } from "@/components/brand/Baymax";
+import { BH6Image } from "@/components/brand/BH6Image";
 
 /**
  * Scroll progress = armoured Baymax flying down the right edge (≥640px).
@@ -63,14 +63,25 @@ export function BaymaxFlight() {
       <div aria-hidden className="pointer-events-none fixed right-1 top-0 z-40 hidden h-dvh w-12 sm:block">
         {/* flight path: dotted microbot trail */}
         <div className="absolute bottom-24 right-[22px] top-24 w-0 border-l-2 border-dotted border-[var(--line-strong)]/40" />
-        <div ref={bot} className="absolute right-0 top-0 w-11 will-change-transform">
-          <div className={idle && !landed ? "motion-safe:animate-[bmx-bob_2.4s_ease-in-out_infinite]" : ""} style={{ transform: `rotate(${landed ? 0 : -flame * 8}deg)`, transition: "transform 200ms" }}>
-            <Baymax armour flame={landed ? 0 : Math.max(0.15, flame)} pose={landed ? "wave" : "idle"} className="w-full drop-shadow-[0_6px_10px_rgba(0,0,0,.25)]" />
+        <div ref={bot} className="absolute right-0 top-0 w-12 will-change-transform">
+          <div className={idle && !landed ? "motion-safe:animate-[bmx-bob_2.4s_ease-in-out_infinite]" : ""} style={{ transform: `rotate(${landed ? 0 : 90 - flame * 10}deg)`, transition: "transform 200ms" }}>
+            {/* flying pose is a side view: rotated so he flies "down" the page */}
+            <div className="relative">
+              <BH6Image id="baymax-armor-flying" decorative sizes="48px" className="h-auto w-full drop-shadow-[0_6px_10px_rgba(0,0,0,.25)]" fallbackClassName="!aspect-[16/9] w-full !rounded-full" />
+              {/* thruster flame (code): scales with scroll velocity */}
+              {!landed && (
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-1/2 h-3 origin-right -translate-x-full -translate-y-1/2 rounded-full bg-gradient-to-l from-[#FFF3C4] via-[#FFB347] to-transparent motion-safe:animate-[flicker_120ms_steps(2)_infinite]"
+                  style={{ width: `${8 + Math.max(0.15, flame) * 28}px`, opacity: 0.55 + flame * 0.45 }}
+                />
+              )}
+            </div>
           </div>
           {landed && <div className="mx-auto mt-0.5 h-1 w-8 rounded-full bg-[var(--primary)] opacity-60" />}
         </div>
       </div>
-      <style>{`@keyframes bmx-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}`}</style>
+      <style>{`@keyframes bmx-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes flicker{0%{transform:translate(-100%,-50%) scaleX(1)}100%{transform:translate(-100%,-50%) scaleX(.82)}}`}</style>
     </>
   );
 }

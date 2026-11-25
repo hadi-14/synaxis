@@ -3,6 +3,7 @@ import { Logo } from "@/components/brand/Logo";
 import type { Settings } from "@/lib/types";
 import { LuckyCat } from "./LuckyCat";
 import { SecretsTracker } from "@/components/eggs/SecretsTracker";
+import { BH6Image } from "@/components/brand/BH6Image";
 
 export function Footer({ settings }: { settings: Settings }) {
   const wa = settings.contact_whatsapp.replace(/\D/g, "");
@@ -17,6 +18,7 @@ export function Footer({ settings }: { settings: Settings }) {
           </p>
           <div className="mt-6 flex items-center gap-3 text-sm text-[var(--ink-muted)]">
             <LuckyCat />
+            <span className="h-12 w-9 shrink-0"><BH6Image id="aunt-cass" decorative sizes="36px" className="h-full w-full object-contain object-bottom" fallbackClassName="h-full w-full" /></span>
             <span>Fuelled by the Lucky Cat Café spirit.</span>
           </div>
           <div className="mt-4"><SecretsTracker /></div>
@@ -43,7 +45,7 @@ export function Footer({ settings }: { settings: Settings }) {
         </div>
       </div>
       <p className="border-t border-[var(--line)] px-4 py-5 text-center font-mono text-[11px] text-[var(--ink-muted)]">
-        © {settings.season_label} · Heuser Science Society · Karachi · Artwork is original and inspired by San Fransokyo
+        Big Hero 6 © Disney. Fan-made for a student event. · {settings.season_label} · Heuser Science Society · Karachi
       </p>
     </footer>
   );

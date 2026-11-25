@@ -5,6 +5,7 @@ import { useUpload } from "./useUpload";
 import { markWhatsAppShared } from "@/app/(site)/dashboard/actions";
 import { toast } from "@/components/ui/toast-store";
 import { say } from "@/components/guide/guide-store";
+import { BH6Image } from "@/components/brand/BH6Image";
 
 /**
  * Honey Lemon's purse. It opens and a receipt card floats out (chem-ball colours, soft spring).
@@ -97,20 +98,14 @@ export function PurseReceipt({ waHref, hasReceipt }: { waHref: string; hasReceip
         {error && <p role="alert" className="hud-error mt-3 text-sm font-semibold text-[var(--danger)]">{error}</p>}
       </div>
 
-      {/* purse */}
-      <svg viewBox="0 0 240 120" className="relative z-20 -mt-10 w-full" aria-hidden>
-        <path d="M84 30 Q120 -6 156 30" stroke="#18243A" strokeWidth="6" fill="none" strokeLinecap="round" />
-        <rect x="30" y="34" width="180" height="80" rx="26" fill="#FFD84D" stroke="#18243A" strokeWidth="3" />
-        {/* flap flips open while the card is out */}
-        <path
-            d="M30 46 Q30 34 46 34 H194 Q210 34 210 46 L170 74 Q120 92 70 74 Z"
-            fill="#FF5FA2"
-            stroke="#18243A"
-            strokeWidth="3"
-            style={{ transformOrigin: "120px 34px", transform: open && !folded ? "scaleY(-0.55)" : "scaleY(1)", transition: "transform 450ms cubic-bezier(.34,1.56,.64,1)" }}
-          />
-        <circle cx="120" cy="80" r="7" fill="#3BB2F6" stroke="#18243A" strokeWidth="2.5" />
-      </svg>
+      {/* Honey Lemon's purse (real art): opens with a squish while the card is out, snaps shut on success */}
+      <div
+        aria-hidden
+        className="relative z-20 mx-auto -mt-8 w-44 origin-bottom transition-transform duration-500"
+        style={{ transform: reduced ? "none" : folded ? "scale(1.06,.94)" : open ? "scale(1,1.04) rotate(-2deg)" : "scale(.96)", transitionTimingFunction: "cubic-bezier(.34,1.56,.64,1)" }}
+      >
+        <BH6Image id="honey-lemon-purse" decorative sizes="176px" className="h-auto w-full drop-shadow-xl" fallbackClassName="w-full" />
+      </div>
       {folded && (
         <p role="status" className="mt-2 text-center font-display font-bold text-[var(--success)]">
           ✓ Receipt tucked away. I am satisfied with my care.

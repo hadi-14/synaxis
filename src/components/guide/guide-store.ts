@@ -1,5 +1,5 @@
 "use client";
-import type { BaymaxPose } from "@/components/brand/Baymax";
+export type BaymaxPose = "idle" | "wave" | "point" | "fist";
 
 export type GuideMessage = { text: string; pose: BaymaxPose; tone: "info" | "warn" | "success"; at: number };
 type L = (m: GuideMessage) => void;

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Baymax } from "@/components/brand/Baymax";
+import { BH6Image } from "@/components/brand/BH6Image";
 import { FistBump } from "@/components/effects/FistBump";
 import { foundSecret } from "./secrets";
 
@@ -83,7 +83,7 @@ export function EasterEggs() {
               <svg width="0" height="0" aria-hidden>
                 <filter id="fuzz"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" /><feDisplacementMap in="SourceGraphic" scale="9" /></filter>
               </svg>
-              <div style={{ filter: "url(#fuzz)" }}><Baymax className="w-40" pose="wave" /></div>
+              <div style={{ filter: "url(#fuzz)" }}><BH6Image id="baymax-healthcare" decorative sizes="160px" className="h-auto w-40" fallbackClassName="w-40" /></div>
               <p className="mt-3 rounded-full bg-[var(--surface)] px-4 py-2 font-display text-lg font-extrabold shadow">Hairy baby! Hairy baby!</p>
             </div>
           )}
@@ -100,13 +100,7 @@ export function EasterEggs() {
           className="absolute right-0 z-30 w-16 translate-x-2 motion-safe:animate-[peek_9s_ease-in-out_forwards]"
           style={{ top: mochi.top }}
         >
-          <svg viewBox="0 0 60 50" aria-hidden>
-            <path d="M60 50V10C46 6 30 10 22 20c-6 8-6 20-2 30z" fill="#E7A35A" />
-            <path d="M30 16l-6-12 12 8M46 10l2-10 6 9" fill="#E7A35A" />
-            <circle cx="34" cy="28" r="2.6" fill="#18243A" />
-            <circle cx="46" cy="27" r="2.6" fill="#18243A" />
-            <path d="M38 34q2 2 4 0" stroke="#18243A" strokeWidth="1.5" fill="none" />
-          </svg>
+          <BH6Image id="mochi" decorative sizes="64px" className="h-auto w-full -scale-x-100" fallbackClassName="w-full" />
           <style>{`@keyframes peek{0%{transform:translateX(100%)}12%,80%{transform:translateX(8px)}100%{transform:translateX(100%)}}`}</style>
         </button>
       )}

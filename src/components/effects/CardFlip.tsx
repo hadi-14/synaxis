@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Motif } from "@/components/brand/Motif";
+import { BH6Image } from "@/components/brand/BH6Image";
+import { MODULE_ART } from "@/lib/bh6-assets";
 import { foundSecret } from "@/components/eggs/secrets";
 
 const MOVE: Record<string, { verb: string; anim: string }> = {
@@ -19,6 +20,7 @@ const MOVE: Record<string, { verb: string; anim: string }> = {
 export function CardFlip({ motif, accent, name, character }: { motif: string; accent: string; name: string; character: string }) {
   const [flipped, setFlipped] = useState(false);
   const move = MOVE[motif] ?? MOVE.blueprint;
+  const art = MODULE_ART[motif] ?? MODULE_ART.microbots;
   return (
     <button
       type="button"
@@ -32,7 +34,7 @@ export function CardFlip({ motif, accent, name, character }: { motif: string; ac
       <span key={String(flipped)} className="card panel-lines absolute inset-0 flex flex-col items-center justify-center gap-4 overflow-hidden p-6" style={{ animation: `${move.anim} 520ms cubic-bezier(.34,1.56,.64,1)`, borderColor: accent }}>
         {!flipped ? (
           <>
-            <Motif motif={motif} accent={accent} className="h-36 w-36 text-[var(--ink)]" />
+            <BH6Image id={art.character} sizes="(max-width: 640px) 60vw, 240px" className="h-56 w-auto object-contain drop-shadow-xl" fallbackClassName="h-56" />
             <span className="font-display text-lg font-bold">{character}</span>
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--ink-muted)]">Tap: {move.verb}</span>
             <span className="sr-only">(flips the {name} card)</span>
@@ -40,6 +42,7 @@ export function CardFlip({ motif, accent, name, character }: { motif: string; ac
         ) : (
           <>
             <span className="absolute inset-0 opacity-20" style={{ background: `radial-gradient(circle at 50% 40%, ${accent}, transparent 70%)` }} />
+            <BH6Image id={art.prop} decorative sizes="128px" className="relative h-28 w-28 object-contain motion-safe:animate-[spin_1.2s_ease-out_1]" fallbackClassName="relative h-28 w-28" />
             {motif === "kabuki" ? (
               <span className="relative text-center"><span className="block font-mono text-xs uppercase tracking-[0.2em] text-[var(--ink-muted)]">Unmasked</span><span className="mt-2 block font-display text-2xl font-extrabold">Look for the motive.</span></span>
             ) : (

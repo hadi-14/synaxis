@@ -1,0 +1,147 @@
+{
+  "baymax-healthcare": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "c0cc8426cd16e4a5b2bec9196286dbb59dd4f39dff0fe1f347f6ef6d03998f6d"
+  },
+  "baymax-wave": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "2838a9c1b39b3cec9bf241374d86e0ec116c1e90cb1ec34bb297ab999347cdcd"
+  },
+  "baymax-fistbump": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "bb61dcc999c2c7fd513844f315d7db5689b7479ef34a952f69fbe4266de5f88f"
+  },
+  "baymax-armor": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "39ab48b2f7b8e35ea3b64712bafcf6a571695629e4fb1e36fab128d282b2f941"
+  },
+  "baymax-armor-flying": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "1d0dc0e66663550c87ab45e540cc3b01f4b5c8042d2b7fa1dbee0fbeb96c0764"
+  },
+  "hiro": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "394be867850317b1d6669315e53299fdda3b90dfbf95696281020363a8e05575"
+  },
+  "tadashi": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "3d0cfd2df5340c09b91574186360ca8369c29d8b125302b7a2443563241b5ee0"
+  },
+  "honey-lemon": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "342b1722b747dc5a9e2c8c4339e2b3dd7078df760769ba467b75c34c0fe6ff2a"
+  },
+  "gogo": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "50e6e3d5073b40e084c77631779b2f52d0c657b916b282380f6ad2265ed225db"
+  },
+  "wasabi": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "934d7c44322ab2652dfbcff29cc466d2e8cdf7d30851ad92bf8fa73f0b1de148"
+  },
+  "fred": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "f3733908876861ae47e7c30f0b51e0d93c8d4516fd3732387c0c643dadfef105"
+  },
+  "callaghan": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "9fb955d4c69ad451580d452119bba3fbfc92da3a2fbfd2be02aaaf4ef61bf9b2"
+  },
+  "yokai": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "19f6161084eb484f0a2fdc39ce44586863cb582acd2c388ea07d4658a1b02715"
+  },
+  "aunt-cass": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "218ad57a2d6bcbb510e9e13fcb5b20f07351419e88a8612734357e0492ac8c39"
+  },
+  "team": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "4a6b4f3b6df072afaa40a2a531475d270221d528ae6bfebbdf7dd51c37df6966"
+  },
+  "microbot": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "426955bdd0a0ffb35f19e5f0f95cdedcb04117039fd17e964b21fdba96dde8b2"
+  },
+  "kabuki-mask": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "229bd88e50fa0033259890a095c5db5155be35b9e7ded594e4e0eadfccec3afc"
+  },
+  "honey-lemon-purse": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "f6fe7e9cdee18fbd8832800b3d9d8dbd6644efcfcc00d4d39028a455f55e3108"
+  },
+  "chem-ball": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "9ca73a2d52edca37b3b97ca650cf441647f17440dbd1e3f5e72230aca8ccebb7"
+  },
+  "maglev-disc": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "b8fe0a40fcabd3f5485f5ef144c574dc837a46e9b5c896384dc1aec886a5f9ca"
+  },
+  "plasma-blade": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "8bb8b5bbf9bb25fe70ce98b3df97140966778f467f3cacd4c3c023fcf3e3bb52"
+  },
+  "fred-kaiju-head": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "e392d9b6f99e577ceae84a6f95ed2d73cf53fe35d58eda905699a33a58e6d763"
+  },
+  "tadashi-cap": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "99cfeeb98dce9d05dae273884d8464dd3483c1e73598c57072611b2408f7ebc8"
+  },
+  "baymax-charging-case": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "32ed4c24f01cbb1bd59096d91452ba1dd230a26b7de335276f398fa1465b0780"
+  },
+  "mochi": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "6eb03cd905751ec21dc8563d62dff3cbfd11471733616f52b1ac1681ffecde9c"
+  },
+  "lucky-cat": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "1d7c2c02ce3fdb3088ba686fae118ac6a033bf0a444b9d7bcb8bd57f1264c02f"
+  },
+  "san-fransokyo-day": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "3daa5dbdf97d296742efaba83774c557a2f629a66eb0f2ee06d712acfb651a92"
+  },
+  "san-fransokyo-night": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "d32ed20d11b596d6817ea89423b244146b1d78909befa61285c6ee9021df1f7d"
+  },
+  "sfit-lab": {
+    "placeholder": true,
+    "missing": false,
+    "placeholderHash": "a278b3eaae44928300dffe5a2e45ddacb8b0dcc9607e2fea51eeb762041e92ec"
+  }
+}

@@ -18,13 +18,12 @@ export function Motif({ motif, accent, className = "" }: { motif: string; accent
   let body: React.ReactNode;
   switch (motif as MotifKey) {
     case "baymax":
+      // neutral healthcare icon: a battery with a medical cross
       body = (
         <>
-          <ellipse cx="32" cy="34" rx="24" ry="18" fill="#fff" stroke="#18243A" strokeWidth="2.5" />
-          <circle cx="22" cy="33" r="4" fill="#18243A" />
-          <circle cx="42" cy="33" r="4" fill="#18243A" />
-          <line x1="22" y1="33" x2="42" y2="33" stroke="#18243A" strokeWidth="2.5" />
-          <path d="M48 12h6v6h-6zM50 10v10M46 15h10" stroke={accent} strokeWidth="2" fill="none" />
+          <rect x="8" y="18" width="44" height="28" rx="6" fill="#fff" stroke="currentColor" strokeWidth="2.5" />
+          <rect x="52" y="26" width="5" height="12" rx="2" fill="currentColor" />
+          <path d="M30 24v16M22 32h16" stroke={accent} strokeWidth="5" strokeLinecap="round" />
         </>
       );
       break;

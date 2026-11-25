@@ -1,13 +1,18 @@
 "use client";
 import Link from "next/link";
 import { useRef } from "react";
-import { Motif } from "@/components/brand/Motif";
+import { BH6Image } from "@/components/brand/BH6Image";
 import { foundSecret } from "@/components/eggs/secrets";
+import { MODULE_ART } from "@/lib/bh6-assets";
 import type { Module } from "@/lib/types";
 
-/** Module card: Hiro's lab hologram tilt + character colour scanline on hover. */
+/**
+ * Module card: the character cutout breaks out of the frame on hover (Hiro's lab hologram tilt),
+ * and the character's prop is the effect (chem ball, maglev disc, plasma blade, kabuki mask…).
+ */
 export function ModuleCard({ m }: { m: Module }) {
   const ref = useRef<HTMLAnchorElement>(null);
+  const art = MODULE_ART[m.motif] ?? MODULE_ART.microbots;
   const onMove = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const r = ref.current!.getBoundingClientRect();
@@ -22,29 +27,32 @@ export function ModuleCard({ m }: { m: Module }) {
       href={`/modules/${m.slug}`}
       onPointerMove={onMove}
       onPointerLeave={reset}
-      className="card group relative flex h-full flex-col overflow-hidden p-5 transition-[transform,box-shadow,border-color] duration-200 hover:border-[var(--accent-c)] focus-visible:border-[var(--accent-c)]"
+      className="card group relative mt-14 flex h-[calc(100%-3.5rem)] flex-col p-5 pt-28 transition-[transform,box-shadow,border-color] duration-200 hover:border-[var(--accent-c)] focus-visible:border-[var(--accent-c)]"
       style={{ "--accent-c": m.accent } as React.CSSProperties}
     >
-      {/* hologram scanline */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-1/2 h-1/2 bg-gradient-to-b from-transparent via-[color-mix(in_srgb,var(--accent-c)_22%,transparent)] to-transparent opacity-0 transition-[top,opacity] duration-500 group-hover:top-full group-hover:opacity-100"
-      />
-      <span aria-hidden className="absolute inset-x-0 top-0 h-1.5" style={{ background: m.accent }} />
-      <div className="flex items-start justify-between gap-3">
-        <Motif motif={m.motif} accent={m.accent} className="h-14 w-14 text-[var(--ink)]" />
-        <div className="flex flex-col items-end gap-1">
-          <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-[var(--ink-muted)]">
-            {m.subject}
+      {/* accent glow + top bar (clipped to the card) */}
+      <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
+        <span className="absolute inset-x-0 top-0 h-1.5" style={{ background: m.accent }} />
+        <span className="absolute -top-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full opacity-30 blur-2xl" style={{ background: m.accent }} />
+      </span>
+      {/* character breaks out of the frame on hover */}
+      <span aria-hidden className="pointer-events-none absolute -top-14 left-4 h-40 w-32 origin-bottom transition-transform duration-300 ease-out group-hover:-translate-y-3 group-hover:scale-110 motion-reduce:transition-none">
+        <BH6Image id={art.character} decorative sizes="128px" className="h-full w-full object-contain object-bottom drop-shadow-xl" fallbackClassName="h-full w-full" />
+      </span>
+      {/* prop effect */}
+      <span aria-hidden className="pointer-events-none absolute right-5 top-6 h-14 w-14 opacity-0 transition-all duration-300 group-hover:rotate-[20deg] group-hover:opacity-100 motion-reduce:transition-none">
+        <BH6Image id={art.prop} decorative sizes="56px" className="h-full w-full object-contain" fallbackClassName="h-full w-full" />
+      </span>
+      <div className="absolute right-5 top-4 flex flex-col items-end gap-1 transition-opacity group-hover:opacity-0">
+        <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-[var(--ink-muted)]">{m.subject}</span>
+        {m.is_compulsory && (
+          <span className="flex items-center gap-1 rounded-full bg-[var(--primary)] py-1 pl-1 pr-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--primary-ink)]">
+            <span className="h-4 w-4 overflow-hidden rounded-full bg-white/70"><BH6Image id="kabuki-mask" decorative sizes="16px" className="h-full w-full object-contain" fallbackClassName="h-full w-full" /></span>
+            Compulsory
           </span>
-          {m.is_compulsory && (
-            <span className="rounded-full bg-[var(--primary)] px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--primary-ink)]">
-              Compulsory
-            </span>
-          )}
-        </div>
+        )}
       </div>
-      <h3 className="mt-4 font-display text-lg font-bold leading-tight">{m.name}</h3>
+      <h3 className="font-display text-lg font-bold leading-tight">{m.name}</h3>
       <p className="mt-1 text-sm font-semibold" style={{ color: "color-mix(in srgb, var(--accent-c) 70%, var(--ink))" }}>
         {m.character}
       </p>
@@ -55,9 +63,9 @@ export function ModuleCard({ m }: { m: Module }) {
       </span>
       {/* easter egg: Tadashi's cap tucked in the Hangar card */}
       {m.motif === "blueprint" && (
-        <svg aria-hidden viewBox="0 0 20 12" className="absolute bottom-2 right-2 h-3 w-5 opacity-20 transition-opacity group-hover:opacity-70" data-egg="tadashi-cap" onPointerEnter={() => foundSecret("tadashi-cap")}>
-          <path d="M2 9c0-4 3-7 8-7s8 3 8 7z" fill="currentColor" />
-        </svg>
+        <span aria-hidden className="absolute bottom-2 right-2 h-5 w-6 opacity-25 transition-opacity group-hover:opacity-80" onPointerEnter={() => foundSecret("tadashi-cap")}>
+          <BH6Image id="tadashi-cap" decorative sizes="24px" className="h-full w-full object-contain" fallbackClassName="h-full w-full" />
+        </span>
       )}
     </Link>
   );
