@@ -40,7 +40,7 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,box-shadow] duration-200 ${
-        scrolled || open ? "bg-[var(--bg)]/90 shadow-[0_1px_0_var(--line)] backdrop-blur-md" : "bg-transparent"
+        scrolled || open ? "bg-[var(--bg)]/95 shadow-[0_1px_0_var(--line)] backdrop-blur-md" : "bg-[var(--bg)]"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">

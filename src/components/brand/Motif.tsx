@@ -13,7 +13,7 @@ export type MotifKey =
   | "kaiju"
   | "kabuki";
 
-export function Motif({ motif, accent, className = "" }: { motif: string; accent: string; className?: string }) {
+export function Motif({ motif, accent, className = "", label }: { motif: string; accent: string; className?: string; label?: string }) {
   const s = { stroke: "currentColor", strokeWidth: 2.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, fill: "none" };
   let body: React.ReactNode;
   switch (motif as MotifKey) {
@@ -120,7 +120,7 @@ export function Motif({ motif, accent, className = "" }: { motif: string; accent
       body = <circle cx="32" cy="32" r="20" fill={accent} />;
   }
   return (
-    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+    <svg viewBox="0 0 64 64" className={className} {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}>
       {body}
     </svg>
   );

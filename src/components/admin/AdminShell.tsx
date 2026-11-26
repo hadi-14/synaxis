@@ -5,7 +5,6 @@ import { getStaff, getUser } from "@/lib/auth";
 import { AdminNav } from "./AdminNav";
 import { Logo } from "@/components/brand/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
-import { bh6 } from "@/lib/bh6-assets";
 
 export async function AdminShell({ children }: { children: React.ReactNode }) {
   await connection();
@@ -28,11 +27,6 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
   }
   return (
     <div className="relative flex min-h-dvh flex-col bg-blueprint lg:flex-row">
-      {/* Hiro's garage: faint SFIT lab backdrop (only once the real file exists) */}
-      {bh6("sfit-lab").real && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={bh6("sfit-lab").src} alt="" aria-hidden className="pointer-events-none fixed inset-0 -z-10 h-full w-full object-cover opacity-[0.07]" />
-      )}
       <aside className="border-b border-[var(--line)] bg-[var(--surface)] lg:sticky lg:top-0 lg:h-dvh lg:w-60 lg:shrink-0 lg:border-b-0 lg:border-r">
         <div className="flex items-center justify-between gap-3 px-4 py-4">
           <a href="/admin" className="flex flex-col">

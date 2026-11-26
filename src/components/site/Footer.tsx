@@ -3,37 +3,35 @@ import { Logo } from "@/components/brand/Logo";
 import type { Settings } from "@/lib/types";
 import { LuckyCat } from "./LuckyCat";
 import { SecretsTracker } from "@/components/eggs/SecretsTracker";
-import { BH6Image } from "@/components/brand/BH6Image";
 
 export function Footer({ settings }: { settings: Settings }) {
   const wa = settings.contact_whatsapp.replace(/\D/g, "");
   return (
-    <footer className="mt-24 border-t-4 border-[var(--primary)] bg-[var(--surface)] pb-[env(safe-area-inset-bottom)]" id="footer">
+    <footer className="mt-0 bg-[#DC2A35] pb-[env(safe-area-inset-bottom)] text-white battle:bg-[#a3141f] [&_a:focus-visible]:outline-white" id="footer">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <Logo className="h-6 w-auto" />
-          <p className="mt-4 max-w-sm text-sm text-[var(--ink-muted)]">
+          <Logo mono className="h-6 w-auto" />
+          <p className="mt-4 max-w-sm text-sm text-white">
             Synaxis {settings.season_label} is organised by the Heuser Science Society. Big Hero 6 is a Disney property. This is a
             fan-themed student event and is not affiliated with or endorsed by Disney.
           </p>
-          <div className="mt-6 flex items-center gap-3 text-sm text-[var(--ink-muted)]">
+          <div className="mt-6 flex items-center gap-3 text-sm text-white">
             <LuckyCat />
-            <span className="h-12 w-9 shrink-0"><BH6Image id="aunt-cass" decorative sizes="36px" className="h-full w-full object-contain object-bottom" fallbackClassName="h-full w-full" /></span>
             <span>Fuelled by the Lucky Cat Café spirit.</span>
           </div>
           <div className="mt-4"><SecretsTracker /></div>
         </div>
         <div>
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--ink-muted)]">Contact</h2>
+          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-white">Contact</h2>
           <ul className="mt-3 space-y-2 text-sm">
             <li><a className="plasma-link" href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a></li>
             <li><a className="plasma-link" href={`https://wa.me/${wa}`} rel="noopener" target="_blank">WhatsApp {settings.contact_whatsapp}</a></li>
             <li><a className="plasma-link" href={settings.instagram_url} rel="noopener" target="_blank">Instagram @heusersynaxis</a></li>
-            <li className="text-[var(--ink-muted)]">{settings.venue_name}, {settings.venue_address}</li>
+            <li className="text-white">{settings.venue_name}, {settings.venue_address}</li>
           </ul>
         </div>
         <div>
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--ink-muted)]">Quick links</h2>
+          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-white">Quick links</h2>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link className="plasma-link" href="/register">Register</Link></li>
             <li><Link className="plasma-link" href="/dashboard">My team</Link></li>
@@ -44,7 +42,7 @@ export function Footer({ settings }: { settings: Settings }) {
           </ul>
         </div>
       </div>
-      <p className="border-t border-[var(--line)] px-4 py-5 text-center font-mono text-[11px] text-[var(--ink-muted)]">
+      <p className="border-t border-white/30 px-4 py-5 text-center font-mono text-[11px] text-white">
         Big Hero 6 © Disney. Fan-made for a student event. · {settings.season_label} · Heuser Science Society · Karachi
       </p>
     </footer>

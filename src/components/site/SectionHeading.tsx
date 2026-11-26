@@ -6,17 +6,19 @@ export function SectionHeading({
   title,
   intro,
   id,
+  onRed = false,
 }: {
   eyebrow: string;
   title: string;
   intro?: React.ReactNode;
   id?: string;
+  onRed?: boolean;
 }) {
   return (
     <div className="mb-8 max-w-2xl sm:mb-10">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[var(--primary-text)]">{eyebrow}</p>
-      <MicrobotHeading id={id} text={title} />
-      {intro && <div className="mt-3 text-[var(--ink-muted)] sm:text-lg">{intro}</div>}
+      <p className={`font-mono text-xs font-bold uppercase tracking-[0.2em] ${onRed ? "text-[var(--band-body)]" : "text-[var(--primary-text)]"}`}>{eyebrow}</p>
+      <div className={onRed ? "text-[var(--band-heading)]" : ""}><MicrobotHeading id={id} text={title} /></div>
+      {intro && <div className={`mt-3 sm:text-lg ${onRed ? "font-semibold text-[var(--band-body)]" : "text-[var(--ink-muted)]"}`}>{intro}</div>}
     </div>
   );
 }

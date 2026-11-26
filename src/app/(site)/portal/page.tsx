@@ -28,34 +28,33 @@ export default async function PortalPage() {
   return (
     <>
       {/* ------------------------------------------------------------ HERO */}
-      <section className="relative overflow-hidden bg-blueprint">
-        <div aria-hidden className="pointer-events-none absolute -right-40 -top-40 h-[640px] w-[640px] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--primary)_22%,transparent),transparent_65%)]" />
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-8 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pb-24 md:pt-16">
-          <div>
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-[var(--primary-text)]">
+      <section className="band relative overflow-visible">
+        <div className="mx-auto grid max-w-6xl items-end gap-6 px-4 pt-10 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-16">
+          <div className="pb-12 md:pb-20">
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--band-body)]">
               Heuser Science Society presents
             </p>
             <h1 className="mt-4">
               <span className="sr-only">Synaxis {settings.season_label}</span>
-              <Logo className="h-auto w-full max-w-[520px]" title={`Synaxis ${settings.season_label}`} />
+              <Logo mono className="h-auto w-full max-w-[540px] drop-shadow-[0_6px_0_var(--band-deep)]" title={`Synaxis ${settings.season_label}`} />
             </h1>
-            <p className="mt-5 font-display text-xl font-bold sm:text-2xl">
+            <p className="mt-6 font-display text-2xl font-extrabold text-[var(--band-heading)] sm:text-3xl">
               {settings.season_label} · {formatDateRange(settings.event_start, settings.event_end)}
             </p>
-            <p className="mt-3 max-w-md text-[var(--ink-muted)] sm:text-lg">
+            <p className="mt-3 max-w-md text-lg font-semibold text-[var(--band-body)]">
               A three-day science olympiad in San Fransokyo style. Nine modules, one team, and a mystery every team must
               solve.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/register" className="btn btn-primary text-base">
+              <Link href="/register" className="btn btn-onred text-base">
                 Register your team
               </Link>
-              <Link href="#modules" className="btn btn-secondary text-base">
+              <Link href="#modules" className="btn btn-onred-outline text-base">
                 Explore modules
               </Link>
             </div>
             <div className="mt-9">
-              <Countdown to={`${settings.event_start}T09:00:00+05:00`} />
+              <Countdown onRed to={`${settings.event_start}T09:00:00+05:00`} />
             </div>
           </div>
           <HeroArt />
@@ -119,9 +118,10 @@ export default async function PortalPage() {
       </section>
 
       {/* ------------------------------------------------------------ MODULES */}
-      <section id="modules" className="scroll-mt-20 bg-[var(--surface-2)]/60 py-16 sm:py-24">
+      <section id="modules" className="band scroll-mt-20 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeading
+            onRed
             eyebrow="02 · Modules"
             title="Nine labs. Pick your mission."
             intro={
@@ -129,7 +129,7 @@ export default async function PortalPage() {
                 Every team competes in {settings.modules_min}–{settings.modules_max} modules.{" "}
                 {compulsory.length > 0 && (
                   <>
-                    <strong className="text-[var(--ink)]">{compulsory.map((m) => m.name).join(", ")}</strong> is compulsory. You rank{" "}
+                    <strong className="font-extrabold">{compulsory.map((m) => m.name).join(", ")}</strong> is compulsory. You rank{" "}
                     {pickMin === pickMax ? pickMin : `${pickMin}–${pickMax}`} more.
                   </>
                 )}
@@ -149,7 +149,7 @@ export default async function PortalPage() {
       </section>
 
       {/* ------------------------------------------------------------ REGISTER TEASER */}
-      <div className="bg-[color-mix(in_srgb,var(--primary)_9%,var(--bg))]">
+      <div>
       <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
         <SectionHeading
           eyebrow="03 · Registration"
@@ -166,7 +166,7 @@ export default async function PortalPage() {
             <li key={t}>
               <Reveal delay={i * 60} className="h-full">
                 <div className="card h-full p-5">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-[var(--primary)] font-mono font-bold text-[var(--primary-ink)]">
+                  <span className="grid h-9 w-9 place-items-center rounded-full bg-[var(--band-deep)] font-mono font-bold text-white">
                     {i + 1}
                   </span>
                   <h3 className="mt-4 font-display font-bold">{t}</h3>
@@ -178,14 +178,14 @@ export default async function PortalPage() {
         </ol>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-          <div className="card overflow-hidden">
+          <div className="band overflow-hidden rounded-[var(--radius)] shadow-[0_10px_0_var(--band-deep)]">
             <table className="w-full text-left text-sm">
-              <caption className="border-b border-[var(--line)] px-5 py-4 text-left font-display text-base font-bold">Fees</caption>
-              <tbody className="divide-y divide-[var(--line)]">
+              <caption className="border-b-2 border-[var(--band-deep)] px-5 py-4 text-left font-display text-2xl font-extrabold text-[var(--band-heading)]">Fees</caption>
+              <tbody className="divide-y divide-[var(--band-deep)]/60">
                 <tr>
                   <th scope="row" className="px-5 py-3 font-semibold">
                     Delegation fee (once per team), early bird
-                    <span className="block text-xs font-normal text-[var(--ink-muted)]">Submitted by {formatDate(settings.early_bird_deadline)}</span>
+                    <span className="block text-xs font-medium">Submitted by {formatDate(settings.early_bird_deadline)}</span>
                   </th>
                   <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.delegation_fee_early)}</td>
                 </tr>
@@ -196,7 +196,7 @@ export default async function PortalPage() {
                 <tr>
                   <th scope="row" className="px-5 py-3 font-semibold">
                     Per delegate, early bird
-                    <span className="block text-xs font-normal text-[var(--ink-muted)]">Submitted by {formatDate(settings.early_bird_deadline)}</span>
+                    <span className="block text-xs font-medium">Submitted by {formatDate(settings.early_bird_deadline)}</span>
                   </th>
                   <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.early_fee)}</td>
                 </tr>
@@ -204,7 +204,7 @@ export default async function PortalPage() {
                   <th scope="row" className="px-5 py-3 font-semibold">Per delegate, regular</th>
                   <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.regular_fee)}</td>
                 </tr>
-                <tr className="bg-[var(--surface-2)]">
+                <tr className="bg-[var(--band-deep)] text-white">
                   <th scope="row" className="px-5 py-3 font-semibold">
                     Example: team of {settings.team_min}, early bird
                   </th>
@@ -215,20 +215,20 @@ export default async function PortalPage() {
               </tbody>
             </table>
           </div>
-          <div className="card flex flex-col justify-between gap-4 p-5">
-            <dl className="space-y-3 text-sm">
+          <div className="band flex flex-col justify-between gap-4 rounded-[var(--radius)] p-5 shadow-[0_10px_0_var(--band-deep)]">
+            <dl className="space-y-3 text-sm font-semibold">
               {[
                 ["Early bird ends", settings.early_bird_deadline],
                 ["Registration closes", settings.registration_closes_at],
                 ["Payment deadline", settings.payment_deadline],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4">
-                  <dt className="text-[var(--ink-muted)]">{k}</dt>
+                  <dt>{k}</dt>
                   <dd className="font-mono font-semibold">{formatDate(v)}</dd>
                 </div>
               ))}
             </dl>
-            <Link href="/register" className="btn btn-primary w-full">
+            <Link href="/register" className="btn btn-onred w-full">
               Start registration
             </Link>
           </div>

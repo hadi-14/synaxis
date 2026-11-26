@@ -35,22 +35,29 @@
   --glow: 0 0 0 transparent;
   --grid: rgb(66 76 188 / 0.07);
   --motion-scale: 1;     /* gentle */
+  /* Red-led bands (coral sections). White for large headings/buttons; ink for body (AA). */
+  --band: #f24b59;
+  --band-deep: #dc2a35;
+  --band-heading: #ffffff;
+  --band-body: #0b1220;
+  --band-card: #ffffff;
+  --band-glow: none;
 }
 
 [data-theme="battle"] {
   color-scheme: dark;
-  --bg: #0b1220;
-  --surface: #18243a;
-  --surface-2: #1f2d47;
+  --bg: #08090f;          /* near-black */
+  --surface: #131a2a;
+  --surface-2: #1b2336;
   --ink: #f7f5f0;
   --ink-muted: #9a9aa0;
-  --line: #2a3955;
+  --line: #2b2f3d;
   --line-strong: #737375;
   --primary: #f24b59;
   --primary-ink: #0b1220;
   --primary-press: #dc2a35;
   --primary-text: #ff6b77;
-  --accent: #8b93f0;
+  --accent: #ff6b77;     /* armour red leads in Battle Mode */
   --accent-ink: #0b1220;
   --logo-letters: #b4b4b9;
   --logo-red: #dc2a35;
@@ -62,8 +69,14 @@
   --shadow: 0 0 0 1px rgb(242 75 89 / 0.08), 0 10px 30px -10px rgb(0 0 0 / 0.6);
   --shadow-press: 0 0 0 1px rgb(242 75 89 / 0.3);
   --glow: 0 0 24px rgb(242 75 89 / 0.35);
-  --grid: rgb(139 147 240 / 0.08);
+  --grid: rgb(242 75 89 / 0.07);
   --motion-scale: 0.7;   /* punchier: shorter durations */
+  --band: #a3141f;        /* deep armour red; white text 7.6:1 */
+  --band-deep: #dc2a35;
+  --band-heading: #ffffff;
+  --band-body: #ffffff;
+  --band-card: #131a2a;
+  --band-glow: 0 0 80px rgb(242 75 89 / 0.35);
 }
 
 @theme inline {
@@ -88,6 +101,11 @@
   --color-coral: #f24b59;
   --color-indigo: #424cbc;
   --color-baymax: #f7f5f0;
+  --color-band: var(--band);
+  --color-band-deep: var(--band-deep);
+  --color-band-heading: var(--band-heading);
+  --color-band-body: var(--band-body);
+  --color-band-card: var(--band-card);
   --radius-bh: var(--radius);
   --radius-bh-sm: var(--radius-sm);
   --shadow-bh: var(--shadow);
@@ -172,6 +190,17 @@ body {
 .btn-primary:active:not(:disabled) { background: var(--primary-press); color: #fff; box-shadow: var(--shadow-press); }
 .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
 .btn-ghost { background: transparent; color: var(--ink); }
+/* On coral/red bands: white button with red text (#C42634 on white = 5.7:1) */
+.btn-onred { background: #fff; color: #c42634; box-shadow: 0 6px 0 var(--band-deep); }
+.btn-onred:active:not(:disabled) { box-shadow: 0 2px 0 var(--band-deep); }
+.btn-onred-outline { background: transparent; color: #fff; border: 2px solid #fff; }
+@media (hover: hover) {
+  .btn-onred:hover:not(:disabled) { transform: scale(1.03); }
+  .btn-onred-outline:hover:not(:disabled) { background: rgb(255 255 255 / .12); }
+}
+/* Coral band section */
+.band { background: var(--band); color: var(--band-body); box-shadow: inset 0 0 0 0 transparent, var(--band-glow); }
+.band :focus-visible { outline-color: #fff; }
 .btn-danger { background: var(--danger); color: #fff; }
 [data-theme="battle"] .btn-danger { color: #0b1220; }
 

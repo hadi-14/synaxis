@@ -68,7 +68,7 @@ export function BaymaxGuide() {
         className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-3 z-[70] grid h-12 w-12 place-items-center rounded-full border-2 border-[var(--line)] bg-white shadow-lg"
         aria-label="Open Baymax guide"
       >
-        <span className="h-9 w-9 overflow-hidden rounded-full"><BH6Image id="baymax-healthcare" decorative sizes="36px" className="h-full w-full object-cover object-top" fallbackClassName="h-full w-full" /></span>
+        <span className="h-9 w-9 overflow-hidden rounded-full"><BH6Image id="baymax-healthcare" decorative sizes="36px" className="h-full w-full object-cover object-top" fallback="icon" iconClassName="mx-auto h-16 w-16" /></span>
       </button>
     );
   }
@@ -109,7 +109,7 @@ export function BaymaxGuide() {
               className={`block transition-transform duration-500 ${droop ? "translate-y-1 rotate-[10deg] saturate-50" : ""} ${pose === "wave" ? "motion-safe:animate-[wiggle_700ms_ease-in-out_2]" : pose === "point" ? "motion-safe:animate-[nudge_500ms_ease-out_1]" : ""}`}
               style={{ transformOrigin: "50% 90%" }}
             >
-              <BH6Image id={POSE_ART[pose]} decorative sizes="84px" className="h-auto w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" fallbackClassName="w-full" />
+              <BH6Image id={POSE_ART[pose]} decorative sizes="84px" className="h-auto w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" fallback="icon" iconClassName="mx-auto h-16 w-16" />
             </span>
           </span>
         </button>

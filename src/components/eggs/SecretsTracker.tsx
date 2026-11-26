@@ -70,8 +70,8 @@ export function SecretsTracker() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-3 py-1.5 font-mono text-xs" aria-haspopup="dialog">
-        <span aria-hidden className="h-2 w-2 rounded-[2px] bg-[var(--primary)]" /> Secrets {found.length}/{SECRET_TOTAL}
+      <button type="button" onClick={() => setOpen(true)} className="inline-flex items-center gap-2 rounded-full border border-current px-3 py-1.5 font-mono text-xs" aria-haspopup="dialog">
+        <span aria-hidden className="h-2 w-2 rounded-[2px] bg-current" /> Secrets {found.length}/{SECRET_TOTAL}
       </button>
       <dialog ref={dialog} onClose={() => setOpen(false)} className="inflate-in m-auto w-[min(92vw,420px)] rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] p-0 text-[var(--ink)] backdrop:bg-[#0b1220]/60">
         <div className="p-6">

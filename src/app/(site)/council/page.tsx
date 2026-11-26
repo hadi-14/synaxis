@@ -4,8 +4,6 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { CouncilCard } from "@/components/site/CouncilCard";
 import { Empty } from "@/components/ui/Empty";
 import { Reveal } from "@/components/effects/Reveal";
-import { BH6Image } from "@/components/brand/BH6Image";
-import { MODULE_ART } from "@/lib/bh6-assets";
 
 export const metadata: Metadata = { title: "The Cubinet", description: "Meet the Heuser Science Society council running Synaxis Season 1.", alternates: { canonical: "/council" } };
 
@@ -25,15 +23,11 @@ export default async function CouncilPage() {
         const team = council.filter((c) => c.tier === "module" && c.module_id === m.id);
         if (!team.length) return null;
         return (
-          <section key={m.id} className="mt-12 grid items-end gap-4 sm:grid-cols-[9rem_1fr]">
-            {/* the module's character stands beside its Head/Co-Head cards */}
-            <div className="hidden h-48 sm:block"><BH6Image id={(MODULE_ART[m.motif] ?? MODULE_ART.microbots).character} decorative sizes="144px" className="h-full w-auto object-contain object-bottom drop-shadow-xl" fallbackClassName="h-full" /></div>
-            <div>
+          <section key={m.id} className="mt-12">
             <h2 className="flex items-center gap-3 font-display text-xl font-bold"><span className="h-3 w-3 rounded-full" style={{ background: m.accent }} />{m.name}<span className="text-sm font-normal text-[var(--ink-muted)]">{m.subject}</span></h2>
-            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {team.map((c, i) => <li key={c.id}><Reveal delay={i * 60}><CouncilCard c={c} accent={m.accent} /></Reveal></li>)}
             </ul>
-            </div>
           </section>
         );
       })}

@@ -104,7 +104,7 @@ export function PurseReceipt({ waHref, hasReceipt }: { waHref: string; hasReceip
         className="relative z-20 mx-auto -mt-8 w-44 origin-bottom transition-transform duration-500"
         style={{ transform: reduced ? "none" : folded ? "scale(1.06,.94)" : open ? "scale(1,1.04) rotate(-2deg)" : "scale(.96)", transitionTimingFunction: "cubic-bezier(.34,1.56,.64,1)" }}
       >
-        <BH6Image id="honey-lemon-purse" decorative sizes="176px" className="h-auto w-full drop-shadow-xl" fallbackClassName="w-full" />
+        <BH6Image id="honey-lemon-purse" decorative sizes="176px" className="h-auto w-full drop-shadow-xl" fallback="icon" iconClassName="mx-auto h-24 w-24" />
       </div>
       {folded && (
         <p role="status" className="mt-2 text-center font-display font-bold text-[var(--success)]">

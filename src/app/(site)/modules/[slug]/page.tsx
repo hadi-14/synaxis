@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { getModule, getModules } from "@/lib/content";
 import { CardFlip } from "@/components/effects/CardFlip";
 
@@ -16,8 +17,17 @@ export async function generateMetadata(props: PageProps<"/modules/[slug]">): Pro
   return { title: `${m.name} · ${m.subject}`, description: `${m.tagline} ${m.description}`.slice(0, 160), alternates: { canonical: `/modules/${m.slug}` } };
 }
 
-export default async function ModulePage(props: PageProps<"/modules/[slug]">) {
-  const { slug } = await props.params;
+export default function ModulePage(props: PageProps<"/modules/[slug]">) {
+  // Params are read inside a Suspense boundary (all slugs are prerendered via generateStaticParams).
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-5xl px-4 py-16 sm:px-6"><div className="skeleton h-10 w-2/3" /><div className="skeleton mt-6 h-64" /></div>}>
+      <ModuleContent params={props.params} />
+    </Suspense>
+  );
+}
+
+async function ModuleContent({ params }: { params: PageProps<"/modules/[slug]">["params"] }) {
+  const { slug } = await params;
   const [m, all] = await Promise.all([getModule(slug), getModules()]);
   if (!m) notFound();
   const i = all.findIndex((x) => x.id === m.id);

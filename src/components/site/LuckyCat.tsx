@@ -14,7 +14,7 @@ export function LuckyCat() {
   return (
     <button type="button" onPointerEnter={go} onClick={go} aria-label="Lucky Cat waves hello" className="shrink-0">
       <span className="block h-12 w-10 origin-bottom" style={{ animation: wave ? "luckywave 300ms ease-in-out 4" : undefined }}>
-        <BH6Image id="lucky-cat" decorative sizes="40px" className="h-full w-full object-contain" fallbackClassName="h-full w-full" />
+        <BH6Image id="lucky-cat" decorative sizes="40px" className="h-full w-full object-contain" fallback="icon" iconClassName="h-10 w-10" />
       </span>
       <style>{`@keyframes luckywave{0%,100%{transform:rotate(0)}50%{transform:rotate(-12deg)}}`}</style>
     </button>

@@ -67,7 +67,7 @@ export function BaymaxFlight() {
           <div className={idle && !landed ? "motion-safe:animate-[bmx-bob_2.4s_ease-in-out_infinite]" : ""} style={{ transform: `rotate(${landed ? 0 : 90 - flame * 10}deg)`, transition: "transform 200ms" }}>
             {/* flying pose is a side view: rotated so he flies "down" the page */}
             <div className="relative">
-              <BH6Image id="baymax-armor-flying" decorative sizes="48px" className="h-auto w-full drop-shadow-[0_6px_10px_rgba(0,0,0,.25)]" fallbackClassName="!aspect-[16/9] w-full !rounded-full" />
+              <BH6Image id="baymax-armor-flying" decorative sizes="48px" className="h-auto w-full drop-shadow-[0_6px_10px_rgba(0,0,0,.25)]" fallback="icon" iconClassName="h-10 w-10" />
               {/* thruster flame (code): scales with scroll velocity */}
               {!landed && (
                 <span

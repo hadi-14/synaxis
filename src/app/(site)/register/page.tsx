@@ -43,7 +43,7 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
   if (state !== "open") {
     return (
       <div className="card mt-6 flex flex-col items-center p-8 text-center">
-        <BH6Image id="baymax-healthcare" decorative sizes="112px" className="h-auto w-28 rotate-[8deg] saturate-50" fallbackClassName="w-28" />
+        <BH6Image id="baymax-healthcare" decorative sizes="112px" className="h-auto w-28 rotate-[8deg] saturate-50" />
         <h1 className="mt-4 font-display text-2xl font-extrabold">
           {state === "not_yet" ? "Registration opens soon" : "Registration is closed"}
         </h1>

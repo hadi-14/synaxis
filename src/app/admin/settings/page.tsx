@@ -63,11 +63,11 @@ export default async function SettingsPage() {
               <F label="Event start"><input className="field" type="date" name="event_start" defaultValue={s.event_start} /></F>
               <F label="Event end"><input className="field" type="date" name="event_end" defaultValue={s.event_end} /></F>
             </div>
-            <F label="Venue name"><input className="field" name="venue_name" defaultValue={s.venue_name} /></F>
+            <F label="Venue name"><input className="field" name="venue_name" defaultValue={s.venue_name} /><Todo v={s.venue_name} /></F>
             <F label="Venue address"><input className="field" name="venue_address" defaultValue={s.venue_address} /></F>
             <F label="Map link"><input className="field" name="venue_map_url" defaultValue={s.venue_map_url} /></F>
-            <F label="Contact email"><input className="field" type="email" name="contact_email" defaultValue={s.contact_email} /></F>
-            <F label="Contact WhatsApp"><input className="field" name="contact_whatsapp" defaultValue={s.contact_whatsapp} /></F>
+            <F label="Contact email" hint={todo(s.contact_email) ? "Still the placeholder shown in the site footer. Replace before launch." : undefined}><input className="field" type="email" name="contact_email" defaultValue={s.contact_email} /><Todo v={s.contact_email} /></F>
+            <F label="Contact WhatsApp" hint={todo(s.contact_whatsapp) ? "Still the placeholder shown in the site footer. Replace before launch." : undefined}><input className="field" name="contact_whatsapp" defaultValue={s.contact_whatsapp} /><Todo v={s.contact_whatsapp} /></F>
             <F label="Instagram URL"><input className="field" name="instagram_url" defaultValue={s.instagram_url} /></F>
             <F label="Waiver template URL" hint="Default /waiver (printable). Or a PDF link."><input className="field" name="waiver_template_url" defaultValue={s.waiver_template_url} /></F>
           </div>
@@ -94,4 +94,10 @@ export default async function SettingsPage() {
       </ActionForm>
     </div>
   );
+}
+
+/** Placeholder values seeded at launch: flagged until the Cubinet fills them in. */
+const todo = (v: string) => /example\.com|0000000|TBC/i.test(v);
+function Todo({ v }: { v: string }) {
+  return todo(v) ? <span className="ml-2 rounded bg-[#FBBF24]/25 px-1.5 py-0.5 text-[10px] font-bold uppercase text-[var(--warning)]">TODO: placeholder</span> : null;
 }
