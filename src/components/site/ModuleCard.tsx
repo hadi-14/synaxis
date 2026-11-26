@@ -48,9 +48,9 @@ export function ModuleCard({ m }: { m: Module }) {
         </div>
       </div>
       <h3 className="mt-4 font-display text-lg font-bold leading-tight text-[var(--ink)]">{m.name}</h3>
-      <p className="mt-1 flex items-center gap-2 text-sm font-semibold" style={{ color: `color-mix(in srgb, ${m.accent} 70%, var(--ink))` }}>
+      <p className="mt-1 flex items-center text-sm font-semibold" style={{ color: `color-mix(in srgb, ${m.accent} 70%, var(--ink))` }}>
         {hasAvatar && (
-          <span aria-hidden className="h-12 w-0 overflow-hidden rounded-full opacity-0 transition-all duration-300 group-hover:w-12 group-hover:opacity-100 motion-reduce:transition-none">
+          <span aria-hidden className="mr-0 h-12 w-0 overflow-hidden rounded-full opacity-0 transition-all duration-300 group-hover:mr-2 group-hover:w-12 group-hover:opacity-100 motion-reduce:transition-none">
             <BH6Image id={art.character} decorative sizes="48px" className="h-12 w-12 rounded-full object-cover object-top" />
           </span>
         )}

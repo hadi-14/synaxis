@@ -46,7 +46,8 @@ export function BH6Image({
     );
   }
   const alt = decorative ? "" : a.alt;
-  const common = { src: a.src, alt, sizes, priority, className, ...(priority ? {} : { loading: "lazy" as const }) };
+  // Next 16: `priority` is deprecated; above-the-fold art uses preload + eager + high fetch priority.
+  const common = { src: a.src, alt, sizes, className, ...(priority ? { preload: true, loading: "eager" as const, fetchPriority: "high" as const } : { loading: "lazy" as const }) };
   return fill ? <Image {...common} alt={alt} fill /> : <Image {...common} alt={alt} width={a.width} height={a.height} />;
 }
 

@@ -36,10 +36,10 @@
   --grid: rgb(66 76 188 / 0.07);
   --motion-scale: 1;     /* gentle */
   /* Red-led bands (coral sections). White for large headings/buttons; ink for body (AA). */
-  --band: #f24b59;
-  --band-deep: #dc2a35;
+  --band: #dc2a35;        /* true logo red for big areas; white text 4.74:1 (AA) */
+  --band-deep: #a3141f;   /* darker red for depth: tiles, ticker, solid shadows */
   --band-heading: #ffffff;
-  --band-body: #0b1220;
+  --band-body: #ffffff;
   --band-card: #ffffff;
   --band-glow: none;
 }
@@ -71,8 +71,8 @@
   --glow: 0 0 24px rgb(242 75 89 / 0.35);
   --grid: rgb(242 75 89 / 0.07);
   --motion-scale: 0.7;   /* punchier: shorter durations */
-  --band: #a3141f;        /* deep armour red; white text 7.6:1 */
-  --band-deep: #dc2a35;
+  --band: #b01e2a;        /* same red family, deeper for Battle Mode; white text >7:1 */
+  --band-deep: #7d0f18;
   --band-heading: #ffffff;
   --band-body: #ffffff;
   --band-card: #131a2a;
@@ -198,7 +198,7 @@ body {
   .btn-onred:hover:not(:disabled) { transform: scale(1.03); }
   .btn-onred-outline:hover:not(:disabled) { background: rgb(255 255 255 / .12); }
 }
-/* Coral band section */
+/* Red band section (solid, no glow on light backgrounds) */
 .band { background: var(--band); color: var(--band-body); box-shadow: inset 0 0 0 0 transparent, var(--band-glow); }
 .band :focus-visible { outline-color: #fff; }
 .btn-danger { background: var(--danger); color: #fff; }

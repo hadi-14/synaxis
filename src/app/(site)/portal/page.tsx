@@ -28,7 +28,8 @@ export default async function PortalPage() {
   return (
     <>
       {/* ------------------------------------------------------------ HERO */}
-      <section className="band relative overflow-visible">
+      {/* pb-11 reserves the ticker's height; the ticker is pinned to the bottom edge in front of Baymax's legs */}
+      <section className="band relative overflow-hidden pb-11">
         <div className="mx-auto grid max-w-6xl items-end gap-6 px-4 pt-10 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-16">
           <div className="pb-12 md:pb-20">
             <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--band-body)]">
@@ -59,9 +60,9 @@ export default async function PortalPage() {
           </div>
           <HeroArt />
         </div>
+        <Ticker items={[formatDateRange(settings.event_start, settings.event_end), `${modules.length} modules`, "Karachi", `Teams of ${settings.team_min}–${settings.team_max}`, "Kabuki Caper is compulsory", `Early bird until ${formatDate(settings.early_bird_deadline)}`, "Register now"]} />
       </section>
 
-      <Ticker items={[formatDateRange(settings.event_start, settings.event_end), `${modules.length} modules`, "Karachi", `Teams of ${settings.team_min}–${settings.team_max}`, "Kabuki Caper is compulsory", `Early bird until ${formatDate(settings.early_bird_deadline)}`, "Register now"]} />
 
       {/* ------------------------------------------------------------ ABOUT */}
       <section id="about" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
@@ -182,27 +183,36 @@ export default async function PortalPage() {
             <table className="w-full text-left text-sm">
               <caption className="border-b-2 border-[var(--band-deep)] px-5 py-4 text-left font-display text-2xl font-extrabold text-[var(--band-heading)]">Fees</caption>
               <tbody className="divide-y divide-[var(--band-deep)]/60">
-                <tr>
-                  <th scope="row" className="px-5 py-3 font-semibold">
-                    Delegation fee (once per team), early bird
-                    <span className="block text-xs font-medium">Submitted by {formatDate(settings.early_bird_deadline)}</span>
-                  </th>
-                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.delegation_fee_early)}</td>
-                </tr>
-                <tr>
-                  <th scope="row" className="px-5 py-3 font-semibold">Delegation fee (once per team), regular</th>
-                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.delegation_fee_regular)}</td>
-                </tr>
+                {settings.delegation_fee_early === settings.delegation_fee_regular ? (
+                  <tr>
+                    <th scope="row" className="px-5 py-3 font-semibold">Delegation fee (once per team)</th>
+                    <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{feeText(settings.delegation_fee_early)}</td>
+                  </tr>
+                ) : (
+                  <>
+                    <tr>
+                      <th scope="row" className="px-5 py-3 font-semibold">
+                        Delegation fee (once per team), early bird
+                        <span className="block text-xs font-medium">Submitted by {formatDate(settings.early_bird_deadline)}</span>
+                      </th>
+                      <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{feeText(settings.delegation_fee_early)}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" className="px-5 py-3 font-semibold">Delegation fee (once per team), regular</th>
+                      <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{feeText(settings.delegation_fee_regular)}</td>
+                    </tr>
+                  </>
+                )}
                 <tr>
                   <th scope="row" className="px-5 py-3 font-semibold">
                     Per delegate, early bird
                     <span className="block text-xs font-medium">Submitted by {formatDate(settings.early_bird_deadline)}</span>
                   </th>
-                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.early_fee)}</td>
+                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{feeText(settings.early_fee)}</td>
                 </tr>
                 <tr>
                   <th scope="row" className="px-5 py-3 font-semibold">Per delegate, regular</th>
-                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.regular_fee)}</td>
+                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{feeText(settings.regular_fee)}</td>
                 </tr>
                 <tr className="bg-[var(--band-deep)] text-white">
                   <th scope="row" className="px-5 py-3 font-semibold">
@@ -252,4 +262,9 @@ export default async function PortalPage() {
       </section>
     </>
   );
+}
+
+/** Fee cell text: "Free" for 0 (e.g. no per-delegate fee during early bird), otherwise Rs amount. */
+function feeText(n: number) {
+  return n === 0 ? "Free" : formatRs(n);
 }

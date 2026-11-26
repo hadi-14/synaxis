@@ -7,7 +7,7 @@ import { SecretsTracker } from "@/components/eggs/SecretsTracker";
 export function Footer({ settings }: { settings: Settings }) {
   const wa = settings.contact_whatsapp.replace(/\D/g, "");
   return (
-    <footer className="mt-0 bg-[#DC2A35] pb-[env(safe-area-inset-bottom)] text-white battle:bg-[#a3141f] [&_a:focus-visible]:outline-white" id="footer">
+    <footer className="mt-0 bg-[#a3141f] pb-[env(safe-area-inset-bottom)] text-white battle:bg-[#7d0f18] [&_a:focus-visible]:outline-white" id="footer">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <Logo mono className="h-6 w-auto" />

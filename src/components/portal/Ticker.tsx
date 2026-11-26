@@ -2,7 +2,7 @@
 export function Ticker({ items }: { items: string[] }) {
   const row = [...items, ...items];
   return (
-    <div className="relative overflow-hidden bg-[#DC2A35] py-3 text-white">
+    <div className="absolute inset-x-0 bottom-0 z-20 flex h-11 items-center overflow-hidden bg-[var(--band-deep)] text-white">
       <p className="sr-only">{items.join(" · ")}</p>
       <div aria-hidden className="flex w-max gap-8 whitespace-nowrap font-mono text-sm font-bold uppercase tracking-[0.18em] motion-safe:animate-[ticker_40s_linear_infinite]">
         {row.map((t, i) => (

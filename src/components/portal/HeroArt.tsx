@@ -21,17 +21,17 @@ export function HeroArt() {
   }, []);
 
   return (
-    <div className="pointer-events-none relative h-[340px] w-full sm:h-[440px] md:h-[520px]">
-      {/* soft glow the figure stands in */}
-      <div aria-hidden className="absolute bottom-0 left-1/2 h-[85%] w-[110%] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.55),rgba(255,255,255,0))] battle:bg-[radial-gradient(closest-side,rgba(255,80,96,.55),rgba(255,80,96,0))]" />
-      <div aria-hidden className="absolute bottom-[-6%] left-1/2 h-8 w-2/3 -translate-x-1/2 rounded-[50%] bg-[var(--band-deep)] opacity-30 blur-md" />
-      <div ref={fig} className="absolute inset-x-0 bottom-[-12%] top-0 will-change-transform">
+    // The hero section clips at the ticker's bottom edge; the figure runs behind the ticker (which sits on top).
+    <div className="pointer-events-none relative -mb-11 h-[360px] w-full sm:h-[460px] md:h-[560px]">
+      {/* soft light behind the figure (white on red, no blurred shadows) */}
+      <div aria-hidden className="absolute bottom-0 left-1/2 h-[85%] w-[110%] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.35),rgba(255,255,255,0))] battle:bg-[radial-gradient(closest-side,rgba(255,80,96,.4),rgba(255,80,96,0))]" />
+      <div ref={fig} className="absolute inset-x-0 bottom-0 top-0 will-change-transform">
         <div className="h-full motion-safe:animate-[bob_3.4s_ease-in-out_infinite]">
           <div className="medical-only h-full">
-            <BH6Image id="baymax-healthcare" priority sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom drop-shadow-[0_24px_30px_rgba(150,20,30,.35)]" />
+            <BH6Image id="baymax-healthcare" priority sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom" />
           </div>
           <div className="battle-only h-full">
-            <BH6Image id="baymax-armor" sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom drop-shadow-[0_0_48px_rgba(255,80,96,.6)]" />
+            <BH6Image id="baymax-armor" sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom drop-shadow-[0_0_32px_rgba(255,80,96,.5)]" />
           </div>
         </div>
       </div>

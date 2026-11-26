@@ -25,7 +25,7 @@ export function Countdown({ to, label = "Until Synaxis begins", onRed = false }:
         {parts.map(([unit, v]) => (
           <div
             key={unit}
-            className="panel-lines flex min-w-[64px] flex-col items-center rounded-[var(--radius-sm)] bg-[#DC2A35] px-2 py-2 text-white shadow-[0_6px_0_#a3141f,inset_0_0_18px_rgb(0_0_0/.15)] sm:min-w-[76px]"
+            className="panel-lines flex min-w-[64px] flex-col items-center rounded-[var(--radius-sm)] bg-[var(--band-deep)] px-2 py-2 text-white shadow-[0_6px_0_#5e0a12] sm:min-w-[76px]"
           >
             <span className="segment-digit text-3xl font-bold leading-none tabular-nums sm:text-4xl" suppressHydrationWarning>
               {v === null ? "--" : String(v).padStart(2, "0")}
