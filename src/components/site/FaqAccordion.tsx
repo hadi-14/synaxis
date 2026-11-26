@@ -1,6 +1,7 @@
 "use client";
 import { useId, useState } from "react";
 import type { Faq } from "@/lib/types";
+import { PlusIcon } from "@/components/ui/Icon";
 
 /** FAQ accordion: Wasabi's plasma blade slices the panel open along a clean line. */
 export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
@@ -26,9 +27,11 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
                 <span>{f.question}</span>
                 <span
                   aria-hidden
-                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 border-[var(--line)] transition-transform duration-200 ${isOpen ? "rotate-45 border-[#2BB673] text-[#2BB673]" : ""}`}
+                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 transition-colors duration-200 ${isOpen ? "border-[#2BB673] text-[#2BB673]" : "border-[var(--line)]"}`}
                 >
-                  +
+                  <span className={`grid place-items-center transition-transform duration-200 ${isOpen ? "rotate-45" : ""}`}>
+                    <PlusIcon />
+                  </span>
                 </span>
               </button>
             </h3>

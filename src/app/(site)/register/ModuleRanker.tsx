@@ -4,6 +4,7 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from "@dnd-kit/utilities";
 import { Motif } from "@/components/brand/Motif";
 import type { Module } from "@/lib/types";
+import { CloseIcon } from "@/components/ui/Icon";
 
 /**
  * Drag-to-rank modules. Ranked cards are linked like microbots joining a chain.
@@ -124,7 +125,7 @@ function RankedItem({ m, i, total, onUp, onDown, onRemove }: { m: Module; i: num
       <div className="flex shrink-0 items-center">
         <button type="button" onClick={onUp} disabled={i === 0} className="grid h-10 w-9 place-items-center rounded-full disabled:opacity-30" aria-label={`Move ${m.name} up`}>↑</button>
         <button type="button" onClick={onDown} disabled={i === total - 1} className="grid h-10 w-9 place-items-center rounded-full disabled:opacity-30" aria-label={`Move ${m.name} down`}>↓</button>
-        <button type="button" onClick={onRemove} className="grid h-10 w-9 place-items-center rounded-full text-[var(--danger)]" aria-label={`Remove ${m.name}`}>✕</button>
+        <button type="button" onClick={onRemove} className="grid h-10 w-9 place-items-center rounded-full text-[var(--danger)]" aria-label={`Remove ${m.name}`}><CloseIcon /></button>
       </div>
     </li>
   );

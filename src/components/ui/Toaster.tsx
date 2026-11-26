@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { dismiss, subscribe, type ToastItem } from "./toast-store";
+import { CloseIcon } from "@/components/ui/Icon";
 
 /** Baymax's chest display: a rounded screen that slides out of the red case. */
 export function Toaster() {
@@ -31,10 +32,10 @@ export function Toaster() {
             </div>
             <button
               onClick={() => dismiss(t.id)}
-              className="-mr-1 rounded-full px-2 text-lg leading-none text-[#8fa3c0] hover:text-white"
+              className="-mr-1 grid h-7 w-7 shrink-0 place-items-center rounded-full text-[#8fa3c0] hover:text-white"
               aria-label="Dismiss notification"
             >
-              ×
+              <CloseIcon />
             </button>
           </div>
         </div>

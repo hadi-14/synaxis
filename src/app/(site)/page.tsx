@@ -139,8 +139,9 @@ export default async function HomePage() {
       <MicrobotChain className="text-[var(--band)] opacity-60" />
 
       {/* ------------------------------------------------------------ MODULES */}
-      <section id="modules" className="band relative isolate scroll-mt-20 overflow-hidden pb-40 pt-16 sm:pb-48 sm:pt-24">
-        <Skyline className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-32 w-full text-[var(--band-deep)] sm:h-44" />
+      {/* Bottom padding = skyline height + a clear gap, so the cards never touch the skyline. */}
+      <section id="modules" className="band relative isolate scroll-mt-20 overflow-hidden pt-16 pb-[calc(max(150px,18.75vw)+3.5rem)] sm:pt-24">
+        <Skyline className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[max(150px,18.75vw)] w-full" />
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeading
             onRed

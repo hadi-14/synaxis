@@ -37,6 +37,13 @@ const mobile = z
 const anyPhone = z.string().trim().refine(isPkPhone, "Use a Pakistani phone number, e.g. 0300 1234567.");
 const grade = z.enum(GRADES, { error: "Pick a grade or level." });
 
+/** Values people type to mean "nothing": empty, whitespace, "-", "none", "n/a", "na", "nil". */
+const BLANK = /^\s*(?:-+|–|—|none|n\/?a|nil|null)?\s*$/i;
+export const isBlank = (v: unknown) => v == null || (typeof v === "string" && BLANK.test(v));
+/** Optional field: blank-like input becomes null (never an error); anything else must pass `inner`. */
+export const optional = <T extends z.ZodType>(inner: T) =>
+  z.preprocess((v) => (isBlank(v) ? null : typeof v === "string" ? v.trim() : v), inner.nullable().optional());
+
 export const step1 = z.object({
   delegation_type: z.enum(["internal", "external_official", "external_independent"], {
     error: "Choose a delegation type.",
@@ -50,7 +57,7 @@ export const step2 = z.object({
   head_name: name,
   head_email: email,
   head_whatsapp: mobile,
-  head_alt_phone: z.union([z.literal(""), anyPhone]).optional(),
+  head_alt_phone: optional(anyPhone),
   head_grade: grade,
   institution: z.string().trim().min(2, "Enter your institution.").max(120),
   city: z.string().trim().min(2, "Enter your city.").max(60),
@@ -78,8 +85,8 @@ export const step4 = z.object({ module_ranking: z.array(z.number().int().positiv
 
 export const step5 = z.object({
   heard_from: z.enum(HEARD_FROM, { error: "Let us know how you heard about Synaxis." }),
-  heard_from_other: z.string().trim().max(120).optional(),
-  needs: z.string().trim().max(500).optional(),
+  heard_from_other: optional(z.string().max(120)),
+  needs: optional(z.string().max(500)),
   agree_rules: z.literal(true, { error: "Required." }),
   agree_conduct: z.literal(true, { error: "Required." }),
   agree_dress: z.literal(true, { error: "Required." }),

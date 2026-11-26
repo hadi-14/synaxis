@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LOGO_LETTERS, LOGO_X } from "@/components/brand/logo-paths";
 import { loadMicrobotSprite, microbotSprite } from "@/components/effects/microbot-sprite";
-import { Skyline } from "@/components/decor/Skyline";
+import { Skyline, SKYLINE_NIGHT } from "@/components/decor/Skyline";
 
 /**
  * Opening animation as a full-screen overlay on top of the server-rendered home page.
@@ -226,7 +226,7 @@ export function IntroOverlay() {
         <div role="dialog" aria-modal="true" aria-label="Synaxis intro" className="fixed inset-0 z-[201]">
           <div ref={shell} className="absolute inset-0 overflow-hidden bg-[#0B1220]">
             <div aria-hidden className="absolute left-1/2 top-[38%] h-[70vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(220,42,53,.28),rgba(220,42,53,0))]" />
-            <Skyline className="absolute inset-x-0 bottom-0 h-[34vh] w-full text-[#141c30]" />
+            <Skyline palette={SKYLINE_NIGHT} className="absolute inset-x-0 bottom-0 h-[min(36vh,max(150px,18.75vw))] w-full" />
             {[[12, 30], [24, 18], [78, 24], [88, 36], [64, 14]].map(([l, t], i) => (
               <span key={i} aria-hidden className="absolute block h-4 w-3 rounded-[5px] bg-[#DC2A35] opacity-50 shadow-[0_0_14px_rgba(255,120,90,.6)] motion-safe:animate-[lantern_6s_ease-in-out_infinite_alternate]" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${-i * 1.3}s` }} />
             ))}

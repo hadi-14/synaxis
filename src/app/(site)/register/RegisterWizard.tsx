@@ -328,7 +328,8 @@ export function RegisterWizard(props: {
             {teamId ? "" : saving === "saving" ? "Saving…" : saving === "saved" ? "Saved ✓" : saving === "offline" ? "Saved on this device" : ""}
           </p>
         </div>
-        <Battery value={step - 1} max={6} charging className="mt-2" label={`${Math.round(((step - 1) / 6) * 100)}%`} />
+        {/* Completed steps = furthest step reached minus one; the current step shows as a faint "charging" cell. */}
+        <Battery value={Math.max(step, maxReached) - 1} max={6} charging className="mt-2" label={`${Math.round(((Math.max(step, maxReached) - 1) / 6) * 100)}% done`} />
         <nav aria-label="Registration steps" className="no-scrollbar mt-2 flex gap-1 overflow-x-auto">
           {STEPS.map((s) => (
             <button
@@ -347,7 +348,7 @@ export function RegisterWizard(props: {
         </nav>
       </div>
 
-      <form onSubmit={(e) => e.preventDefault()} noValidate className="mt-4">
+      <form onSubmit={(e) => e.preventDefault()} noValidate className="mt-4 [&_input]:scroll-mb-28 [&_select]:scroll-mb-28 [&_textarea]:scroll-mb-28">
         <h1 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-extrabold outline-none sm:text-3xl">
           {STEPS[step - 1].title}
         </h1>
@@ -638,24 +639,25 @@ export function RegisterWizard(props: {
         )}
 
         {/* ----------------------------------------------------- NAV */}
-        <div className="sticky bottom-0 z-20 -mx-4 mt-8 flex items-center gap-3 border-t border-[var(--line)] bg-[var(--bg)]/95 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pr-24 backdrop-blur sm:-mx-6 sm:px-6 sm:pr-28">
+        {/* Same width as the form: divider spans the form exactly and the primary button is flush right. */}
+        <div className="sticky bottom-0 z-20 mt-8 flex items-center gap-3 border-t border-[var(--line)] bg-[var(--bg)]/95 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
           {step > 1 && (
-            <button type="button" className="btn btn-secondary" onClick={goBack}>
+            <button type="button" className="btn btn-secondary shrink-0" onClick={goBack}>
               Back
             </button>
           )}
           {step < 6 ? (
-            <button type="button" className="btn btn-primary ml-auto" onClick={goNext}>
+            <button type="button" className="btn btn-primary min-w-0 flex-1 sm:ml-auto sm:flex-none" onClick={goNext}>
               Continue
             </button>
           ) : (
-            <button type="button" className="btn btn-primary ml-auto whitespace-nowrap" onClick={onSubmit} disabled={pending}>
+            <button type="button" className="btn btn-primary min-w-0 flex-1 whitespace-nowrap sm:ml-auto sm:flex-none" onClick={onSubmit} disabled={pending}>
               {pending ? "Submitting…" : teamId ? "Save changes" : `Submit · ${formatRs(fee.total)}`}
             </button>
           )}
         </div>
       </form>
-      <BaymaxGuide intro />
+      <BaymaxGuide intro aboveActionBar />
     </>
   );
 }

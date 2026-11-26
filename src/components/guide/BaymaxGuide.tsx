@@ -4,6 +4,7 @@ import { BH6Image } from "@/components/brand/BH6Image";
 import { onSay, type BaymaxPose, type GuideMessage } from "./guide-store";
 import { FistBump } from "@/components/effects/FistBump";
 import { BaymaxVideo } from "@/components/brand/BaymaxVideo";
+import { MinusIcon } from "@/components/ui/Icon";
 
 const POSE_ART: Record<BaymaxPose, string> = { idle: "baymax-healthcare", point: "baymax-healthcare", wave: "baymax-wave", fist: "baymax-wave" };
 import { foundSecret } from "@/components/eggs/secrets";
@@ -15,7 +16,9 @@ const OPENING = "Hello. I am Baymax, your personal registration companion.";
  * a speech bubble, low-battery droop after inactivity, and it can be minimised (remembered).
  */
 /** `intro`: on the first visit this session, Baymax inflates out of his charging case before saying hello. */
-export function BaymaxGuide({ intro = false }: { intro?: boolean }) {
+export function BaymaxGuide({ intro = false, aboveActionBar = false }: { intro?: boolean; aboveActionBar?: boolean }) {
+  // On pages with a sticky bottom action bar, sit above it on mobile so it never covers the buttons.
+  const lift = aboveActionBar ? "bottom-[calc(76px+env(safe-area-inset-bottom))] sm:bottom-[max(0.75rem,env(safe-area-inset-bottom))]" : "bottom-[max(0.75rem,env(safe-area-inset-bottom))]";
   const [msg, setMsg] = useState<GuideMessage>({ text: OPENING, pose: "wave", tone: "info", at: 0 });
   const [min, setMin] = useState(false);
   const [bubble, setBubble] = useState(true);
@@ -74,7 +77,7 @@ export function BaymaxGuide({ intro = false }: { intro?: boolean }) {
       <button
         type="button"
         onClick={() => toggleMin(false)}
-        className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-3 z-[70] grid h-12 w-12 place-items-center rounded-full border-2 border-[var(--line)] bg-white shadow-lg"
+        className={`fixed ${aboveActionBar ? "bottom-[calc(76px+env(safe-area-inset-bottom))] sm:bottom-4" : "bottom-[max(1rem,env(safe-area-inset-bottom))]"} right-3 z-[70] grid h-12 w-12 place-items-center rounded-full border-2 border-[var(--line)] bg-white shadow-lg`}
         aria-label="Open Baymax guide"
       >
         <span className="h-9 w-9 overflow-hidden rounded-full"><BH6Image id="baymax-healthcare" decorative sizes="36px" className="h-full w-full object-cover object-top" fallback="icon" iconClassName="mx-auto h-16 w-16" /></span>
@@ -85,7 +88,7 @@ export function BaymaxGuide({ intro = false }: { intro?: boolean }) {
   return (
     <aside
       aria-label="Baymax registration guide"
-      className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] right-2 z-[70] flex max-w-[calc(100vw-1rem)] items-end gap-1 sm:right-4"
+      className={`fixed ${lift} right-2 z-[70] flex max-w-[calc(100vw-1rem)] items-end gap-1 sm:right-4`}
     >
       {bubble && (
         <div
@@ -145,7 +148,7 @@ export function BaymaxGuide({ intro = false }: { intro?: boolean }) {
           className="absolute -top-1 right-0 grid h-6 w-6 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-xs"
           aria-label="Minimise Baymax guide"
         >
-          –
+          <MinusIcon />
         </button>
       </div>
       <style>{`@keyframes squish{0%{transform:scale(.6,.4)}40%{transform:scale(1.12,.9)}70%{transform:scale(.95,1.06)}100%{transform:scale(1)}}@keyframes wiggle{0%,100%{transform:rotate(0)}30%{transform:rotate(-6deg)}70%{transform:rotate(6deg)}}@keyframes nudge{0%{transform:translateX(0)}50%{transform:translateX(-5px)}100%{transform:translateX(0)}}`}</style>

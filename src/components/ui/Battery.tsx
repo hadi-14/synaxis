@@ -32,7 +32,7 @@ export function Battery({
                   ? "bg-[var(--success)]"
                   : "bg-[var(--primary)]"
                 : charging && i === value
-                  ? "battery-cell-charging bg-[var(--primary)]"
+                  ? "battery-cell-charging bg-[color-mix(in_srgb,var(--primary)_30%,var(--surface-2))]"
                   : "bg-[var(--surface-2)]"
             }`}
           />

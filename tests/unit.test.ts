@@ -104,3 +104,32 @@ test("safeNext: only same-origin paths", () => {
   for (const bad of ["//evil.com", "/\\evil.com", "/\\/evil.com", "https://evil.com", "evil.com", "/%0d%0aLocation:x".replace("%0d%0a", "\r\n"), "", null, undefined, "javascript:alert(1)", "/.//evil.com", "/a/..//evil.com", "/./\\evil.com", "/%2e//evil.com"])
     assert.equal(safeNext(bad as string), "/register", String(bad));
 });
+
+// ---- optional fields: blank-like input never blocks progress ----
+import { step2 as s2, step5 as s5, isBlank } from "../src/lib/validation/registration";
+const baseStep2 = {
+  head_name: "Ayesha Khan", head_email: "a@example.com", head_whatsapp: "0300 1234567", head_grade: "Grade 9",
+  institution: "Heuser College", city: "Karachi", team_name: "Microbots", guardian_name: "Sara Khan", guardian_phone: "0300 7654321",
+};
+test("optional alt phone: blank-like values become null", () => {
+  for (const v of ["", "   ", "-", "--", "none", "None", "n/a", "N/A", "na", undefined]) {
+    const r = s2.safeParse({ ...baseStep2, head_alt_phone: v });
+    assert.ok(r.success, `should accept ${JSON.stringify(v)}`);
+    assert.equal(r.data.head_alt_phone ?? null, null);
+  }
+});
+test("optional alt phone: real digits are still validated", () => {
+  assert.equal(s2.safeParse({ ...baseStep2, head_alt_phone: "12345" }).success, false);
+  const ok = s2.safeParse({ ...baseStep2, head_alt_phone: " 021 34567890 " });
+  assert.ok(ok.success);
+  assert.equal(ok.data.head_alt_phone, "021 34567890");
+});
+test("optional needs / heard_from_other normalise to null", () => {
+  const base = { heard_from: "Instagram", agree_rules: true, agree_conduct: true, agree_dress: true, agree_media: true };
+  const r = s5.safeParse({ ...base, needs: " n/a ", heard_from_other: "-" });
+  assert.ok(r.success);
+  assert.equal(r.data.needs, null);
+  assert.equal(r.data.heard_from_other, null);
+  assert.equal(s5.safeParse({ ...base, needs: "Vegetarian" }).data?.needs, "Vegetarian");
+  assert.ok(isBlank("  —  ") && !isBlank("0"));
+});

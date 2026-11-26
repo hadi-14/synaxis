@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/dates";
 import { STATUS_LABEL, type Module, type TeamStatus } from "@/lib/types";
 import { recordManualPayment, rejectPayment, saveAdminNotes, setTeamCancelled, setWaiverReceived, signedFileUrl, verifyPayment } from "@/app/admin/actions";
 import { statusTone } from "./TeamsTable";
+import { CloseIcon } from "@/components/ui/Icon";
 
 type Member = { id: string; position: number; is_head: boolean; full_name: string; email: string; phone: string; grade: string; institution: string };
 type Payment = { id: string; amount: number; method: string; receipt_path: string | null; status: string; notes: string | null; created_at: string; reviewed_at: string | null };
@@ -70,7 +71,7 @@ export function TeamDrawer({ team, modules, closeHref, canFinance, canSuper }: {
             <h2 id="drawer-title" className="font-display text-xl font-extrabold">{team.team_name}</h2>
             <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${statusTone[team.status]}`}>{STATUS_LABEL[team.status]}</span>
           </div>
-          <Link href={closeHref} scroll={false} className="btn btn-ghost !min-h-9" aria-label="Close">✕</Link>
+          <Link href={closeHref} scroll={false} className="btn btn-ghost grid !min-h-9 w-9 place-items-center !px-0" aria-label="Close"><CloseIcon /></Link>
         </div>
 
         <div className="space-y-5 p-5">
