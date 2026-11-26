@@ -31,12 +31,10 @@ export const BH6_ASSETS: BH6Asset[] = [
   P("microbot", "A single microbot", "Swarm particle texture", "#18243A", "microbots"),
   P("kabuki-mask", "Yokai's kabuki mask", "Kabuki Caper badge and effect", "#DC2A35", "kabuki"),
   P("honey-lemon-purse", "Honey Lemon's purse", "Receipt upload", "#FF5FA2", "chem"),
-  P("chem-ball", "A chem ball", "Lemon's Labyrinth effect", "#FF5FA2", "chem"),
   P("maglev-disc", "A maglev disc", "Maglev's Mayhem effect", "#F5C400", "maglev"),
-  P("plasma-blade", "A plasma blade", "Wasabi's Wits effect", "#2BB673", "plasma"),
   P("fred-kaiju-head", "Fred's kaiju suit head", "Fred's Fallacy effect", "#2FB8AC", "kaiju"),
   P("tadashi-cap", "Tadashi's cap", "Hamada's Hangar effect and easter egg", "#3B82F6", "blueprint"),
-  P("baymax-charging-case", "Baymax's charging case", "Loaders and drawers", "#DC2A35", "baymax"),
+  P("baymax-charging-case", "Baymax's charging case", "Baymax module prop; poster for the charging video (video/baymax-charging.mp4/.webm)", "#DC2A35", "baymax"),
   P("mochi", "Mochi the cat", "Easter egg and empty states", "#E7A35A", "chem"),
 ];
 
@@ -52,14 +50,14 @@ export function bh6(id: string) {
   return { ...a, src: `/assets/bh6/${a.file}${v ? `?v=${v}` : ""}`, real: !s.placeholder && !s.missing, width: s.width ?? a.w, height: s.height ?? a.h, status: s };
 }
 
-/** Module motif → character + prop art. */
+/** Module motif → character + prop art. Props starting with "code:" are drawn in code (see decor/CodeProps). */
 export const MODULE_ART: Record<string, { character: string; prop: string }> = {
   baymax: { character: "baymax-healthcare", prop: "baymax-charging-case" },
-  chem: { character: "honey-lemon", prop: "chem-ball" },
+  chem: { character: "honey-lemon", prop: "code:chem-ball" },
   maglev: { character: "gogo", prop: "maglev-disc" },
   blueprint: { character: "tadashi", prop: "tadashi-cap" },
   microbots: { character: "hiro", prop: "microbot" },
-  plasma: { character: "wasabi", prop: "plasma-blade" },
+  plasma: { character: "wasabi", prop: "code:energy-blade" },
   portal: { character: "callaghan", prop: "microbot" },
   kaiju: { character: "fred", prop: "fred-kaiju-head" },
   kabuki: { character: "yokai", prop: "kabuki-mask" },

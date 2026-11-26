@@ -1,6 +1,6 @@
 # Big Hero 6 image sourcing guide
 
-There are 23 image slots, all used on the site. Backgrounds (skyline, blueprint, HUD) are drawn in code, so no background images are needed. Save each file in `public/assets/bh6/` using the **exact file name** below.
+There are 21 image slots, all used on the site and all in place. Backgrounds (skyline, blueprint, HUD) are drawn in code, so no background images are needed. Save each file in `public/assets/bh6/` using the **exact file name** below.
 Then run:
 
 ```bash
@@ -47,14 +47,18 @@ Transparent PNG, square-ish (about 800×800 or larger), object only with no hand
 | `microbot.png` | **One** black microbot, top or ¾ view. Simple is best: it's shrunk to a few pixels for the swarm. | `Big Hero 6 microbot PNG` |
 | `kabuki-mask.png` | Yokai's white-and-red kabuki mask, front view, mask only | `Yokai mask PNG transparent` |
 | `honey-lemon-purse.png` | Honey Lemon's yellow chem purse, front view | `Honey Lemon purse PNG` |
-| `chem-ball.png` | One chem ball (pink, yellow or blue sphere) | `Honey Lemon chem ball PNG` |
 | `maglev-disc.png` | One of Go Go's yellow maglev discs, ideally slightly tilted | `Go Go maglev disc PNG` |
-| `plasma-blade.png` | One of Wasabi's glowing green plasma blades | `Wasabi plasma blade PNG` |
-| `fred-kaiju-head.png` | The head of Fred's kaiju suit only | `Fred kaiju head Big Hero 6 PNG` |
+| `fred-kaiju-head.png` | Cropped from `fred.png` (head only, square, transparent). Re-crop if `fred.png` changes. | — |
 | `tadashi-cap.png` | Tadashi's baseball cap, side or ¾ view | `Tadashi cap PNG` |
-| `baymax-charging-case.png` | Baymax's red charging box | `Baymax charging station PNG` |
+| `baymax-charging-case.png` | First frame of the charging GIF (the closed case). Also the poster for the video below. | — |
 | `mochi.png` | Mochi the orange-and-white cat, ideally sitting or peeking | `Mochi cat Big Hero 6 PNG transparent` |
 
+
+## Video
+`public/assets/bh6/video/baymax-charging.{mp4,webm}` plus `-poster.jpg`: Baymax inflating out of his
+charging case, converted from the team's GIF (original kept in `assets-src/bh6/`). Used for the Baymax
+guide's first appearance on /register and on the registration success screen. To replace it, convert a
+new GIF with the ffmpeg commands in the commit that added it (flatten onto `#F1F2F6`, 480px wide).
 
 ## Where to start
 The current homepage only uses a few of these, so begin with the ones that show most:
@@ -72,4 +76,5 @@ page URL to see the labelled placeholders.
 ## Not used anymore
 - `baymax-fistbump.png`: removed. The fist bump is animated in code.
 - `lucky-cat.png`: removed. The footer badge is a code-drawn SVG beckoning cat.
+- `chem-ball.png`, `plasma-blade.png`: removed. Drawn in code (`src/components/decor/CodeProps.tsx`).
 - `aunt-cass.png`, `san-fransokyo-day.jpg`, `san-fransokyo-night.jpg`, `sfit-lab.jpg`: removed. Skyline, blueprint, hex and HUD backgrounds are drawn in code.

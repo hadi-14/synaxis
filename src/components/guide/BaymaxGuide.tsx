@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { BH6Image } from "@/components/brand/BH6Image";
 import { onSay, type BaymaxPose, type GuideMessage } from "./guide-store";
 import { FistBump } from "@/components/effects/FistBump";
+import { BaymaxVideo } from "@/components/brand/BaymaxVideo";
 
 const POSE_ART: Record<BaymaxPose, string> = { idle: "baymax-healthcare", point: "baymax-healthcare", wave: "baymax-wave", fist: "baymax-wave" };
 import { foundSecret } from "@/components/eggs/secrets";
@@ -13,17 +14,24 @@ const OPENING = "Hello. I am Baymax, your personal registration companion.";
  * Floating helper. Squishy inflated body (squash-and-stretch on appear/click), wave/point/fist poses,
  * a speech bubble, low-battery droop after inactivity, and it can be minimised (remembered).
  */
-export function BaymaxGuide() {
+/** `intro`: on the first visit this session, Baymax inflates out of his charging case before saying hello. */
+export function BaymaxGuide({ intro = false }: { intro?: boolean }) {
   const [msg, setMsg] = useState<GuideMessage>({ text: OPENING, pose: "wave", tone: "info", at: 0 });
   const [min, setMin] = useState(false);
   const [bubble, setBubble] = useState(true);
   const [squish, setSquish] = useState(0);
   const [droop, setDroop] = useState(false);
+  const [inflating, setInflating] = useState(false);
   const idle = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reads localStorage after hydration
     setMin(localStorage.getItem("synaxis-guide-min") === "1");
+    if (intro && sessionStorage.getItem("synaxis-guide-inflated") !== "1") {
+      sessionStorage.setItem("synaxis-guide-inflated", "1");
+      setInflating(true);
+      setBubble(false);
+    }
     const off = onSay((m) => {
       setMsg(m);
       setBubble(true);
@@ -46,7 +54,7 @@ export function BaymaxGuide() {
       clearTimeout(idle.current);
       evs.forEach((e) => removeEventListener(e, wake));
     };
-  }, []);
+  }, [intro]);
 
   useEffect(() => {
     if (!bubble || msg.tone === "warn") return;
@@ -110,7 +118,19 @@ export function BaymaxGuide() {
               className={`block transition-transform duration-500 ${droop ? "translate-y-1 rotate-[10deg] saturate-50" : ""} ${pose === "wave" ? "motion-safe:animate-[wiggle_700ms_ease-in-out_2]" : pose === "point" ? "motion-safe:animate-[nudge_500ms_ease-out_1]" : ""}`}
               style={{ transformOrigin: "50% 90%" }}
             >
-              <BH6Image id={POSE_ART[pose]} decorative sizes="84px" className="h-auto w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" fallback="icon" iconClassName="mx-auto h-16 w-16" />
+              {inflating ? (
+                <BaymaxVideo
+                  loop={false}
+                  className="shadow-lg"
+                  onEnded={() => {
+                    setInflating(false);
+                    setBubble(true);
+                    setSquish((n) => n + 1);
+                  }}
+                />
+              ) : (
+                <BH6Image id={POSE_ART[pose]} decorative sizes="84px" className="h-auto w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" fallback="icon" iconClassName="mx-auto h-16 w-16" />
+              )}
             </span>
             {pose === "fist" && !droop && (
               <span key={squish} className="pointer-events-none absolute -left-16 top-2 block w-20">

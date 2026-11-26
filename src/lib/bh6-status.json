@@ -91,9 +91,11 @@
     "hash": "b5855e8efba3c132dba67433754e8fcb392def33046a698dc2f022a62ce4201d"
   },
   "microbot": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "426955bdd0a0ffb35f19e5f0f95cdedcb04117039fd17e964b21fdba96dde8b2"
+    "width": 82,
+    "height": 360,
+    "hash": "27ef2502237c7c5356f1af7528c7f9f23e9573930a68c6c97a950c679ccadd1e"
   },
   "kabuki-mask": {
     "placeholder": false,
@@ -109,25 +111,19 @@
     "height": 254,
     "hash": "2b9bf1e268409397796a574e78d6065d5d68fb0548cedcbf7652c7a568a78b24"
   },
-  "chem-ball": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "9ca73a2d52edca37b3b97ca650cf441647f17440dbd1e3f5e72230aca8ccebb7"
-  },
   "maglev-disc": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "b8fe0a40fcabd3f5485f5ef144c574dc837a46e9b5c896384dc1aec886a5f9ca"
-  },
-  "plasma-blade": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "8bb8b5bbf9bb25fe70ce98b3df97140966778f467f3cacd4c3c023fcf3e3bb52"
+    "width": 216,
+    "height": 224,
+    "hash": "1fa06024d0926463d3f58d205bb0bdfb2bfb8c494845faf6dc44bbd0fbe00b47"
   },
   "fred-kaiju-head": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "e392d9b6f99e577ceae84a6f95ed2d73cf53fe35d58eda905699a33a58e6d763"
+    "width": 456,
+    "height": 640,
+    "hash": "9fb49f3da97f3cfd8e39d536e0a2b624177b85625c4b1ffbee8bf8e792efbc5e"
   },
   "tadashi-cap": {
     "placeholder": false,
@@ -137,9 +133,11 @@
     "hash": "6a012f0b717646880b3eabd8538f5ed2db61ae2facb91996739ea0888fe2ed1b"
   },
   "baymax-charging-case": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "32ed4c24f01cbb1bd59096d91452ba1dd230a26b7de335276f398fa1465b0780"
+    "width": 346,
+    "height": 314,
+    "hash": "6b7159fd4c983a3e1223ce850c275b0ee219a5bc2a798c77827a2a2cd17ac93b"
   },
   "mochi": {
     "placeholder": false,

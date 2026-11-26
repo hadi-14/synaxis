@@ -24,9 +24,7 @@ files. Record where each one came from below when you replace a placeholder, the
 | `microbot.png` | Swarm particle texture | PLACEHOLDER | _add source / licence_ |
 | `kabuki-mask.png` | Kabuki Caper badge and effect | LIVE | _supplied by the HSS team, add source_ |
 | `honey-lemon-purse.png` | Receipt upload | LIVE | _supplied by the HSS team, add source_ |
-| `chem-ball.png` | Lemon's Labyrinth effect | PLACEHOLDER | _add source / licence_ |
 | `maglev-disc.png` | Maglev's Mayhem effect | PLACEHOLDER | _add source / licence_ |
-| `plasma-blade.png` | Wasabi's Wits effect | PLACEHOLDER | _add source / licence_ |
 | `fred-kaiju-head.png` | Fred's Fallacy effect | PLACEHOLDER | _add source / licence_ |
 | `tadashi-cap.png` | Hamada's Hangar effect and easter egg | LIVE | _supplied by the HSS team, add source_ |
 | `baymax-charging-case.png` | Loaders and drawers | PLACEHOLDER | _add source / licence_ |
@@ -41,3 +39,5 @@ Original (unprocessed) files are kept in `assets-src/bh6/`, outside the public f
 | SYNAXIS logo (`/public/logo/*`) | Heuser Science Society | Supplied by the organisers. `synaxis-logo.svg` is a potrace trace of the supplied PNG |
 | Fallback icons (battery, chem balls, disc, blade, kabuki mask, kaiju doodle, cap, microbots, portal) | Original vector icons for this site | Shown only while a slot above is still a placeholder |
 | Fonts: Unbounded, Plus Jakarta Sans, JetBrains Mono | Google Fonts (SIL Open Font License) | Self-hosted via `next/font` |
+
+Derived files: `fred-kaiju-head.png` is cropped from `fred.png`; `baymax-charging-case.png` and `video/baymax-charging.*` are converted from the team's Baymax charging GIF (source page: add it here).

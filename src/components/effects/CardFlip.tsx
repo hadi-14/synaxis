@@ -3,6 +3,7 @@ import { useState } from "react";
 import { BH6Image } from "@/components/brand/BH6Image";
 import { MODULE_ART } from "@/lib/bh6-assets";
 import { foundSecret } from "@/components/eggs/secrets";
+import { CODE_PROPS, CodeProp } from "@/components/decor/CodeProps";
 
 const MOVE: Record<string, { verb: string; anim: string }> = {
   baymax: { verb: "Scan", anim: "flip-scan" },
@@ -44,7 +45,11 @@ export function CardFlip({ motif, accent, name, character }: { motif: string; ac
         ) : (
           <>
             <span className="absolute inset-0 opacity-20" style={{ background: `radial-gradient(circle at 50% 40%, ${accent}, transparent 70%)` }} />
-            <BH6Image id={art.prop} decorative sizes="128px" className="relative h-28 w-28 object-contain motion-safe:animate-[spin_1.2s_ease-out_1]" fallback="icon" iconClassName="relative h-24 w-24" />
+            {CODE_PROPS.has(art.prop) ? (
+              <CodeProp id={art.prop} color={accent} className="relative h-28 w-28 motion-safe:animate-[spin_1.2s_ease-out_1]" />
+            ) : (
+              <BH6Image id={art.prop} decorative sizes="128px" className="relative h-28 w-28 object-contain motion-safe:animate-[spin_1.2s_ease-out_1]" fallback="icon" iconClassName="relative h-24 w-24" />
+            )}
             {motif === "kabuki" ? (
               <span className="relative text-center"><span className="block font-mono text-xs uppercase tracking-[0.2em] text-[var(--ink-muted)]">Unmasked</span><span className="mt-2 block font-display text-2xl font-extrabold">Look for the motive.</span></span>
             ) : (

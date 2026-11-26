@@ -7,9 +7,9 @@ import { z } from "zod";
 import { Battery } from "@/components/ui/Battery";
 import { toast } from "@/components/ui/toast-store";
 import { BaymaxGuide } from "@/components/guide/BaymaxGuide";
+import { BaymaxVideo } from "@/components/brand/BaymaxVideo";
 import { say } from "@/components/guide/guide-store";
 import { foundSecret } from "@/components/eggs/secrets";
-import { FistBump } from "@/components/effects/FistBump";
 import { track } from "@/lib/analytics";
 import { computeFee, formatRs } from "@/lib/fees";
 import { formatDate } from "@/lib/dates";
@@ -305,7 +305,7 @@ export function RegisterWizard(props: {
   if (success) {
     return (
       <div className="card mt-6 flex flex-col items-center p-8 text-center" role="status">
-        <FistBump />
+        <BaymaxVideo className="w-40 sm:w-48" label="Baymax inflating out of his charging case to celebrate" />
         <h1 className="mt-4 font-display text-2xl font-extrabold">{teamId ? "Changes saved" : "You're registered!"}</h1>
         <p className="mt-2 text-[var(--ink-muted)]">
           Registration ID <span className="font-mono font-bold text-[var(--primary-text)]">{success}</span>. Taking you to your dashboard…
@@ -655,7 +655,7 @@ export function RegisterWizard(props: {
           )}
         </div>
       </form>
-      <BaymaxGuide />
+      <BaymaxGuide intro />
     </>
   );
 }
