@@ -34,16 +34,25 @@ export function Footer({ settings }: { settings: Settings }) {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link className="plasma-link" href="/register">Register</Link></li>
             <li><Link className="plasma-link" href="/dashboard">My team</Link></li>
-            <li><Link className="plasma-link" href="/portal#modules">Modules</Link></li>
+            <li><Link className="plasma-link" href="/#modules">Modules</Link></li>
             <li><Link className="plasma-link" href="/council">Council</Link></li>
             <li><Link className="plasma-link" href="/sponsors">Sponsors</Link></li>
+            <li><Link className="plasma-link" href="/terms">Terms of Service</Link></li>
+            <li><Link className="plasma-link" href="/privacy">Privacy Policy</Link></li>
             <li><Link className="plasma-link" href="/admin">Cubinet login</Link></li>
           </ul>
         </div>
       </div>
-      <p className="border-t border-white/30 px-4 py-5 text-center font-mono text-[11px] text-white">
-        Big Hero 6 © Disney. Fan-made for a student event. · {settings.season_label} · Heuser Science Society · Karachi
-      </p>
+      <div className="flex flex-col items-center gap-1.5 border-t border-white/30 px-4 py-5 text-center font-mono text-[11px] text-white sm:flex-row sm:justify-between sm:text-left">
+        <p>Big Hero 6 © Disney. Fan-made for a student event. · {settings.season_label} · Heuser Science Society · Karachi</p>
+        <p>
+          Website by{" "}
+          <a className="font-bold underline underline-offset-2" href="https://abdul-hadi-millwala.vercel.app" target="_blank" rel="noopener">
+            Abdul Hadi Millwala
+          </a>{" "}
+          &amp; <span className="font-bold">Muhammad Aoun Imran</span>
+        </p>
+      </div>
     </footer>
   );
 }

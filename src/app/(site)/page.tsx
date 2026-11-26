@@ -4,6 +4,7 @@ import { Logo } from "@/components/brand/Logo";
 import { Countdown } from "@/components/site/Countdown";
 import { HeroArt } from "@/components/portal/HeroArt";
 import { Ticker } from "@/components/portal/Ticker";
+import { IntroOverlay } from "@/components/landing/IntroOverlay";
 import { ModuleCard } from "@/components/site/ModuleCard";
 import { FaqAccordion } from "@/components/site/FaqAccordion";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -15,11 +16,10 @@ import { formatRs } from "@/lib/fees";
 import { formatDate, formatDateRange } from "@/lib/dates";
 
 export const metadata: Metadata = {
-  title: "Portal",
-  alternates: { canonical: "/portal" },
+  alternates: { canonical: "/" },
 };
 
-export default async function PortalPage() {
+export default async function HomePage() {
   const [settings, modules, faqs] = await Promise.all([getSettings(), getModules(), getFaqs()]);
   const compulsory = modules.filter((m) => m.is_compulsory);
   const pickMin = Math.max(0, settings.modules_min - compulsory.length);
@@ -27,6 +27,7 @@ export default async function PortalPage() {
 
   return (
     <>
+      <IntroOverlay />
       {/* ------------------------------------------------------------ HERO */}
       {/* pb-11 reserves the ticker's height; the ticker is pinned to the bottom edge in front of Baymax's legs */}
       <section className="band relative overflow-hidden pb-11">
@@ -35,18 +36,18 @@ export default async function PortalPage() {
             <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--band-body)]">
               Heuser Science Society presents
             </p>
-            <h1 className="mt-4">
+            <h1 className="mt-4" data-hero-item style={{ "--i": 0 } as React.CSSProperties}>
               <span className="sr-only">Synaxis {settings.season_label}</span>
               <Logo mono className="h-auto w-full max-w-[540px] drop-shadow-[0_6px_0_var(--band-deep)]" title={`Synaxis ${settings.season_label}`} />
             </h1>
-            <p className="mt-6 font-display text-2xl font-extrabold text-[var(--band-heading)] sm:text-3xl">
+            <p data-hero-item style={{ "--i": 1 } as React.CSSProperties} className="mt-6 font-display text-2xl font-extrabold text-[var(--band-heading)] sm:text-3xl">
               {settings.season_label} · {formatDateRange(settings.event_start, settings.event_end)}
             </p>
-            <p className="mt-3 max-w-md text-lg font-semibold text-[var(--band-body)]">
+            <p data-hero-item style={{ "--i": 2 } as React.CSSProperties} className="mt-3 max-w-md text-lg font-semibold text-[var(--band-body)]">
               A three-day science olympiad in San Fransokyo style. Nine modules, one team, and a mystery every team must
               solve.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div data-hero-item style={{ "--i": 3 } as React.CSSProperties} className="mt-7 flex flex-wrap gap-3">
               <Link href="/register" className="btn btn-onred text-base">
                 Register your team
               </Link>
@@ -54,11 +55,11 @@ export default async function PortalPage() {
                 Explore modules
               </Link>
             </div>
-            <div className="mt-9">
+            <div data-hero-item style={{ "--i": 4 } as React.CSSProperties} className="mt-9">
               <Countdown onRed to={`${settings.event_start}T09:00:00+05:00`} />
             </div>
           </div>
-          <HeroArt />
+          <div data-hero-item style={{ "--i": 2 } as React.CSSProperties}><HeroArt /></div>
         </div>
         <Ticker items={[formatDateRange(settings.event_start, settings.event_end), `${modules.length} modules`, "Karachi", `Teams of ${settings.team_min}–${settings.team_max}`, "Kabuki Caper is compulsory", `Early bird until ${formatDate(settings.early_bird_deadline)}`, "Register now"]} />
       </section>

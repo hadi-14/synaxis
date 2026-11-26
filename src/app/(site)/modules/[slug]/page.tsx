@@ -35,7 +35,7 @@ async function ModuleContent({ params }: { params: PageProps<"/modules/[slug]">[
   const next = all[(i + 1) % all.length];
   return (
     <article className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-16" style={{ "--accent-c": m.accent } as React.CSSProperties}>
-      <Link href="/portal#modules" className="plasma-link text-sm font-semibold">← All modules</Link>
+      <Link href="/#modules" className="plasma-link text-sm font-semibold">← All modules</Link>
       <div className="mt-6 grid items-center gap-10 md:grid-cols-[1.3fr_1fr]">
         <div>
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "color-mix(in srgb, var(--accent-c) 65%, var(--ink))" }}>

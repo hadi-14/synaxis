@@ -6,10 +6,10 @@ import { Logo } from "@/components/brand/Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
-  { href: "/portal#about", label: "About" },
-  { href: "/portal#modules", label: "Modules" },
-  { href: "/portal#register", label: "Fees" },
-  { href: "/portal#faq", label: "FAQ" },
+  { href: "/#about", label: "About" },
+  { href: "/#modules", label: "Modules" },
+  { href: "/#register", label: "Fees" },
+  { href: "/#faq", label: "FAQ" },
   { href: "/council", label: "Council" },
   { href: "/sponsors", label: "Sponsors" },
 ];
@@ -44,7 +44,7 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
-        <Link href="/portal" className="mr-auto flex items-center" aria-label="Synaxis home">
+        <Link href="/" className="mr-auto flex items-center" aria-label="Synaxis home" data-header-logo>
           <Logo className="h-5 w-auto sm:h-6" />
         </Link>
         <nav aria-label="Main" className="hidden items-center gap-5 text-sm font-semibold lg:flex">

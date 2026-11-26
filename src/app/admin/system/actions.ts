@@ -13,7 +13,7 @@ export async function sendTestEmail(): Promise<{ ok: boolean; message: string }>
     subject: "Synaxis test email",
     template: "system-test",
     sentBy: staff.id,
-    react: Broadcast({ heading: "Hello. I am Baymax.", body: `This is a test email from Synaxis.\n\nIf you can read this, Resend is set up correctly for ${process.env.EMAIL_FROM ?? "the default sender"}.` }),
+    react: Broadcast({ heading: "Hello. I am Baymax.", body: `This is a test email from Synaxis.\n\nIf you can read this, Resend is set up correctly for ${process.env.RESEND_FROM ?? process.env.EMAIL_FROM ?? "the default sender"}.` }),
   });
   if (r.status === "sent") return { ok: true, message: `Sent to ${staff.email}. Check your inbox (and spam).` };
   if (r.status === "skipped") return { ok: false, message: "Not sent: RESEND_API_KEY is not set on the server." };

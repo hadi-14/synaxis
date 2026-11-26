@@ -56,7 +56,7 @@ export function SecretsTracker() {
     x.fillText(`I found ${found.length}/${SECRET_TOTAL} secrets`, W / 2, 1320);
     x.font = "500 40px system-ui, sans-serif";
     x.fillStyle = "#FF6B77";
-    x.fillText("hidden in the Synaxis portal", W / 2, 1390);
+    x.fillText("hidden on the Synaxis website", W / 2, 1390);
     x.fillStyle = "#9A9AA0";
     x.font = "500 34px ui-monospace, monospace";
     x.fillText("SEASON 1 · 15–17 JAN 2027 · KARACHI", W / 2, 1720);

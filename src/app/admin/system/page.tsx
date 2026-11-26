@@ -23,7 +23,8 @@ export default async function SystemPage() {
       { label: "SUPABASE_SECRET_KEY (server only)", ok: env("SUPABASE_SECRET_KEY") },
       { label: "NEXT_PUBLIC_SITE_URL", ok: env("NEXT_PUBLIC_SITE_URL"), detail: process.env.NEXT_PUBLIC_SITE_URL },
       { label: "RESEND_API_KEY", ok: env("RESEND_API_KEY"), detail: env("RESEND_API_KEY") ? undefined : "emails are logged as skipped" },
-      { label: "EMAIL_FROM", ok: env("EMAIL_FROM"), detail: process.env.EMAIL_FROM },
+      { label: "RESEND_FROM (or EMAIL_FROM)", ok: env("RESEND_FROM") || env("EMAIL_FROM"), detail: process.env.RESEND_FROM ?? process.env.EMAIL_FROM },
+      { label: "Terms & Privacy reviewed", ok: false, detail: "Draft: review content/legal/*.mdx, then remove this check" },
       { label: "ADMIN_NOTIFY_EMAILS", ok: env("ADMIN_NOTIFY_EMAILS"), detail: env("ADMIN_NOTIFY_EMAILS") ? `${process.env.ADMIN_NOTIFY_EMAILS!.split(",").length} address(es)` : "sponsor inquiries won't be emailed" },
     ],
   });

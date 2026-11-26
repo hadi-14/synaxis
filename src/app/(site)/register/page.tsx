@@ -54,8 +54,8 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
               ? "Online editing has closed. Contact the organisers if something on your team needs to change."
               : "Registration for Synaxis Season 1 has closed. Follow @heusersynaxis for updates."}
         </p>
-        <Link href={team ? "/dashboard" : "/portal"} className="btn btn-primary mt-6">
-          {team ? "Back to dashboard" : "Back to portal"}
+        <Link href={team ? "/dashboard" : "/"} className="btn btn-primary mt-6">
+          {team ? "Back to dashboard" : "Back to home"}
         </Link>
       </div>
     );

@@ -3,7 +3,7 @@ import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { createAdminClient } from "../supabase/admin";
 
-const FROM = process.env.EMAIL_FROM ?? "Synaxis <onboarding@resend.dev>";
+const FROM = process.env.RESEND_FROM ?? process.env.EMAIL_FROM ?? "Synaxis <onboarding@resend.dev>";
 const REPLY_TO = process.env.EMAIL_REPLY_TO;
 
 /** Sends one email and records it in email_logs. Never throws: email problems must not break a registration. */

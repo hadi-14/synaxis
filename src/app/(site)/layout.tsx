@@ -17,7 +17,7 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
         </div>
       )}
       <Header />
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1 outline-none">
         {/* Page transition: microbot dissolve (see globals.css) */}
         <ViewTransition default="microbot-swap">{children}</ViewTransition>
       </main>

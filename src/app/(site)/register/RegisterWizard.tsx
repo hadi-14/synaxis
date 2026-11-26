@@ -562,7 +562,11 @@ export function RegisterWizard(props: {
             </Field>
             <fieldset className="space-y-3">
               <legend className="mb-1 text-sm font-semibold">Agreements</legend>
-              <Check reg={register("agree_rules")} error={errors.agree_rules?.message}>I agree to the competition rules.</Check>
+              <Check reg={register("agree_rules")} error={errors.agree_rules?.message}>
+                I agree to the{" "}
+                <a href="/terms" target="_blank" rel="noopener" className="font-semibold text-[var(--primary-text)] underline">Terms</a> and{" "}
+                <a href="/privacy" target="_blank" rel="noopener" className="font-semibold text-[var(--primary-text)] underline">Privacy Policy</a>, including the competition rules.
+              </Check>
               <Check reg={register("agree_conduct")} error={errors.agree_conduct?.message}>My team agrees to the code of conduct.</Check>
               <Check reg={register("agree_dress")} error={errors.agree_dress?.message}>
                 We&apos;ll follow the dress code ({official ? "school uniform" : values.delegation_type === "internal" ? "college uniform" : "semi-formal"}).

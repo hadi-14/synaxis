@@ -14,65 +14,104 @@ Supabase (Postgres + RLS, Auth, Storage) · Resend + React Email · zod + react-
 ## Map
 | Path | What |
 |---|---|
-| `/` | Microbot intro: the swarm assembles the logo, then "Enter the portal" |
-| `/portal` | Main page: hero + countdown, about, modules, fees, FAQ |
+| `/` | Main page (hero + countdown, about, modules, fees, FAQ) with the microbot intro as an overlay on first visit |
+| `/portal` | Redirects permanently to `/` |
+| `/terms` · `/privacy` | Drafts in `content/legal/*.mdx` |
 | `/modules/[slug]` · `/council` · `/sponsors` | Public content (editable in admin) |
 | `/register` | 6-step team registration (Head Delegate), autosaved |
 | `/dashboard` | Head Delegate: payment, receipt upload, WhatsApp, waivers, modules, check-in QR |
 | `/admin` | Cubinet panel: overview, teams, allocation, check-in, emails, content, settings, roles, exports, audit |
 | `/waiver` | Printable waiver template |
 
-## Local development
-Requires Node 20.9+ and Docker.
+## Setup
 
+> Never commit real keys. Variable names are listed in `.env.example`; values live in `.env.local`
+> (local) and in Vercel (production).
+
+### 1. Supabase
+1. Create a project, then copy into `.env.local`:
+   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY`
+   (Project Settings → API Keys; the secret key starts with `sb_secret_`, server-only).
+2. Link and push the schema plus the seed (run the seed **once**):
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <your-project-ref>
+   npx supabase db push --remote --include-seed
+   ```
+3. Generate types: `npm run db:types`.
+4. Check everything: `npm run check:live`.
+5. Make admins (each person signs in once at `/login` first):
+   `npm run make-admin -- someone@example.com [super_admin|finance|module_head] [module-slug]`.
+6. Auth → URL configuration: Site URL `https://heusersynaxis.com`. Redirect URLs `https://heusersynaxis.com/**`
+   and `http://localhost:3001/**`.
+
+### 2. Google sign-in
+1. Google Cloud Console → APIs & Services → Credentials → **OAuth client ID** (Web application).
+2. **Authorised JavaScript origins:** `https://heusersynaxis.com` and `http://localhost:3001`.
+3. **Authorised redirect URI:** `https://<project-ref>.supabase.co/auth/v1/callback`.
+4. Supabase → Authentication → Providers → Google: paste the client ID and secret, then enable it.
+
+### 3. Resend (email)
+1. Create a Resend account → **Domains → Add domain** → `heusersynaxis.com`.
+2. Add the DNS records Resend shows at your domain registrar:
+   - **SPF** (TXT on the `send` subdomain)
+   - **DKIM** (TXT `resend._domainkey`)
+   - **MX** (on the `send` subdomain, for bounce handling)
+   - Optional but recommended: a **DMARC** TXT record on `_dmarc` (e.g. `v=DMARC1; p=none;`)
+
+   Wait until the domain shows **Verified**.
+3. **API Keys → Create API key** ("Sending access"). Set `RESEND_API_KEY` in `.env.local` and Vercel.
+4. Set the sender: `RESEND_FROM="Synaxis <noreply@heusersynaxis.com>"`. Replies go to `EMAIL_REPLY_TO`
+   (for example the contact email shown in Admin → Settings).
+5. **Supabase sign-in emails through Resend:** Supabase → Authentication → **SMTP Settings** → enable custom SMTP:
+   - Host `smtp.resend.com`, port `465`, username `resend`, password = your Resend API key
+   - Sender email `noreply@heusersynaxis.com`, sender name `Synaxis`
+6. Supabase → Authentication → **Rate Limits**: raise "emails sent per hour" (the default is very low)
+   before registration opens.
+7. Test it: **Admin → System → Send test email**.
+8. If emails land in spam:
+   - Check that SPF, DKIM and DMARC all pass (Resend → Domains, or "Show original" in Gmail).
+   - Send from your own domain, not `onboarding@resend.dev`.
+   - Avoid link-only or all-caps subjects.
+   - Make sure the reply-to address is a real inbox.
+
+### 4. Vercel (hosting)
+1. Import the repository. Framework: Next.js.
+2. Add the environment variables from `.env.example`: Supabase URL and keys, `RESEND_API_KEY`, `RESEND_FROM`,
+   `EMAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAILS`, and `NEXT_PUBLIC_SITE_URL=https://heusersynaxis.com`.
+   The build prerenders public pages, so the Supabase variables must be available at build time.
+3. Domains → add `heusersynaxis.com` (and `www`) and follow the DNS instructions.
+
+### 5. Big Hero 6 images
+Drop files into `public/assets/bh6/` using the names in [`docs/IMAGE-SOURCING.md`](docs/IMAGE-SOURCING.md).
+Then run `npm run assets:process` and check **/admin/assets**. Missing images are hidden or replaced
+by a small icon. Add `?debug=assets` to any URL to see the labelled placeholders.
+
+### Local development
+Requires Node 20.9+ and Docker.
 ```bash
 npm install
-npx supabase start          # local Postgres/Auth/Storage + Mailpit (applies migrations and seed)
-cp .env.example .env.local  # then paste the keys from `npx supabase status`
-npm run dev                 # http://localhost:3000 (or the next free port)
+npx supabase start            # local Postgres/Auth/Storage + Mailpit (http://127.0.0.1:54324)
+npm run dev
 ```
 
-- Sign-in emails go to **Mailpit**: http://127.0.0.1:54324
-- Make yourself an admin: sign in once, then run `scripts/make-admin.sql` (edit the email) in
-  Supabase Studio (http://127.0.0.1:54323) or with `psql`.
-- Without `RESEND_API_KEY`, emails are recorded in `email_logs` with status `skipped`.
-- If the dev server isn't on port 3000/3001, add its URL to
-  `auth.additional_redirect_urls` in `supabase/config.jsonc`.
+### npm scripts
+| Script | What it does |
+|---|---|
+| `dev` / `build` / `start` | Next.js dev server / production build / production server |
+| `lint` / `typecheck` | ESLint / TypeScript |
+| `test` | Unit tests (fees, phone numbers, registration rules, allocation, safe redirects) |
+| `test:rls` | Security tests against the **local** stack only |
+| `check:live` | Health check of the project in `.env.local` (creates and deletes one throwaway user) |
+| `make-admin -- <email> [role] [module]` | Grant a Cubinet role |
+| `db:types` / `db:types:local` | Regenerate DB types from the linked project / local stack |
+| `assets:process` | Trim, resize and register new Big Hero 6 images |
+| `assets:placeholders` | Recreate labelled placeholders for missing images |
 
-### Checks
-```bash
-npm run typecheck
-npm test            # unit: fees, phone validation, registration rules, allocation
-npm run test:rls    # security: anon / other user / owner against the LOCAL stack only
-npm run build
-```
-
-## Deploying (Vercel + Supabase)
-1. **Supabase project**: create one, then `npx supabase link` and `npx supabase db push`
-   (applies `supabase/migrations`). Load `supabase/seed.sql` once in the SQL editor.
-2. **Auth**
-   - Site URL: `https://YOUR-DOMAIN`. Redirect URLs: `https://YOUR-DOMAIN/**`
-     (plus Vercel preview URLs if you use them).
-   - Google: create an OAuth client in Google Cloud (authorised redirect
-     `https://<project>.supabase.co/auth/v1/callback`) and enable it under Auth → Providers.
-   - Email: set up custom SMTP (e.g. Resend SMTP). The built-in mailer is heavily rate-limited.
-3. **Resend**: verify your sending domain and set `EMAIL_FROM` to an address on it.
-4. **Vercel**: import the repo and set the variables from `.env.example`.
-   `SUPABASE_SECRET_KEY` must **not** be prefixed with `NEXT_PUBLIC_`. The build prerenders
-   public pages, so the Supabase variables must be available at build time.
-5. Sign in on the live site, then grant yourself `super_admin` with `scripts/make-admin.sql`.
-   Add other Cubinet members from **Admin → Roles** (they must sign in once first).
-6. Before launch: in **Admin → Settings**, set fees, dates, venue, contacts and bank details,
-   and turn on "Registration open".
-
-## Live project tools
-```bash
-npm run check:live          # health check of the project in .env.local (creates + deletes one throwaway user)
-npm run make-admin -- you@example.com [super_admin|finance|module_head] [module-slug]
-npm run db:types            # regenerate src/lib/database.types.ts from the linked project
-npm run db:types:local      # same, from the local stack
-```
-In the app, **Admin → System** shows the same health checks and has a "Send test email" button.
+### Legal pages
+`/terms` and `/privacy` are written in `content/legal/*.mdx`. They are **drafts, to be reviewed by the
+organising team** (placeholders: retention period, reply time, refund policy). Admin → System flags this
+until the check is removed.
 
 ## Security model (summary)
 - RLS on every table. Browsers can only **read** what they're allowed to; the only browser
@@ -87,3 +126,7 @@ In the app, **Admin → System** shows the same health checks and has a "Send te
 ## Regenerating assets
 - Logo SVG: `node scripts/trace-logo.mjs`, then `node scripts/build-logo-component.mjs`
 - DB types: `npm run db:types`
+
+## Credits
+Website by [Abdul Hadi Millwala](https://abdul-hadi-millwala.vercel.app) & Muhammad Aoun Imran.
+Big Hero 6 © Disney. Fan-made for a student event.

@@ -39,9 +39,9 @@ export function EasterEggs() {
     return () => removeEventListener("keydown", onKey);
   }, []);
 
-  // Mochi peeks from a section edge on ~1 in 4 portal views
+  // Mochi peeks from a section edge on ~1 in 4 home page views
   useEffect(() => {
-    if (path !== "/portal" || Math.random() > 0.25 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (path !== "/" || Math.random() > 0.25 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setTimeout(() => {
       const sections = [...document.querySelectorAll("main section")];
       const s = sections[1 + Math.floor(Math.random() * Math.max(1, sections.length - 1))] as HTMLElement | undefined;

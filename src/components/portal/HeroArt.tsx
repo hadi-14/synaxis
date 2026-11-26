@@ -31,7 +31,8 @@ export function HeroArt() {
             <BH6Image id="baymax-healthcare" priority sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom" />
           </div>
           <div className="battle-only h-full">
-            <BH6Image id="baymax-armor" sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom drop-shadow-[0_0_32px_rgba(255,80,96,.5)]" />
+            {/* also eager: the theme is only known in the browser, and either Baymax can be the LCP image */}
+            <BH6Image id="baymax-armor" priority sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom drop-shadow-[0_0_32px_rgba(255,80,96,.5)]" />
           </div>
         </div>
       </div>
