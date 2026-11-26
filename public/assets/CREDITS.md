@@ -8,35 +8,33 @@ files. Record where each one came from below when you replace a placeholder, the
 
 | File | Used for | Status | Source |
 |---|---|---|---|
-| `baymax-healthcare.png` | Guide, Medical Mode hero | PLACEHOLDER | _add source / licence_ |
-| `baymax-wave.png` | Baymax guide: wave | PLACEHOLDER | _add source / licence_ |
-| `baymax-fistbump.png` | Baymax guide: fist bump | PLACEHOLDER | _add source / licence_ |
-| `baymax-armor.png` | Battle Mode hero | PLACEHOLDER | _add source / licence_ |
-| `baymax-armor-flying.png` | Scroll thrusters (flame added in code) | PLACEHOLDER | _add source / licence_ |
-| `hiro.png` | Microbot Matrix card | PLACEHOLDER | _add source / licence_ |
-| `tadashi.png` | Hamada's Hangar card | PLACEHOLDER | _add source / licence_ |
-| `honey-lemon.png` | Lemon's Labyrinth card | PLACEHOLDER | _add source / licence_ |
-| `gogo.png` | Maglev's Mayhem card | PLACEHOLDER | _add source / licence_ |
-| `wasabi.png` | Wasabi's Wits card | PLACEHOLDER | _add source / licence_ |
-| `fred.png` | Fred's Fallacy card | PLACEHOLDER | _add source / licence_ |
-| `callaghan.png` | Callaghan's Conflict card | PLACEHOLDER | _add source / licence_ |
-| `yokai.png` | Kabuki Caper card (compulsory) | PLACEHOLDER | _add source / licence_ |
-| `aunt-cass.png` | Lucky Cat Café footer | PLACEHOLDER | _add source / licence_ |
-| `team.png` | Sponsors and 404 pages | PLACEHOLDER | _add source / licence_ |
+| `baymax-healthcare.png` | Guide, Medical Mode hero | LIVE | _supplied by the HSS team, add source_ |
+| `baymax-wave.png` | Baymax guide: wave | LIVE | _supplied by the HSS team, add source_ |
+| `baymax-armor.png` | Battle Mode hero | LIVE | _supplied by the HSS team, add source_ |
+| `baymax-armor-flying.png` | Scroll thrusters (flame added in code) | LIVE | _supplied by the HSS team, add source_ |
+| `hiro.png` | Microbot Matrix card | LIVE | _supplied by the HSS team, add source_ |
+| `tadashi.png` | Hamada's Hangar card | LIVE | _supplied by the HSS team, add source_ |
+| `honey-lemon.png` | Lemon's Labyrinth card | LIVE | _supplied by the HSS team, add source_ |
+| `gogo.png` | Maglev's Mayhem card | LIVE | _supplied by the HSS team, add source_ |
+| `wasabi.png` | Wasabi's Wits card | LIVE | _supplied by the HSS team, add source_ |
+| `fred.png` | Fred's Fallacy card | LIVE | _supplied by the HSS team, add source_ |
+| `callaghan.png` | Callaghan's Conflict card | LIVE | _supplied by the HSS team, add source_ |
+| `yokai.png` | Kabuki Caper card (compulsory) | LIVE | _supplied by the HSS team, add source_ |
+| `aunt-cass.png` | Lucky Cat Café footer | NOT NEEDED | _add source / licence_ |
+| `team.png` | Sponsors and 404 pages | LIVE | _supplied by the HSS team, add source_ |
 | `microbot.png` | Swarm particle texture | PLACEHOLDER | _add source / licence_ |
-| `kabuki-mask.png` | Kabuki Caper badge and effect | PLACEHOLDER | _add source / licence_ |
-| `honey-lemon-purse.png` | Receipt upload | PLACEHOLDER | _add source / licence_ |
+| `kabuki-mask.png` | Kabuki Caper badge and effect | LIVE | _supplied by the HSS team, add source_ |
+| `honey-lemon-purse.png` | Receipt upload | LIVE | _supplied by the HSS team, add source_ |
 | `chem-ball.png` | Lemon's Labyrinth effect | PLACEHOLDER | _add source / licence_ |
 | `maglev-disc.png` | Maglev's Mayhem effect | PLACEHOLDER | _add source / licence_ |
 | `plasma-blade.png` | Wasabi's Wits effect | PLACEHOLDER | _add source / licence_ |
 | `fred-kaiju-head.png` | Fred's Fallacy effect | PLACEHOLDER | _add source / licence_ |
-| `tadashi-cap.png` | Hamada's Hangar effect and easter egg | PLACEHOLDER | _add source / licence_ |
+| `tadashi-cap.png` | Hamada's Hangar effect and easter egg | LIVE | _supplied by the HSS team, add source_ |
 | `baymax-charging-case.png` | Loaders and drawers | PLACEHOLDER | _add source / licence_ |
-| `mochi.png` | Easter egg and empty states | PLACEHOLDER | _add source / licence_ |
-| `lucky-cat.png` | Footer easter egg | PLACEHOLDER | _add source / licence_ |
-| `san-fransokyo-day.jpg` | Medical Mode hero background | PLACEHOLDER | _add source / licence_ |
-| `san-fransokyo-night.jpg` | Battle Mode hero background | PLACEHOLDER | _add source / licence_ |
-| `sfit-lab.jpg` | Admin panel background | PLACEHOLDER | _add source / licence_ |
+| `mochi.png` | Easter egg and empty states | LIVE | _supplied by the HSS team, add source_ |
+| `san-fransokyo-day.jpg` | Medical Mode hero background | NOT NEEDED | _add source / licence_ |
+| `san-fransokyo-night.jpg` | Battle Mode hero background | NOT NEEDED | _add source / licence_ |
+| `sfit-lab.jpg` | Admin panel background | NOT NEEDED | _add source / licence_ |
 
 Original (unprocessed) files are kept in `assets-src/bh6/`, outside the public folder.
 

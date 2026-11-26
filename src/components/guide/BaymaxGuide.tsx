@@ -2,8 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { BH6Image } from "@/components/brand/BH6Image";
 import { onSay, type BaymaxPose, type GuideMessage } from "./guide-store";
+import { FistBump } from "@/components/effects/FistBump";
 
-const POSE_ART: Record<BaymaxPose, string> = { idle: "baymax-healthcare", point: "baymax-healthcare", wave: "baymax-wave", fist: "baymax-fistbump" };
+const POSE_ART: Record<BaymaxPose, string> = { idle: "baymax-healthcare", point: "baymax-healthcare", wave: "baymax-wave", fist: "baymax-wave" };
 import { foundSecret } from "@/components/eggs/secrets";
 
 const OPENING = "Hello. I am Baymax, your personal registration companion.";
@@ -111,6 +112,11 @@ export function BaymaxGuide() {
             >
               <BH6Image id={POSE_ART[pose]} decorative sizes="84px" className="h-auto w-full drop-shadow-[0_8px_12px_rgba(24,36,58,.25)]" fallback="icon" iconClassName="mx-auto h-16 w-16" />
             </span>
+            {pose === "fist" && !droop && (
+              <span key={squish} className="pointer-events-none absolute -left-16 top-2 block w-20">
+                <FistBump compact />
+              </span>
+            )}
           </span>
         </button>
         <button

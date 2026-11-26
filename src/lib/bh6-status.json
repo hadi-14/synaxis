@@ -1,68 +1,87 @@
 {
   "baymax-healthcare": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "c0cc8426cd16e4a5b2bec9196286dbb59dd4f39dff0fe1f347f6ef6d03998f6d"
+    "width": 1161,
+    "height": 1351,
+    "hash": "e40481758017c972fa155d12697fef75cffb3adfac33c0e5e4ad8324c5a0448c"
   },
   "baymax-wave": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "2838a9c1b39b3cec9bf241374d86e0ec116c1e90cb1ec34bb297ab999347cdcd"
-  },
-  "baymax-fistbump": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "bb61dcc999c2c7fd513844f315d7db5689b7479ef34a952f69fbe4266de5f88f"
+    "width": 375,
+    "height": 450,
+    "hash": "8c8027d1a160c45e67298edb75f332ded8ffb58f300fb0af6be4f38a21771a9c"
   },
   "baymax-armor": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "39ab48b2f7b8e35ea3b64712bafcf6a571695629e4fb1e36fab128d282b2f941"
+    "width": 1063,
+    "height": 1281,
+    "hash": "842b4f58821531c5a1969b0c6d74c5cf0d0f2c988bd1d76930b97132ccc5ffdc"
   },
   "baymax-armor-flying": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "1d0dc0e66663550c87ab45e540cc3b01f4b5c8042d2b7fa1dbee0fbeb96c0764"
+    "width": 1081,
+    "height": 834,
+    "hash": "789b5bbfb1de48d953e2b400fdfff2920053aa4a939bd70a032177405ab88236"
   },
   "hiro": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "394be867850317b1d6669315e53299fdda3b90dfbf95696281020363a8e05575"
+    "width": 683,
+    "height": 707,
+    "hash": "d34d082cf6caefe896e8ed5f697445bad738e9c84e65daad550765efa4b07ea7"
   },
   "tadashi": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "3d0cfd2df5340c09b91574186360ca8369c29d8b125302b7a2443563241b5ee0"
+    "width": 712,
+    "height": 1600,
+    "hash": "0041cff520497f7f67ce0d60ebeefbb458c31f5e7891bdfd33e65d062722d6a5"
   },
   "honey-lemon": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "342b1722b747dc5a9e2c8c4339e2b3dd7078df760769ba467b75c34c0fe6ff2a"
+    "width": 673,
+    "height": 1600,
+    "hash": "471e1b2d2d46b1e837afda073e308bc2be462c615198a6c81fc62493afd23703"
   },
   "gogo": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "50e6e3d5073b40e084c77631779b2f52d0c657b916b282380f6ad2265ed225db"
+    "width": 480,
+    "height": 938,
+    "hash": "8c0e121087d8b415f492d944bd66d26352241f0d3d1a630e04ecdf9e5ac7f1ac"
   },
   "wasabi": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "934d7c44322ab2652dfbcff29cc466d2e8cdf7d30851ad92bf8fa73f0b1de148"
+    "width": 1193,
+    "height": 1262,
+    "hash": "4090172f7e4e9165f659fb63c1b45fdf89b7c3d689679acfd5482060a8658914"
   },
   "fred": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "f3733908876861ae47e7c30f0b51e0d93c8d4516fd3732387c0c643dadfef105"
+    "width": 1200,
+    "height": 1079,
+    "hash": "fc7a380eb8fcfed4889064f226bbe9a2acb6e25003232c685a1901339b22eb35"
   },
   "callaghan": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "9fb955d4c69ad451580d452119bba3fbfc92da3a2fbfd2be02aaaf4ef61bf9b2"
+    "width": 342,
+    "height": 934,
+    "hash": "207ea4556e52123054130993d5c03d9aecdc60adc1e41974a7246c47c8bd972c"
   },
   "yokai": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "19f6161084eb484f0a2fdc39ce44586863cb582acd2c388ea07d4658a1b02715"
+    "width": 967,
+    "height": 908,
+    "hash": "171793eab417b1ef22e0af307ab69b25f879587ab15acd3743716abd1af0ae09"
   },
   "aunt-cass": {
     "placeholder": true,
@@ -70,9 +89,11 @@
     "placeholderHash": "218ad57a2d6bcbb510e9e13fcb5b20f07351419e88a8612734357e0492ac8c39"
   },
   "team": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "4a6b4f3b6df072afaa40a2a531475d270221d528ae6bfebbdf7dd51c37df6966"
+    "width": 1743,
+    "height": 1280,
+    "hash": "b5855e8efba3c132dba67433754e8fcb392def33046a698dc2f022a62ce4201d"
   },
   "microbot": {
     "placeholder": true,
@@ -80,14 +101,18 @@
     "placeholderHash": "426955bdd0a0ffb35f19e5f0f95cdedcb04117039fd17e964b21fdba96dde8b2"
   },
   "kabuki-mask": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "229bd88e50fa0033259890a095c5db5155be35b9e7ded594e4e0eadfccec3afc"
+    "width": 365,
+    "height": 486,
+    "hash": "802731cec560e10d3761c8e44c144760cf06fce98506f688a6dd2e4bb3ae7ab3"
   },
   "honey-lemon-purse": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "f6fe7e9cdee18fbd8832800b3d9d8dbd6644efcfcc00d4d39028a455f55e3108"
+    "width": 345,
+    "height": 254,
+    "hash": "2b9bf1e268409397796a574e78d6065d5d68fb0548cedcbf7652c7a568a78b24"
   },
   "chem-ball": {
     "placeholder": true,
@@ -110,9 +135,11 @@
     "placeholderHash": "e392d9b6f99e577ceae84a6f95ed2d73cf53fe35d58eda905699a33a58e6d763"
   },
   "tadashi-cap": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "99cfeeb98dce9d05dae273884d8464dd3483c1e73598c57072611b2408f7ebc8"
+    "width": 421,
+    "height": 370,
+    "hash": "6a012f0b717646880b3eabd8538f5ed2db61ae2facb91996739ea0888fe2ed1b"
   },
   "baymax-charging-case": {
     "placeholder": true,
@@ -120,14 +147,11 @@
     "placeholderHash": "32ed4c24f01cbb1bd59096d91452ba1dd230a26b7de335276f398fa1465b0780"
   },
   "mochi": {
-    "placeholder": true,
+    "placeholder": false,
     "missing": false,
-    "placeholderHash": "6eb03cd905751ec21dc8563d62dff3cbfd11471733616f52b1ac1681ffecde9c"
-  },
-  "lucky-cat": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "1d7c2c02ce3fdb3088ba686fae118ac6a033bf0a444b9d7bcb8bd57f1264c02f"
+    "width": 286,
+    "height": 472,
+    "hash": "1dd49be989ee35e28deba19e957d95e8ea59e264a454ef8a32a1a6deb708b7f8"
   },
   "san-fransokyo-day": {
     "placeholder": true,

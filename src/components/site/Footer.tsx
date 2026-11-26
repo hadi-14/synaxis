@@ -17,7 +17,6 @@ export function Footer({ settings }: { settings: Settings }) {
           </p>
           <div className="mt-6 flex items-center gap-3 text-sm text-white">
             <LuckyCat />
-            <span>Fuelled by the Lucky Cat Café spirit.</span>
           </div>
           <div className="mt-4"><SecretsTracker /></div>
         </div>

@@ -7,7 +7,7 @@ export const SECRETS = {
   "pain-scale": "Rated your pain on the 404 page",
   mochi: "Spotted Mochi",
   "hairy-baby": "Hairy baby",
-  "lucky-cat": "Waved at the Lucky Cat",
+  "lucky-cat": "Visited the Lucky Cat Café",
   kaiju: "Met Fred's kaiju",
   "another-angle": "Looked for another angle",
   "low-battery": "Let Baymax run low on battery",

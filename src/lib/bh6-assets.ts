@@ -6,16 +6,18 @@
 import status from "./bh6-status.json";
 
 export type AssetKind = "character" | "prop" | "background";
-export type BH6Asset = { id: string; file: string; kind: AssetKind; alt: string; purpose: string; w: number; h: number; accent: string; motif: string };
+export type BH6Asset = { id: string; file: string; kind: AssetKind; alt: string; purpose: string; w: number; h: number; accent: string; motif: string; used: boolean };
 
-const C = (id: string, alt: string, purpose: string, accent: string, motif: string, w = 900, h = 1200): BH6Asset => ({ id, file: `${id}.png`, kind: "character", alt, purpose, w, h, accent, motif });
-const P = (id: string, alt: string, purpose: string, accent: string, motif: string): BH6Asset => ({ id, file: `${id}.png`, kind: "prop", alt, purpose, w: 800, h: 800, accent, motif });
-const B = (id: string, alt: string, purpose: string, accent: string): BH6Asset => ({ id, file: `${id}.jpg`, kind: "background", alt, purpose, w: 2400, h: 1200, accent, motif: "microbots" });
+/** Slots kept in the registry but not shown anywhere on the site right now (listed as "not needed" in /admin/assets). */
+const NOT_NEEDED = new Set(["aunt-cass", "san-fransokyo-day", "san-fransokyo-night", "sfit-lab"]);
+
+const C = (id: string, alt: string, purpose: string, accent: string, motif: string, w = 900, h = 1200): BH6Asset => ({ id, file: `${id}.png`, kind: "character", alt, purpose, w, h, accent, motif, used: !NOT_NEEDED.has(id) });
+const P = (id: string, alt: string, purpose: string, accent: string, motif: string): BH6Asset => ({ id, file: `${id}.png`, kind: "prop", alt, purpose, w: 800, h: 800, accent, motif, used: !NOT_NEEDED.has(id) });
+const B = (id: string, alt: string, purpose: string, accent: string): BH6Asset => ({ id, file: `${id}.jpg`, kind: "background", alt, purpose, w: 2400, h: 1200, accent, motif: "microbots", used: !NOT_NEEDED.has(id) });
 
 export const BH6_ASSETS: BH6Asset[] = [
   C("baymax-healthcare", "Baymax in healthcare mode", "Guide, Medical Mode hero", "#F24B59", "baymax"),
   C("baymax-wave", "Baymax waving", "Baymax guide: wave", "#F24B59", "baymax"),
-  C("baymax-fistbump", "Baymax fist bump", "Baymax guide: fist bump", "#F24B59", "baymax"),
   C("baymax-armor", "Baymax in red and purple armour", "Battle Mode hero", "#DC2A35", "baymax"),
   C("baymax-armor-flying", "Armoured Baymax flying", "Scroll thrusters (flame added in code)", "#DC2A35", "baymax", 1600, 900),
   C("hiro", "Hiro Hamada", "Microbot Matrix card", "#7C5CFF", "microbots"),
@@ -38,20 +40,21 @@ export const BH6_ASSETS: BH6Asset[] = [
   P("tadashi-cap", "Tadashi's cap", "Hamada's Hangar effect and easter egg", "#3B82F6", "blueprint"),
   P("baymax-charging-case", "Baymax's charging case", "Loaders and drawers", "#DC2A35", "baymax"),
   P("mochi", "Mochi the cat", "Easter egg and empty states", "#E7A35A", "chem"),
-  P("lucky-cat", "The Lucky Cat Café cat", "Footer easter egg", "#F5C400", "chem"),
   B("san-fransokyo-day", "San Fransokyo skyline by day", "Medical Mode hero background", "#F24B59"),
   B("san-fransokyo-night", "San Fransokyo skyline at night", "Battle Mode hero background", "#424CBC"),
   B("sfit-lab", "SFIT lab / Hiro's garage", "Admin panel background", "#424CBC"),
 ];
 
-type Status = { placeholder: boolean; missing?: boolean; width?: number; height?: number; hash?: string };
+type Status = { placeholder: boolean; missing?: boolean; width?: number; height?: number; hash?: string; placeholderHash?: string };
 const S = status as Record<string, Status>;
 
 export function bh6(id: string) {
   const a = BH6_ASSETS.find((x) => x.id === id);
   if (!a) throw new Error(`Unknown BH6 asset: ${id}`);
   const s = S[id] ?? { placeholder: true };
-  return { ...a, src: `/assets/bh6/${a.file}`, real: !s.placeholder && !s.missing, width: s.width ?? a.w, height: s.height ?? a.h, status: s };
+  // Version the URL with the file hash so swapped art is never served from an old image cache.
+  const v = (s.placeholder ? s.placeholderHash : s.hash)?.slice(0, 8);
+  return { ...a, src: `/assets/bh6/${a.file}${v ? `?v=${v}` : ""}`, real: !s.placeholder && !s.missing, width: s.width ?? a.w, height: s.height ?? a.h, status: s };
 }
 
 /** Module motif → character + prop art. */
