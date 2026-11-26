@@ -11,6 +11,7 @@ import { formatDate } from "@/lib/dates";
 import { ChargingLoader } from "@/components/ui/Battery";
 import { BH6Image } from "@/components/brand/BH6Image";
 import { RegisterWizard, type WizardValues } from "./RegisterWizard";
+import { RegisterLanding } from "./RegisterLanding";
 
 export const metadata: Metadata = pageMeta("/register", "Register your team", "Register your school team for Synaxis 2027 in Karachi, 15–17 January. Teams of 4–6, instant fee calculation, receipt upload and a live dashboard. Takes 10 minutes.");
 
@@ -29,7 +30,11 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
   const sp = await searchParams;
   const editing = sp.edit === "1";
   const user = await getUser();
-  if (!user) redirect(`/login?next=${encodeURIComponent(editing ? "/register?edit=1" : "/register")}`);
+  if (!user) {
+    if (editing) redirect(`/login?next=${encodeURIComponent("/register?edit=1")}`);
+    // Public, indexable landing for signed-out visitors (and search engines).
+    return <RegisterLanding settings={await getSettings()} />;
+  }
 
   const [settings, modules] = await Promise.all([getSettings(), getModules()]);
   const supabase = await createClient();

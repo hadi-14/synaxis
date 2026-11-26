@@ -22,7 +22,8 @@ export async function proxy(request: NextRequest) {
 
   const { data } = await supabase.auth.getClaims();
   const path = request.nextUrl.pathname;
-  const needsAuth = path.startsWith("/dashboard") || path.startsWith("/admin") || path.startsWith("/register");
+  // /register is public (its landing is indexable); the form itself requires sign-in inside the page.
+  const needsAuth = path.startsWith("/dashboard") || path.startsWith("/admin");
   if (needsAuth && !data?.claims) {
     const login = request.nextUrl.clone();
     login.pathname = "/login";
