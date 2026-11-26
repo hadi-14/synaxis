@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LOGO_LETTERS, LOGO_X } from "@/components/brand/logo-paths";
 import { loadMicrobotSprite, microbotSprite } from "@/components/effects/microbot-sprite";
+import { Skyline } from "@/components/decor/Skyline";
 
 /**
  * Opening animation as a full-screen overlay on top of the server-rendered home page.
@@ -11,8 +12,31 @@ import { loadMicrobotSprite, microbotSprite } from "@/components/effects/microbo
  * - Exit (~1s): the logo swarm shrinks into the header logo's exact position (shared-element feel),
  *   then flies right as a wipe that reveals the page; the hero then staggers in.
  */
-type Bot = { sx: number; sy: number; tx: number; ty: number; hx: number; hy: number; c: string; delay: number; ring: boolean; a: number; x: number; y: number };
+type Bot = { sx: number; sy: number; tx: number; ty: number; hx: number; hy: number; c: string; delay: number; ring: boolean; a: number; x: number; y: number; side: number };
 const SEEN_KEY = "synaxis-intro-seen";
+
+/** Evenly spaced points along a torii-gate outline (pillars, curved top beam, tie beam). */
+function toriiPoints(n: number, cx: number, cy: number, w: number, h: number) {
+  const top = cy - h * 0.62, bottom = cy + h * 0.5, half = w / 2;
+  const segs: [number, number, number, number, (t: number) => number][] = [
+    [cx - half * 0.78, bottom, cx - half * 0.72, top + h * 0.16, () => 0], // left pillar
+    [cx + half * 0.78, bottom, cx + half * 0.72, top + h * 0.16, () => 0], // right pillar
+    [cx - half * 1.08, top, cx + half * 1.08, top, (t) => -Math.sin(t * Math.PI) * h * 0.12 + Math.abs(t - 0.5) * -h * 0.1], // kasagi (curved)
+    [cx - half * 0.92, top + h * 0.2, cx + half * 0.92, top + h * 0.2, () => 0], // nuki (tie beam)
+  ];
+  const lens = segs.map(([x1, y1, x2, y2]) => Math.hypot(x2 - x1, y2 - y1));
+  const total = lens.reduce((a, b) => a + b, 0);
+  const pts: { x: number; y: number; side: number }[] = [];
+  segs.forEach(([x1, y1, x2, y2, bend], si) => {
+    const k = Math.max(2, Math.round((lens[si] / total) * n));
+    for (let i = 0; i < k; i++) {
+      const t = i / (k - 1);
+      const x = x1 + (x2 - x1) * t;
+      pts.push({ x, y: y1 + (y2 - y1) * t + bend(t), side: Math.sign(x - cx) || 1 });
+    }
+  });
+  return pts;
+}
 const EXIT_MORPH = 380;
 const EXIT_WIPE = 620;
 
@@ -23,6 +47,7 @@ export function IntroOverlay() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const shell = useRef<HTMLDivElement>(null);
   const exitAt = useRef(0);
+  const hover = useRef(false);
   const skipBtn = useRef<HTMLButtonElement>(null);
   const enterBtn = useRef<HTMLButtonElement>(null);
 
@@ -112,15 +137,16 @@ export function IntroOverlay() {
             sx, sy, tx: ox + x, ty: oy + y,
             hx: hx0 + (x / off.width) * hw, hy: hy0 + (y / off.height) * hh,
             c: img[i] > 180 && img[i + 1] < 90 ? "#F24B59" : "#C9C9CE",
-            delay: Math.random() * 0.35 + (x / lw) * 0.25, ring: false, a: 0, x: sx, y: sy,
+            delay: Math.random() * 0.35 + (x / lw) * 0.25, ring: false, a: 0, x: sx, y: sy, side: 0,
           });
         }
-      const ringN = W < 640 ? 60 : 96, cx = W / 2, cy = H * 0.72, rx = Math.min(W * 0.34, 200), ry = Math.min(H * 0.09, 60);
-      for (let i = 0; i < ringN; i++) {
-        const a = (i / ringN) * Math.PI * 2;
+      // torii gateway made of linked microbots around the Enter button
+      const gw = Math.min(W * 0.62, 300), gh = Math.min(H * 0.26, 170);
+      const gate = toriiPoints(W < 640 ? 70 : 110, W / 2, H * 0.72, gw, gh);
+      gate.forEach((g, i) => {
         const [sx, sy] = edge();
-        bots.push({ sx, sy, tx: cx + Math.cos(a) * rx, ty: cy + Math.sin(a) * ry, hx: cx, hy: cy, c: i % 7 ? "#8B93F0" : "#F24B59", delay: 0.55 + Math.random() * 0.3, ring: true, a, x: sx, y: sy });
-      }
+        bots.push({ sx, sy, tx: g.x, ty: g.y, hx: g.x, hy: g.y, c: i % 6 ? "#F24B59" : "#FFD6DA", delay: 0.55 + Math.random() * 0.3, ring: true, a: i, x: sx, y: sy, side: g.side });
+      });
     };
     build();
 
@@ -138,20 +164,25 @@ export function IntroOverlay() {
       const wipe = ex < EXIT_MORPH ? 0 : ease((ex - EXIT_MORPH) / EXIT_WIPE);
       // the dark backdrop is wiped away left→right in step with the swarm
       if (shell.current) shell.current.style.clipPath = wipe > 0 ? `inset(0 0 0 ${Math.min(100, wipe * 108)}%)` : "";
-      const spin = (el / 4000) % (Math.PI * 2);
-      const cx = W / 2, cy = H * 0.72, rx = Math.min(W * 0.34, 200), ry = Math.min(H * 0.09, 60);
+      const hoverAmp = hover.current ? 1 : 0;
       for (let i = 0; i < bots.length; i++) {
         const b = bots[i];
         const p = ease((el / ASSEMBLE - b.delay * SPEED) / 0.65);
         let x = b.sx + (b.tx - b.sx) * p, y = b.sy + (b.ty - b.sy) * p;
         if (b.ring && p >= 1) {
-          x = cx + Math.cos(b.a + spin) * rx;
-          y = cy + Math.sin(b.a + spin) * ry;
+          // idle shimmer; a ripple runs along the gate while the button is hovered
+          y += Math.sin(el / 420 + b.a * 0.35) * (0.6 + hoverAmp * 3);
         }
         if (morph > 0) {
-          // shared element: logo bots converge on the header logo; ring bots collapse to centre
-          x += (b.hx - x) * morph;
-          y += (b.hy - y) * morph;
+          if (b.ring) {
+            // the gate opens: each half swings outward
+            x += b.side * morph * W * 0.35;
+            y -= morph * 12;
+          } else {
+            // shared element: logo bots converge on the header logo
+            x += (b.hx - x) * morph;
+            y += (b.hy - y) * morph;
+          }
         }
         if (wipe > 0) {
           // sweep right, staggered by vertical position so it reads as a wipe
@@ -193,13 +224,30 @@ export function IntroOverlay() {
     <>
       {mode !== "off" && (
         <div role="dialog" aria-modal="true" aria-label="Synaxis intro" className="fixed inset-0 z-[201]">
-          <div ref={shell} className="absolute inset-0 bg-[#0B1220]" />
+          <div ref={shell} className="absolute inset-0 overflow-hidden bg-[#0B1220]">
+            <div aria-hidden className="absolute left-1/2 top-[38%] h-[70vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(220,42,53,.28),rgba(220,42,53,0))]" />
+            <Skyline className="absolute inset-x-0 bottom-0 h-[34vh] w-full text-[#141c30]" />
+            {[[12, 30], [24, 18], [78, 24], [88, 36], [64, 14]].map(([l, t], i) => (
+              <span key={i} aria-hidden className="absolute block h-4 w-3 rounded-[5px] bg-[#DC2A35] opacity-50 shadow-[0_0_14px_rgba(255,120,90,.6)] motion-safe:animate-[lantern_6s_ease-in-out_infinite_alternate]" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${-i * 1.3}s` }} />
+            ))}
+            <style>{`@keyframes lantern{from{transform:translateY(0)}to{transform:translateY(-10px)}}`}</style>
+          </div>
           <canvas ref={canvas} aria-hidden className="absolute inset-0" />
-          <p className={`absolute inset-x-0 top-[50%] px-6 text-center font-mono text-[11px] uppercase tracking-[0.32em] text-[#9a9aa0] transition-opacity duration-500 sm:text-xs ${ready && !leaving ? "opacity-100" : "opacity-0"}`}>
+          <p className={`absolute inset-x-0 top-[50%] px-6 text-center font-mono text-xs font-semibold uppercase tracking-[0.28em] text-[#E4E4E8] transition-opacity duration-500 sm:text-sm ${ready && !leaving ? "opacity-100" : "opacity-0"}`}>
             Heuser Science Society · Season 1 · 15–17 Jan 2027
           </p>
           <div className={`absolute inset-x-0 top-[72%] flex -translate-y-1/2 justify-center transition-opacity duration-300 ${ready && !leaving ? "opacity-100" : "pointer-events-none opacity-0"}`}>
-            <button ref={enterBtn} type="button" onClick={leave} className="btn btn-onred px-8 text-base" tabIndex={ready ? 0 : -1}>
+            <button
+              ref={enterBtn}
+              type="button"
+              onClick={leave}
+              onPointerEnter={() => (hover.current = true)}
+              onPointerLeave={() => (hover.current = false)}
+              onFocus={() => (hover.current = true)}
+              onBlur={() => (hover.current = false)}
+              className="btn bg-[#DC2A35] px-10 text-base text-white shadow-[0_6px_0_#7d0f18] hover:bg-[#c42634] active:shadow-[0_2px_0_#7d0f18]"
+              tabIndex={ready ? 0 : -1}
+            >
               Enter
             </button>
           </div>

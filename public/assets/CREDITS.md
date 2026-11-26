@@ -20,7 +20,6 @@ files. Record where each one came from below when you replace a placeholder, the
 | `fred.png` | Fred's Fallacy card | LIVE | _supplied by the HSS team, add source_ |
 | `callaghan.png` | Callaghan's Conflict card | LIVE | _supplied by the HSS team, add source_ |
 | `yokai.png` | Kabuki Caper card (compulsory) | LIVE | _supplied by the HSS team, add source_ |
-| `aunt-cass.png` | Lucky Cat Café footer | NOT NEEDED | _add source / licence_ |
 | `team.png` | Sponsors and 404 pages | LIVE | _supplied by the HSS team, add source_ |
 | `microbot.png` | Swarm particle texture | PLACEHOLDER | _add source / licence_ |
 | `kabuki-mask.png` | Kabuki Caper badge and effect | LIVE | _supplied by the HSS team, add source_ |
@@ -32,9 +31,6 @@ files. Record where each one came from below when you replace a placeholder, the
 | `tadashi-cap.png` | Hamada's Hangar effect and easter egg | LIVE | _supplied by the HSS team, add source_ |
 | `baymax-charging-case.png` | Loaders and drawers | PLACEHOLDER | _add source / licence_ |
 | `mochi.png` | Easter egg and empty states | LIVE | _supplied by the HSS team, add source_ |
-| `san-fransokyo-day.jpg` | Medical Mode hero background | NOT NEEDED | _add source / licence_ |
-| `san-fransokyo-night.jpg` | Battle Mode hero background | NOT NEEDED | _add source / licence_ |
-| `sfit-lab.jpg` | Admin panel background | NOT NEEDED | _add source / licence_ |
 
 Original (unprocessed) files are kept in `assets-src/bh6/`, outside the public folder.
 

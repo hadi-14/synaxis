@@ -83,11 +83,6 @@
     "height": 908,
     "hash": "171793eab417b1ef22e0af307ab69b25f879587ab15acd3743716abd1af0ae09"
   },
-  "aunt-cass": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "218ad57a2d6bcbb510e9e13fcb5b20f07351419e88a8612734357e0492ac8c39"
-  },
   "team": {
     "placeholder": false,
     "missing": false,
@@ -152,20 +147,5 @@
     "width": 286,
     "height": 472,
     "hash": "1dd49be989ee35e28deba19e957d95e8ea59e264a454ef8a32a1a6deb708b7f8"
-  },
-  "san-fransokyo-day": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "3daa5dbdf97d296742efaba83774c557a2f629a66eb0f2ee06d712acfb651a92"
-  },
-  "san-fransokyo-night": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "d32ed20d11b596d6817ea89423b244146b1d78909befa61285c6ee9021df1f7d"
-  },
-  "sfit-lab": {
-    "placeholder": true,
-    "missing": false,
-    "placeholderHash": "a278b3eaae44928300dffe5a2e45ddacb8b0dcc9607e2fea51eeb762041e92ec"
   }
 }

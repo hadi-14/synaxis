@@ -1,6 +1,6 @@
 # Big Hero 6 image sourcing guide
 
-There are 27 image slots. 23 are used on the site; `aunt-cass`, `san-fransokyo-day`, `san-fransokyo-night` and `sfit-lab` are not needed right now. Save each file in `public/assets/bh6/` using the **exact file name** below.
+There are 23 image slots, all used on the site. Backgrounds (skyline, blueprint, HUD) are drawn in code, so no background images are needed. Save each file in `public/assets/bh6/` using the **exact file name** below.
 Then run:
 
 ```bash
@@ -37,7 +37,6 @@ Transparent PNG, at least 1200px tall, full body unless noted, one character per
 | `fred.png` | Fred in his blue kaiju suit | `Fred kaiju suit Big Hero 6 PNG transparent` |
 | `callaghan.png` | Professor Robert Callaghan **unmasked** (glasses, grey hair, suit), not as Yokai | `Professor Callaghan Big Hero 6 PNG` |
 | `yokai.png` | Yokai in the black coat and kabuki mask, ideally with a microbot swirl. This is the compulsory module, so pick a strong pose. | `Yokai Big Hero 6 PNG transparent` |
-| `aunt-cass.png` | Aunt Cass, cheerful, waist-up is fine | `Aunt Cass Big Hero 6 PNG` |
 | `team.png` | All six heroes together in suits. **Wide**, about 2000×1200 (used on the 404 page). | `Big Hero 6 team PNG transparent` |
 
 ## Props and objects
@@ -56,14 +55,6 @@ Transparent PNG, square-ish (about 800×800 or larger), object only with no hand
 | `baymax-charging-case.png` | Baymax's red charging box | `Baymax charging station PNG` |
 | `mochi.png` | Mochi the orange-and-white cat, ideally sitting or peeking | `Mochi cat Big Hero 6 PNG transparent` |
 
-## Backgrounds
-JPG, landscape, **at least 2400px wide**, no text or logos on top.
-
-| File | What it should show | Search |
-|---|---|---|
-| `san-fransokyo-day.jpg` | San Fransokyo skyline by day, with the Golden Gate–style bridge with torii towers if possible | `San Fransokyo skyline day wallpaper 4K` |
-| `san-fransokyo-night.jpg` | San Fransokyo at night with lanterns, blimps and city lights | `San Fransokyo night wallpaper 4K` |
-| `sfit-lab.jpg` | SFIT robotics lab or Hiro's garage workshop interior | `SFIT lab Big Hero 6 wallpaper` |
 
 ## Where to start
 The current homepage only uses a few of these, so begin with the ones that show most:
@@ -80,4 +71,5 @@ page URL to see the labelled placeholders.
 
 ## Not used anymore
 - `baymax-fistbump.png`: removed. The fist bump is animated in code.
-- `lucky-cat.png`: removed. The footer egg is a text reveal ("Lucky Cat Café: now serving science").
+- `lucky-cat.png`: removed. The footer badge is a code-drawn SVG beckoning cat.
+- `aunt-cass.png`, `san-fransokyo-day.jpg`, `san-fransokyo-night.jpg`, `sfit-lab.jpg`: removed. Skyline, blueprint, hex and HUD backgrounds are drawn in code.

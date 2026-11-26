@@ -9,11 +9,10 @@ export type AssetKind = "character" | "prop" | "background";
 export type BH6Asset = { id: string; file: string; kind: AssetKind; alt: string; purpose: string; w: number; h: number; accent: string; motif: string; used: boolean };
 
 /** Slots kept in the registry but not shown anywhere on the site right now (listed as "not needed" in /admin/assets). */
-const NOT_NEEDED = new Set(["aunt-cass", "san-fransokyo-day", "san-fransokyo-night", "sfit-lab"]);
+const NOT_NEEDED = new Set<string>([]);
 
 const C = (id: string, alt: string, purpose: string, accent: string, motif: string, w = 900, h = 1200): BH6Asset => ({ id, file: `${id}.png`, kind: "character", alt, purpose, w, h, accent, motif, used: !NOT_NEEDED.has(id) });
 const P = (id: string, alt: string, purpose: string, accent: string, motif: string): BH6Asset => ({ id, file: `${id}.png`, kind: "prop", alt, purpose, w: 800, h: 800, accent, motif, used: !NOT_NEEDED.has(id) });
-const B = (id: string, alt: string, purpose: string, accent: string): BH6Asset => ({ id, file: `${id}.jpg`, kind: "background", alt, purpose, w: 2400, h: 1200, accent, motif: "microbots", used: !NOT_NEEDED.has(id) });
 
 export const BH6_ASSETS: BH6Asset[] = [
   C("baymax-healthcare", "Baymax in healthcare mode", "Guide, Medical Mode hero", "#F24B59", "baymax"),
@@ -28,7 +27,6 @@ export const BH6_ASSETS: BH6Asset[] = [
   C("fred", "Fred", "Fred's Fallacy card", "#2FB8AC", "kaiju"),
   C("callaghan", "Robert Callaghan", "Callaghan's Conflict card", "#8A8F98", "portal"),
   C("yokai", "Yokai", "Kabuki Caper card (compulsory)", "#DC2A35", "kabuki"),
-  C("aunt-cass", "Aunt Cass", "Lucky Cat Café footer", "#E7A35A", "chem"),
   C("team", "The Big Hero 6 team", "Sponsors and 404 pages", "#424CBC", "microbots", 2000, 1200),
   P("microbot", "A single microbot", "Swarm particle texture", "#18243A", "microbots"),
   P("kabuki-mask", "Yokai's kabuki mask", "Kabuki Caper badge and effect", "#DC2A35", "kabuki"),
@@ -40,9 +38,6 @@ export const BH6_ASSETS: BH6Asset[] = [
   P("tadashi-cap", "Tadashi's cap", "Hamada's Hangar effect and easter egg", "#3B82F6", "blueprint"),
   P("baymax-charging-case", "Baymax's charging case", "Loaders and drawers", "#DC2A35", "baymax"),
   P("mochi", "Mochi the cat", "Easter egg and empty states", "#E7A35A", "chem"),
-  B("san-fransokyo-day", "San Fransokyo skyline by day", "Medical Mode hero background", "#F24B59"),
-  B("san-fransokyo-night", "San Fransokyo skyline at night", "Battle Mode hero background", "#424CBC"),
-  B("sfit-lab", "SFIT lab / Hiro's garage", "Admin panel background", "#424CBC"),
 ];
 
 type Status = { placeholder: boolean; missing?: boolean; width?: number; height?: number; hash?: string; placeholderHash?: string };

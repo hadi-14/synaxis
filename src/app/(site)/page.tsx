@@ -8,6 +8,12 @@ import { Ticker } from "@/components/portal/Ticker";
 import { IntroGate } from "@/components/landing/IntroGate";
 import { JsonLd, homeJsonLd } from "@/components/seo/JsonLd";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { Skyline } from "@/components/decor/Skyline";
+import { BlueprintSchematic } from "@/components/decor/BlueprintSchematic";
+import { HexPattern } from "@/components/decor/HexPattern";
+import { ScanHud } from "@/components/decor/ScanHud";
+import { MicrobotChain } from "@/components/decor/MicrobotChain";
+import { AmbientMicrobots } from "@/components/decor/AmbientMicrobots";
 import { ModuleCard } from "@/components/site/ModuleCard";
 import { FaqAccordion } from "@/components/site/FaqAccordion";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -72,6 +78,11 @@ export default async function HomePage() {
 
 
       {/* ------------------------------------------------------------ ABOUT */}
+      <div className="relative isolate overflow-hidden bg-blueprint">
+        <div aria-hidden className="pointer-events-none absolute right-[-40px] top-10 -z-10 hidden w-[380px] text-[var(--accent)] opacity-[0.16] md:block lg:right-[4%]">
+          <BlueprintSchematic className="h-auto w-full" />
+        </div>
+        <AmbientMicrobots className="-z-10 text-[var(--ink-muted)]" count={7} />
       <section id="about" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
         <SectionHeading
           eyebrow="01 · About"
@@ -124,9 +135,12 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+      </div>
+      <MicrobotChain className="text-[var(--band)] opacity-60" />
 
       {/* ------------------------------------------------------------ MODULES */}
-      <section id="modules" className="band scroll-mt-20 py-16 sm:py-24">
+      <section id="modules" className="band relative isolate scroll-mt-20 overflow-hidden pb-40 pt-16 sm:pb-48 sm:pt-24">
+        <Skyline className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-32 w-full text-[var(--band-deep)] sm:h-44" />
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeading
             onRed
@@ -158,6 +172,9 @@ export default async function HomePage() {
 
       {/* ------------------------------------------------------------ REGISTER TEASER */}
       <div>
+      <MicrobotChain className="text-[var(--band)] opacity-60" />
+      <div className="relative isolate overflow-hidden">
+        <HexPattern className="pointer-events-none absolute inset-0 -z-10 text-[var(--ink)] opacity-[0.05]" />
       <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
         <SectionHeading
           eyebrow="03 · Registration"
@@ -251,10 +268,15 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      </div>
 
       </div>
 
       {/* ------------------------------------------------------------ FAQ */}
+      <MicrobotChain className="text-[var(--band)] opacity-60" />
+      <div className="relative isolate overflow-hidden">
+        <ScanHud className="absolute inset-0 -z-10 text-[var(--primary-text)] opacity-[0.14] [--scan-h:100%]" />
+        <AmbientMicrobots className="-z-10 text-[var(--ink-muted)]" count={6} />
       <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
         <SectionHeading eyebrow="04 · FAQ" title="Questions? Scan complete." />
         <FaqAccordion faqs={faqs} />
@@ -267,6 +289,7 @@ export default async function HomePage() {
         </p>
         <FaqKaiju />
       </section>
+      </div>
     </>
   );
 }
