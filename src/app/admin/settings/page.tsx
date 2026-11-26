@@ -36,9 +36,10 @@ export default async function SettingsPage() {
         </section>
         <section className="card p-5">
           <h2 className="font-display text-lg font-bold">Fees (Rs)</h2>
-          <p className="text-xs text-[var(--ink-muted)]">Total = delegation fee + members × per-delegate fee. Teams keep the fee they registered with.</p>
-          <div className="mt-3 grid gap-4 sm:grid-cols-3">
-            <F label="Delegation fee (per team)"><input className="field" type="number" min={0} name="delegation_fee" defaultValue={s.delegation_fee} /></F>
+          <p className="text-xs text-[var(--ink-muted)]">Total = delegation fee + members × per-delegate fee. Early-bird amounts apply to teams that submit before the early-bird deadline. Teams keep the fee they registered with.</p>
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            <F label="Delegation fee per team, early bird"><input className="field" type="number" min={0} name="delegation_fee_early" defaultValue={s.delegation_fee_early} /></F>
+            <F label="Delegation fee per team, regular"><input className="field" type="number" min={0} name="delegation_fee_regular" defaultValue={s.delegation_fee_regular} /></F>
             <F label="Per delegate, early bird"><input className="field" type="number" min={0} name="early_fee" defaultValue={s.early_fee} /></F>
             <F label="Per delegate, regular"><input className="field" type="number" min={0} name="regular_fee" defaultValue={s.regular_fee} /></F>
           </div>

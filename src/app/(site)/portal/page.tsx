@@ -183,8 +183,15 @@ export default async function PortalPage() {
               <caption className="border-b border-[var(--line)] px-5 py-4 text-left font-display text-base font-bold">Fees</caption>
               <tbody className="divide-y divide-[var(--line)]">
                 <tr>
-                  <th scope="row" className="px-5 py-3 font-semibold">Delegation fee (once per team)</th>
-                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.delegation_fee)}</td>
+                  <th scope="row" className="px-5 py-3 font-semibold">
+                    Delegation fee (once per team), early bird
+                    <span className="block text-xs font-normal text-[var(--ink-muted)]">Submitted by {formatDate(settings.early_bird_deadline)}</span>
+                  </th>
+                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.delegation_fee_early)}</td>
+                </tr>
+                <tr>
+                  <th scope="row" className="px-5 py-3 font-semibold">Delegation fee (once per team), regular</th>
+                  <td className="whitespace-nowrap px-5 py-3 text-right font-mono">{formatRs(settings.delegation_fee_regular)}</td>
                 </tr>
                 <tr>
                   <th scope="row" className="px-5 py-3 font-semibold">
@@ -202,7 +209,7 @@ export default async function PortalPage() {
                     Example: team of {settings.team_min}, early bird
                   </th>
                   <td className="whitespace-nowrap px-5 py-3 text-right font-mono font-bold">
-                    {formatRs(settings.delegation_fee + settings.team_min * settings.early_fee)}
+                    {formatRs(settings.delegation_fee_early + settings.team_min * settings.early_fee)}
                   </td>
                 </tr>
               </tbody>

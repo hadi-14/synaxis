@@ -4,17 +4,19 @@ import { computeFee } from "../src/lib/fees";
 import { normalizePkMobile, isPkPhone } from "../src/lib/phone";
 import { ruleIssues, moduleSlots, type RegistrationData, type Rules } from "../src/lib/validation/registration";
 
-const settings = { delegation_fee: 4500, early_fee: 2500, regular_fee: 3500, early_bird_deadline: "2026-12-15T23:59:00+05:00" };
+const settings = { delegation_fee_early: 4000, delegation_fee_regular: 5000, early_fee: 2500, regular_fee: 3500, early_bird_deadline: "2026-12-15T23:59:00+05:00" };
 
 test("fee: early bird = delegation + members × early", () => {
   const f = computeFee(settings, 5, new Date("2026-12-01T10:00:00+05:00"));
   assert.equal(f.tier, "early");
-  assert.equal(f.total, 4500 + 5 * 2500);
+  assert.equal(f.delegationFee, 4000);
+  assert.equal(f.total, 4000 + 5 * 2500);
 });
 test("fee: after deadline is regular", () => {
   const f = computeFee(settings, 4, new Date("2026-12-16T00:00:00+05:00"));
   assert.equal(f.tier, "regular");
-  assert.equal(f.total, 4500 + 4 * 3500);
+  assert.equal(f.delegationFee, 5000);
+  assert.equal(f.total, 5000 + 4 * 3500);
 });
 test("fee: exactly at the deadline is still early", () => {
   assert.equal(computeFee(settings, 4, new Date("2026-12-15T23:59:00+05:00")).tier, "early");

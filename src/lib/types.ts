@@ -27,7 +27,8 @@ export type Settings = {
   venue_name: string;
   venue_address: string;
   venue_map_url: string;
-  delegation_fee: number;
+  delegation_fee_early: number;
+  delegation_fee_regular: number;
   early_fee: number;
   regular_fee: number;
   registration_opens_at: string;
