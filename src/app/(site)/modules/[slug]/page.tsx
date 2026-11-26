@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { getModule, getModules } from "@/lib/content";
 import { CardFlip } from "@/components/effects/CardFlip";
+import { JsonLd, moduleBreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { TrackView } from "@/components/analytics/TrackView";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 
 export async function generateStaticParams() {
   const modules = await getModules();
@@ -13,21 +16,20 @@ export async function generateStaticParams() {
 export async function generateMetadata(props: PageProps<"/modules/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
   const m = await getModule(slug);
-  if (!m) return { title: "Module not found" };
-  return { title: `${m.name} · ${m.subject}`, description: `${m.tagline} ${m.description}`.slice(0, 160), alternates: { canonical: `/modules/${m.slug}` } };
+  if (!m) return { title: "Module not found", robots: { index: false } };
+  const lead = `${m.name} is the ${m.subject} module of Synaxis 2027, themed on ${m.character}${m.is_compulsory ? " and compulsory for every team" : ""}.`;
+  // Longest version that fits in 160 characters, dropping whole sentences (never cut mid-sentence).
+  const description =
+    [`${lead} ${m.tagline} Format, team size and schedule.`, `${lead} ${m.tagline}`, `${lead} See the format and schedule.`, lead].find((d) => d.length <= 160) ?? lead.slice(0, 160);
+  return pageMeta(`/modules/${m.slug}`, `${m.name} · ${m.subject}`, description);
 }
 
-export default function ModulePage(props: PageProps<"/modules/[slug]">) {
-  // Params are read inside a Suspense boundary (all slugs are prerendered via generateStaticParams).
-  return (
-    <Suspense fallback={<div className="mx-auto max-w-5xl px-4 py-16 sm:px-6"><div className="skeleton h-10 w-2/3" /><div className="skeleton mt-6 h-64" /></div>}>
-      <ModuleContent params={props.params} />
-    </Suspense>
-  );
-}
+/** All 9 module pages are prerendered (generateStaticParams), so no Suspense boundary: the content is in the
+ *  initial HTML (a streamed skeleton swap caused a large layout shift). Navigation may block briefly. */
+export const instant = false;
 
-async function ModuleContent({ params }: { params: PageProps<"/modules/[slug]">["params"] }) {
-  const { slug } = await params;
+export default async function ModulePage(props: PageProps<"/modules/[slug]">) {
+  const { slug } = await props.params;
   const [m, all] = await Promise.all([getModule(slug), getModules()]);
   if (!m) notFound();
   const i = all.findIndex((x) => x.id === m.id);
@@ -35,6 +37,8 @@ async function ModuleContent({ params }: { params: PageProps<"/modules/[slug]">[
   const next = all[(i + 1) % all.length];
   return (
     <article className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-16" style={{ "--accent-c": m.accent } as React.CSSProperties}>
+      <JsonLd data={moduleBreadcrumbJsonLd(m.name, m.slug)} />
+      <TrackView event="module_viewed" props={{ slug: m.slug }} />
       <Link href="/#modules" className="plasma-link text-sm font-semibold">← All modules</Link>
       <div className="mt-6 grid items-center gap-10 md:grid-cols-[1.3fr_1fr]">
         <div>
@@ -63,7 +67,7 @@ async function ModuleContent({ params }: { params: PageProps<"/modules/[slug]">[
       </dl>
       <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
         <Link href={`/modules/${prev.slug}`} className="btn btn-secondary">← {prev.name}</Link>
-        <Link href="/register" className="btn btn-primary">Register your team</Link>
+        <TrackedLink location="module_page" href="/register" className="btn btn-primary">Register your team</TrackedLink>
         <Link href={`/modules/${next.slug}`} className="btn btn-secondary">{next.name} →</Link>
       </div>
     </article>

@@ -1,16 +1,19 @@
 import type { MetadataRoute } from "next";
-import { getModules } from "@/lib/content";
+import { getModules, getSettings } from "@/lib/content";
+import { SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const modules = await getModules();
+  const [modules, settings] = await Promise.all([getModules(), getSettings()]);
+  const contentUpdated = new Date(settings.updated_at ?? Date.UTC(2026, 10, 26));
+  const legal = new Date("2026-11-26");
+  const page = (path: string, priority: number, lastModified: Date, changeFrequency: "daily" | "weekly" | "monthly" = "weekly") => ({ url: `${SITE_URL}${path}`, lastModified, changeFrequency, priority });
   return [
-    { url: `${base}/`, priority: 1 },
-    { url: `${base}/terms`, priority: 0.3 },
-    { url: `${base}/privacy`, priority: 0.3 },
-    { url: `${base}/council`, priority: 0.6 },
-    { url: `${base}/sponsors`, priority: 0.5 },
-    { url: `${base}/register`, priority: 0.9 },
-    ...modules.map((m) => ({ url: `${base}/modules/${m.slug}`, priority: 0.7 })),
+    page("/", 1, contentUpdated, "daily"),
+    page("/register", 0.9, contentUpdated),
+    ...modules.map((m) => page(`/modules/${m.slug}`, 0.8, new Date(m.updated_at ?? contentUpdated))),
+    page("/council", 0.6, contentUpdated),
+    page("/sponsors", 0.5, contentUpdated),
+    page("/terms", 0.3, legal, "monthly"),
+    page("/privacy", 0.3, legal, "monthly"),
   ];
 }

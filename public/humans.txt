@@ -1,0 +1,15 @@
+/* TEAM */
+Website: Abdul Hadi Millwala
+Site: https://abdul-hadi-millwala.vercel.app
+Location: Karachi, Pakistan
+
+Website: Muhammad Aoun Imran
+Location: Karachi, Pakistan
+
+Organiser: Heuser Science Society, Heuser College
+Instagram: @heusersynaxis
+
+/* SITE */
+Standards: HTML5, CSS3, WCAG 2.1 AA
+Components: Next.js, React, Tailwind CSS, Supabase, Resend
+Note: Big Hero 6 © Disney. Fan-made for a student event.

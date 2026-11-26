@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand/Logo";
 import { ThemeToggle } from "./ThemeToggle";
+import { track } from "@/lib/analytics";
 
 const NAV = [
   { href: "/#about", label: "About" },
@@ -57,7 +58,7 @@ export function Header() {
         <div className="hidden sm:block">
           <ThemeToggle />
         </div>
-        <Link href="/register" className="btn btn-primary !min-h-10 !px-4 text-sm">
+        <Link href="/register" onClick={() => track("cta_clicked", { location: "header" })} className="btn btn-primary !min-h-10 !px-4 text-sm">
           Register
         </Link>
         <button

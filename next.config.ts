@@ -6,8 +6,22 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   // The main site lives at "/"; old /portal links (and #anchors) redirect permanently (308).
+  // PostHog reverse proxy (so ad blockers don't drop first-party analytics).
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    const host = (process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com").replace(/\/$/, "");
+    const assets = host.replace(".i.posthog.com", "-assets.i.posthog.com");
+    return [
+      { source: "/ingest/static/:path*", destination: `${assets}/static/:path*` },
+      { source: "/ingest/:path*", destination: `${host}/:path*` },
+    ];
+  },
   async redirects() {
-    return [{ source: "/portal", destination: "/", permanent: true }];
+    return [
+      { source: "/portal", destination: "/", permanent: true },
+      // One canonical host: www → apex (also set in Vercel → Domains).
+      { source: "/:path*", has: [{ type: "host", value: "www.heusersynaxis.com" }], destination: "https://heusersynaxis.com/:path*", permanent: true },
+    ];
   },
   // Big Hero 6 art in /public/assets/bh6 is served as AVIF/WebP via next/image.
   images: {

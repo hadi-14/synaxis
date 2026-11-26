@@ -191,8 +191,6 @@ export function IntroOverlay() {
 
   return (
     <>
-      {/* Pre-hydration cover (shown by html[data-intro] before first paint, so the page never flashes) */}
-      <div aria-hidden className="intro-cover fixed inset-0 z-[200] hidden bg-[#0B1220]" />
       {mode !== "off" && (
         <div role="dialog" aria-modal="true" aria-label="Synaxis intro" className="fixed inset-0 z-[201]">
           <div ref={shell} className="absolute inset-0 bg-[#0B1220]" />

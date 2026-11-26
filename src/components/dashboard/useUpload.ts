@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { confirmReceipt, confirmWaiver, createUploadUrl } from "@/app/(site)/dashboard/actions";
+import { track } from "@/lib/analytics";
 
 /** Lazy-load the Supabase browser client so it never ships with public pages. */
 const supabase = () => import("@/lib/supabase/browser").then((m) => m.createClient());
@@ -35,6 +36,7 @@ export function useUpload(kind: "receipt" | "waiver", memberId: string | null = 
       return false;
     }
     setState("done");
+    if (kind === "receipt") track("receipt_uploaded");
     return true;
   };
   return { state, error, upload, reset: () => setState("idle") };

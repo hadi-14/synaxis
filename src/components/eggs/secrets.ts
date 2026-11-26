@@ -1,5 +1,6 @@
 "use client";
 import { toast } from "@/components/ui/toast-store";
+import { track } from "@/lib/analytics";
 
 /** Easter egg registry. Found secrets persist in localStorage; the tracker unlocks a story card. */
 export const SECRETS = {
@@ -36,5 +37,6 @@ export function foundSecret(id: SecretId) {
   found.push(id);
   localStorage.setItem(KEY, JSON.stringify(found));
   window.dispatchEvent(new CustomEvent("synaxis:secret", { detail: { id, count: found.length } }));
+  track("easter_egg_found", { id });
   toast(`Secret found: ${SECRETS[id]}`, { body: `${found.length}/${SECRET_TOTAL} secrets discovered`, kind: "success" });
 }

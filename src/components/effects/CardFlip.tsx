@@ -19,6 +19,7 @@ const MOVE: Record<string, { verb: string; anim: string }> = {
 /** Module card flip — each character's signature move. Reduced motion: content swaps without rotation. */
 export function CardFlip({ motif, accent, name, character }: { motif: string; accent: string; name: string; character: string }) {
   const [flipped, setFlipped] = useState(false);
+  const [interacted, setInteracted] = useState(false); // no entrance animation on first paint (keeps LCP fast)
   const move = MOVE[motif] ?? MOVE.blueprint;
   const art = MODULE_ART[motif] ?? MODULE_ART.microbots;
   return (
@@ -26,15 +27,16 @@ export function CardFlip({ motif, accent, name, character }: { motif: string; ac
       type="button"
       onClick={() => {
         setFlipped((f) => !f);
+        setInteracted(true);
         if (motif === "kabuki" && !flipped) foundSecret("kabuki-mask");
       }}
       aria-pressed={flipped}
       className="group relative mx-auto aspect-[4/5] w-full max-w-[300px] [perspective:900px]"
     >
-      <span key={String(flipped)} className="card panel-lines absolute inset-0 flex flex-col items-center justify-center gap-4 overflow-hidden p-6" style={{ animation: `${move.anim} 520ms cubic-bezier(.34,1.56,.64,1)`, borderColor: accent }}>
+      <span key={String(flipped)} className="card panel-lines absolute inset-0 flex flex-col items-center justify-center gap-4 overflow-hidden p-6" style={{ animation: interacted ? `${move.anim} 520ms cubic-bezier(.34,1.56,.64,1)` : undefined, borderColor: accent }}>
         {!flipped ? (
           <>
-            <BH6Image id={art.character} sizes="(max-width: 640px) 60vw, 240px" className="h-56 w-auto object-contain drop-shadow-xl" fallback="icon" iconClassName="h-36 w-36" />
+            <BH6Image id={art.character} priority sizes="(max-width: 640px) 60vw, 240px" className="h-56 w-auto object-contain drop-shadow-xl" fallback="icon" iconClassName="h-36 w-36" />
             <span className="font-display text-lg font-bold">{character}</span>
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--ink-muted)]">Tap: {move.verb}</span>
             <span className="sr-only">(flips the {name} card)</span>

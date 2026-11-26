@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans, Unbounded } from "next/font/google";
 import { Toaster } from "@/components/ui/Toaster";
-import { MicrobotBurst } from "@/components/effects/MicrobotBurst";
-import { EasterEggs } from "@/components/eggs/EasterEggs";
+import { DeferredEffects } from "@/components/effects/DeferredEffects";
+import { Analytics } from "@/components/analytics/Analytics";
 import "./globals.css";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 // Display: wide, heavy, geometric with soft outer radii — closest match to the logo lettering.
 const unbounded = Unbounded({ variable: "--font-unbounded", subsets: ["latin"], display: "swap" });
@@ -12,22 +13,21 @@ const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin
 // Mono/HUD: counters, registration IDs, Battle Mode labels.
 const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"], display: "swap", preload: false });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: "Synaxis S1 · Heuser Science Society Olympiad", template: "%s · Synaxis S1" },
-  description:
-    "Synaxis Season 1: a three-day Big Hero 6–themed science olympiad by the Heuser Science Society, Karachi. 15–17 January 2027. Register your team.",
-  applicationName: "Synaxis",
-  openGraph: { type: "website", siteName: "Synaxis", locale: "en_PK" },
-  twitter: { card: "summary_large_image" },
+  title: { default: DEFAULT_TITLE, template: "%s · Synaxis 2027" },
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", siteName: SITE_NAME, locale: "en_PK", url: "/", title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION },
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B1220" },
+    { media: "(prefers-color-scheme: light)", color: "#DC2A35" },
+    { media: "(prefers-color-scheme: dark)", color: "#08090F" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -65,8 +65,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {children}
         <Toaster />
-        <MicrobotBurst />
-        <EasterEggs />
+        <DeferredEffects />
+        <Analytics />
       </body>
     </html>
   );

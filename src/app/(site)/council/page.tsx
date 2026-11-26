@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { getCouncil, getModules } from "@/lib/content";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { CouncilCard } from "@/components/site/CouncilCard";
 import { Empty } from "@/components/ui/Empty";
 import { Reveal } from "@/components/effects/Reveal";
 
-export const metadata: Metadata = { title: "The Cubinet", description: "Meet the Heuser Science Society council running Synaxis Season 1.", alternates: { canonical: "/council" } };
+export const metadata: Metadata = pageMeta("/council", "The Cubinet: organising council", "Meet the Cubinet, the Heuser Science Society council behind Synaxis 2027: the President, Vice President and the Head and Co-Head of each of the 9 modules.");
 
 export default async function CouncilPage() {
   const [council, modules] = await Promise.all([getCouncil(), getModules()]);
   const exec = council.filter((c) => c.tier === "executive");
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-20">
-      <SectionHeading eyebrow="The Cubinet" title="The team behind the microbots" intro={<p>The President, Vice President and every Module Head and Co-Head of Synaxis Season 1.</p>} />
+      <SectionHeading as="h1" eyebrow="The Cubinet" title="The team behind the microbots" intro={<p>The President, Vice President and every Module Head and Co-Head of Synaxis Season 1.</p>} />
       {council.length === 0 && <div className="card"><Empty title="Council reveal coming soon" body="Follow @heusersynaxis for the announcement." /></div>}
       {exec.length > 0 && (
         <ul className="grid gap-5 sm:grid-cols-2">

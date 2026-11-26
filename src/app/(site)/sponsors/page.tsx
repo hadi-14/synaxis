@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { getSettings, getSponsors } from "@/lib/content";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { InquiryForm } from "./InquiryForm";
 import type { Sponsor } from "@/lib/types";
 
-export const metadata: Metadata = { title: "Sponsors", description: "Partner with Synaxis Season 1, a science olympiad for Pakistan's brightest school students.", alternates: { canonical: "/sponsors" } };
+export const metadata: Metadata = pageMeta("/sponsors", "Sponsors and partners", "Sponsor Synaxis 2027, a 3-day science olympiad in Karachi for school teams from across Pakistan. See sponsorship tiers and send the Cubinet an inquiry.");
 
 const TIERS: { key: Sponsor["tier"]; label: string; size: string }[] = [
   { key: "title", label: "Title sponsor", size: "h-28" },
@@ -18,7 +19,7 @@ export default async function SponsorsPage() {
   const [sponsors, settings] = await Promise.all([getSponsors(), getSettings()]);
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-20">
-      <SectionHeading eyebrow="Sponsors" title="Fuel the next generation of Hiros" intro={<p>Synaxis brings school teams from across Pakistan together for three days of science, logic and teamwork. Put your brand in front of them.</p>} />
+      <SectionHeading as="h1" eyebrow="Sponsors" title="Fuel the next generation of Hiros" intro={<p>Synaxis brings school teams from across Pakistan together for three days of science, logic and teamwork. Put your brand in front of them.</p>} />
       {TIERS.map((t) => {
         const list = sponsors.filter((s) => s.tier === t.key);
         if (!list.length) return null;
@@ -47,7 +48,7 @@ export default async function SponsorsPage() {
           <h2 className="font-display text-2xl font-extrabold">Become a sponsor</h2>
           <ul className="mt-4 space-y-3 text-[var(--ink-muted)]">
             <li>• Logo on the site, social posts and event-day stage</li>
-            <li>• Stall or demo space on campus (all three days)</li>
+            <li>• Stall or demo space on campus (all 3 days)</li>
             <li>• Named awards for a module of your choice</li>
             <li>• Reach students from schools across Pakistan</li>
           </ul>

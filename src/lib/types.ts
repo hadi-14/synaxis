@@ -18,6 +18,7 @@ export type Module = {
   is_active: boolean;
   sort: number;
   category_id: number | null;
+  updated_at?: string;
 };
 
 export type Settings = {
@@ -48,6 +49,7 @@ export type Settings = {
   contact_whatsapp: string;
   instagram_url: string;
   waiver_template_url: string;
+  updated_at?: string;
 };
 
 export type Faq = { id: number; question: string; answer: string; category: string; sort: number; is_published: boolean };

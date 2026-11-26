@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageMeta } from "@/lib/seo";
 import { Logo } from "@/components/brand/Logo";
 import { Countdown } from "@/components/site/Countdown";
 import { HeroArt } from "@/components/portal/HeroArt";
 import { Ticker } from "@/components/portal/Ticker";
-import { IntroOverlay } from "@/components/landing/IntroOverlay";
+import { IntroGate } from "@/components/landing/IntroGate";
+import { JsonLd, homeJsonLd } from "@/components/seo/JsonLd";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ModuleCard } from "@/components/site/ModuleCard";
 import { FaqAccordion } from "@/components/site/FaqAccordion";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -16,7 +19,8 @@ import { formatRs } from "@/lib/fees";
 import { formatDate, formatDateRange } from "@/lib/dates";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  ...pageMeta("/", DEFAULT_TITLE, DEFAULT_DESCRIPTION),
+  title: { absolute: DEFAULT_TITLE },
 };
 
 export default async function HomePage() {
@@ -27,7 +31,8 @@ export default async function HomePage() {
 
   return (
     <>
-      <IntroOverlay />
+      <JsonLd data={homeJsonLd(settings, faqs)} />
+      <IntroGate />
       {/* ------------------------------------------------------------ HERO */}
       {/* pb-11 reserves the ticker's height; the ticker is pinned to the bottom edge in front of Baymax's legs */}
       <section className="band relative overflow-hidden pb-11">
@@ -44,13 +49,14 @@ export default async function HomePage() {
               {settings.season_label} · {formatDateRange(settings.event_start, settings.event_end)}
             </p>
             <p data-hero-item style={{ "--i": 2 } as React.CSSProperties} className="mt-3 max-w-md text-lg font-semibold text-[var(--band-body)]">
-              A three-day science olympiad in San Fransokyo style. Nine modules, one team, and a mystery every team must
+              A 3-day science olympiad in San Fransokyo style.{" "}
+              <span className="font-extrabold underline decoration-[var(--band-deep)] decoration-[5px] underline-offset-[4px]">9 modules</span>, one team, and a mystery every team must
               solve.
             </p>
             <div data-hero-item style={{ "--i": 3 } as React.CSSProperties} className="mt-7 flex flex-wrap gap-3">
-              <Link href="/register" className="btn btn-onred text-base">
+              <TrackedLink location="hero" href="/register" className="btn btn-onred text-base">
                 Register your team
-              </Link>
+              </TrackedLink>
               <Link href="#modules" className="btn btn-onred-outline text-base">
                 Explore modules
               </Link>
@@ -72,8 +78,8 @@ export default async function HomePage() {
           title="A gathering of curious minds"
           intro={
             <p>
-              <em>Synaxis</em> means “a gathering”. For three days, school teams from across Pakistan meet in Karachi to compete in
-              nine modules, from Baymax’s biology lab to Yokai’s crime scene. You think like Hiro, build like Tadashi and stay calm
+              <em>Synaxis</em> means “a gathering”. For 3 days, school teams from across Pakistan meet in Karachi to compete in
+              9 modules, from Baymax’s biology lab to Yokai’s crime scene. You think like Hiro, build like Tadashi and stay calm
               like Baymax.
             </p>
           }
@@ -125,7 +131,7 @@ export default async function HomePage() {
           <SectionHeading
             onRed
             eyebrow="02 · Modules"
-            title="Nine labs. Pick your mission."
+            title="9 labs. Pick your mission."
             intro={
               <p>
                 Every team competes in {settings.modules_min}–{settings.modules_max} modules.{" "}
@@ -155,7 +161,7 @@ export default async function HomePage() {
       <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
         <SectionHeading
           eyebrow="03 · Registration"
-          title="Suit up in four steps"
+          title="Suit up in 4 steps"
           intro={<p>Only the Head Delegate fills in the form. It saves as you go, so you can finish it later on any device.</p>}
         />
         <ol className="grid gap-4 md:grid-cols-4">
@@ -239,9 +245,9 @@ export default async function HomePage() {
                 </div>
               ))}
             </dl>
-            <Link href="/register" className="btn btn-onred w-full">
+            <TrackedLink location="fees_panel" href="/register" className="btn btn-onred w-full">
               Start registration
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>

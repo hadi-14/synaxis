@@ -10,6 +10,7 @@ import { BaymaxGuide } from "@/components/guide/BaymaxGuide";
 import { say } from "@/components/guide/guide-store";
 import { foundSecret } from "@/components/eggs/secrets";
 import { FistBump } from "@/components/effects/FistBump";
+import { track } from "@/lib/analytics";
 import { computeFee, formatRs } from "@/lib/fees";
 import { formatDate } from "@/lib/dates";
 import type { Module, Settings } from "@/lib/types";
@@ -124,6 +125,11 @@ export function RegisterWizard(props: {
   const { register, control, handleSubmit, trigger, setValue, getValues, formState, reset, setError } = form;
   const { fields, append, remove } = useFieldArray({ control, name: "members" });
   const values = useWatch({ control }) as WizardValues;
+
+  // ---------- analytics: registration started (no personal data) ----------
+  useEffect(() => {
+    if (!teamId) track("register_started");
+  }, [teamId]);
 
   // ---------- restore newer localStorage draft (offline edits) ----------
   useEffect(() => {
@@ -250,6 +256,7 @@ export function RegisterWizard(props: {
       return;
     }
     const n = Math.min(6, step + 1);
+    track("register_step_completed", { step });
     setStep(n);
     setMaxReached((m) => Math.max(m, n));
     scrollTo({ top: 0, behavior: "smooth" });
@@ -283,6 +290,7 @@ export function RegisterWizard(props: {
           localStorage.removeItem(LS_KEY(user.id));
         } catch {}
         setSuccess(res.data!.regCode);
+        if (!teamId) track("registration_submitted", { team_size: data.members.length + 1 });
         say(teamId ? "Changes saved. I am satisfied with my care." : "Ba-la-la-la-la! Your team is registered.", "fist", "success");
         setTimeout(() => router.push(teamId ? "/dashboard?updated=1" : "/dashboard?welcome=1"), 2200);
       }),

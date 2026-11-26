@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Suspense } from "react";
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
@@ -11,7 +12,7 @@ import { ChargingLoader } from "@/components/ui/Battery";
 import { BH6Image } from "@/components/brand/BH6Image";
 import { RegisterWizard, type WizardValues } from "./RegisterWizard";
 
-export const metadata: Metadata = { title: "Register your team", robots: { index: false } };
+export const metadata: Metadata = pageMeta("/register", "Register your team", "Register your school team for Synaxis 2027 in Karachi, 15–17 January. Teams of 4–6, instant fee calculation, receipt upload and a live dashboard. Takes 10 minutes.");
 
 export default function RegisterPage(props: PageProps<"/register">) {
   return (

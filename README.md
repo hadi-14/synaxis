@@ -82,7 +82,31 @@ Supabase (Postgres + RLS, Auth, Storage) · Resend + React Email · zod + react-
    The build prerenders public pages, so the Supabase variables must be available at build time.
 3. Domains → add `heusersynaxis.com` (and `www`) and follow the DNS instructions.
 
-### 5. Big Hero 6 images
+### 5. Google Search Console
+1. Open [Google Search Console](https://search.google.com/search-console) → **Add property** → **URL prefix**
+   `https://heusersynaxis.com` (or a **Domain** property verified by a DNS TXT record).
+2. Pick the **HTML tag** method and copy only the `content="…"` value into `GOOGLE_SITE_VERIFICATION` (in Vercel),
+   then redeploy and click **Verify**.
+3. **Sitemaps** → submit `sitemap.xml`.
+4. **URL inspection** → paste `https://heusersynaxis.com/` → **Request indexing**. Repeat for `/register` and a
+   module page.
+5. Check rich results with Google's [Rich Results Test](https://search.google.com/test/rich-results)
+   (Event, FAQ, Breadcrumbs).
+
+### 6. PostHog (analytics)
+1. Create a PostHog project (US or EU cloud). Set `NEXT_PUBLIC_POSTHOG_KEY` (the project API key) and
+   `NEXT_PUBLIC_POSTHOG_HOST` (`https://us.i.posthog.com` or `https://eu.i.posthog.com`) in Vercel. Without a key,
+   analytics stays off.
+2. Events go through the first-party proxy `/ingest` (rewrites in `next.config.ts`), so ad blockers don't drop them.
+3. Privacy setup:
+   - **Cookieless** (`persistence: "memory"`): nothing is stored on the device, so no consent banner is needed.
+   - No autocapture, no session recording, inputs masked, IP not stored, query strings stripped.
+   - **/admin is never tracked.**
+4. Events: `$pageview`, `register_started`, `register_step_completed` (step), `registration_submitted` (team_size),
+   `receipt_uploaded`, `module_viewed` (slug), `easter_egg_found` (id), `cta_clicked` (location). Never add personal
+   data to event properties.
+
+### 7. Big Hero 6 images
 Drop files into `public/assets/bh6/` using the names in [`docs/IMAGE-SOURCING.md`](docs/IMAGE-SOURCING.md).
 Then run `npm run assets:process` and check **/admin/assets**. Missing images are hidden or replaced
 by a small icon. Add `?debug=assets` to any URL to see the labelled placeholders.
