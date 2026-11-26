@@ -15,6 +15,7 @@ const ITEMS: { href: string; label: string; roles: AppRole[] }[] = [
   { href: "/admin/exports", label: "Exports", roles: ["super_admin", "finance"] },
   { href: "/admin/assets", label: "Assets", roles: ["super_admin", "module_head"] },
   { href: "/admin/audit", label: "Audit log", roles: ["super_admin", "finance"] },
+  { href: "/admin/system", label: "System", roles: ["super_admin"] },
 ];
 
 export function AdminNav({ roles }: { roles: AppRole[] }) {

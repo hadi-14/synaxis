@@ -3,7 +3,6 @@ import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createClient } from "./supabase/server";
-import { createAdminClient } from "./supabase/admin";
 
 export type AppRole = "super_admin" | "finance" | "module_head";
 export type SessionUser = { id: string; email: string; name: string | null };
@@ -24,12 +23,12 @@ export async function requireUser(next = "/register"): Promise<SessionUser> {
   return user;
 }
 
-/** Roles are read with the service role so a missing SELECT grant can never lock admins out. */
+/** The caller's own roles, read through their session (RLS: users can read their own role rows). */
 export const getStaff = cache(async (): Promise<StaffContext | null> => {
   const user = await getUser();
   if (!user) return null;
-  const admin = createAdminClient();
-  const { data } = await admin.from("user_roles").select("role, module_id").eq("user_id", user.id);
+  const supabase = await createClient();
+  const { data } = await supabase.from("user_roles").select("role, module_id").eq("user_id", user.id);
   if (!data?.length) return null;
   return {
     ...user,

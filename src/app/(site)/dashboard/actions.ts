@@ -1,6 +1,7 @@
 "use server";
 import { getUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/email/send";
@@ -18,7 +19,9 @@ const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "
 async function ownTeam() {
   const user = await getUser();
   if (!user) return { user: null, team: null } as const;
-  const { data: team } = await createAdminClient()
+  // Session client: RLS guarantees this can only ever return the caller's own team.
+  const supabase = await createClient();
+  const { data: team } = await supabase
     .from("teams")
     .select("id, reg_code, team_name, status, head_email, total_fee")
     .eq("owner_id", user.id)
@@ -36,7 +39,7 @@ export async function createUploadUrl(kind: "receipt" | "waiver", mime: string, 
   if (size > lim.max) return { ok: false, error: `That file is too large. The limit is ${lim.max / 1024 / 1024} MB.` };
   if (["cancelled"].includes(team.status)) return { ok: false, error: "This registration is cancelled." };
   if (kind === "waiver" && memberId) {
-    const { data: m } = await createAdminClient().from("team_members").select("id").eq("id", memberId).eq("team_id", team.id).maybeSingle();
+    const { data: m } = await (await createClient()).from("team_members").select("id").eq("id", memberId).eq("team_id", team.id).maybeSingle();
     if (!m) return { ok: false, error: "Member not found." };
   }
   const path = `${team.id}/${kind === "waiver" ? (memberId ?? "combined") + "-" : ""}${Date.now()}.${EXT[mime]}`;
@@ -56,8 +59,8 @@ export async function confirmReceipt(path: string): Promise<Result> {
   const { user, team } = await ownTeam();
   if (!user || !team) return { ok: false, error: "Sign in again." };
   if (!path.startsWith(`${team.id}/`) || !(await objectExists("receipts", path))) return { ok: false, error: "We couldn't find that upload. Try again." };
-  const admin = createAdminClient();
-  const { data: t } = await admin.from("teams").select("fee_breakdown, total_fee").eq("id", team.id).single();
+  const admin = createAdminClient(); // writes only, after the ownership check above
+  const { data: t } = await (await createClient()).from("teams").select("fee_breakdown, total_fee").eq("id", team.id).single();
   const { error } = await admin.from("payments").insert({
     team_id: team.id,
     amount: t!.total_fee,

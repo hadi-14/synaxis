@@ -65,6 +65,15 @@ npm run build
 6. Before launch: in **Admin → Settings**, set fees, dates, venue, contacts and bank details,
    and turn on "Registration open".
 
+## Live project tools
+```bash
+npm run check:live          # health check of the project in .env.local (creates + deletes one throwaway user)
+npm run make-admin -- you@example.com [super_admin|finance|module_head] [module-slug]
+npm run db:types            # regenerate src/lib/database.types.ts from the linked project
+npm run db:types:local      # same, from the local stack
+```
+In the app, **Admin → System** shows the same health checks and has a "Send test email" button.
+
 ## Security model (summary)
 - RLS on every table. Browsers can only **read** what they're allowed to; the only browser
   write is the user's own registration draft.
