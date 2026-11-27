@@ -48,7 +48,7 @@ export function BentoTile({ m, panel, featured = false }: { m: TileModule; panel
               {CODE_PROPS.has(art.prop) ? (
                 <CodeProp id={art.prop} color="#FFB8D6" className="h-7 w-7 sm:h-9 sm:w-9" />
               ) : (
-                <BH6Image id={art.prop} decorative sizes="40px" className="h-7 w-7 object-contain sm:h-9 sm:w-9" fallback="hide" />
+                <BH6Image id={art.prop} decorative sizes="40px" className={`h-7 w-7 object-contain sm:h-9 sm:w-9 ${art.prop === "microbot" ? "rotate-[35deg]" : ""}`} fallback="hide" />
               )}
             </span>
           </span>
