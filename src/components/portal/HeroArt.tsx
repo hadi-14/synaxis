@@ -26,6 +26,9 @@ export function HeroArt() {
       {/* soft light behind the figure (white on red, no blurred shadows) */}
       <div aria-hidden className="absolute bottom-0 left-1/2 h-[85%] w-[110%] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.35),rgba(255,255,255,0))] battle:bg-[radial-gradient(closest-side,rgba(255,80,96,.4),rgba(255,80,96,0))]" />
       <div ref={fig} className="absolute inset-x-0 bottom-0 top-0 will-change-transform">
+        {/* data-hero-fly: after the intro, the figure flies in on thruster flames and lands (globals.css) */}
+        <div data-hero-fly className="relative h-full">
+        <span aria-hidden data-hero-flame className="absolute bottom-[-6%] left-1/2 hidden h-[22%] w-[14%] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,#FFF3C4,#FFB347_45%,rgba(242,75,89,.6)_70%,transparent)] blur-[2px]" />
         <div className="h-full motion-safe:animate-[bob_3.4s_ease-in-out_infinite]">
           <div className="medical-only h-full">
             <BH6Image id="baymax-healthcare" priority sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom" />
@@ -34,6 +37,7 @@ export function HeroArt() {
             {/* also eager: the theme is only known in the browser, and either Baymax can be the LCP image */}
             <BH6Image id="baymax-armor" priority sizes="(max-width: 768px) 80vw, 460px" className="mx-auto h-full w-auto object-contain object-bottom drop-shadow-[0_0_32px_rgba(255,80,96,.5)]" />
           </div>
+        </div>
         </div>
       </div>
       <style>{`@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}`}</style>

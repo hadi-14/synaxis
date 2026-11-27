@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { toKarachiLocalInput } from "@/lib/dates";
 import { ActionForm, F, Toggle } from "@/components/admin/ActionForm";
 import { savePaymentDetails, saveSettings } from "../content/actions";
+import { EarlyBirdPreviewToggle } from "@/components/earlybird/EarlyBirdPreviewToggle";
 
 export const instant = false;
 export const metadata = { title: "Settings" };
@@ -92,6 +93,11 @@ export default async function SettingsPage() {
           </div>
         </section>
       </ActionForm>
+      <section className="card mt-6 p-5">
+        <h2 className="font-display text-lg font-bold">Early-bird preview</h2>
+        <p className="mb-3 text-xs text-[var(--ink-muted)]">The public site switches to regular prices automatically when the early-bird deadline (Registration section above) passes.</p>
+        <EarlyBirdPreviewToggle />
+      </section>
     </div>
   );
 }

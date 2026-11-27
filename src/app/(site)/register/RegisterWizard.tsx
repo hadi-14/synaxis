@@ -8,6 +8,7 @@ import { Battery } from "@/components/ui/Battery";
 import { toast } from "@/components/ui/toast-store";
 import { BaymaxGuide } from "@/components/guide/BaymaxGuide";
 import { BaymaxVideo } from "@/components/brand/BaymaxVideo";
+import { FeeBreakdownView } from "@/components/earlybird/FeeBreakdownView";
 import { say } from "@/components/guide/guide-store";
 import { foundSecret } from "@/components/eggs/secrets";
 import { track } from "@/lib/analytics";
@@ -623,14 +624,7 @@ export function RegisterWizard(props: {
               <div className="border-b border-[var(--line)] px-5 py-4">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--ink-muted)]">Fee breakdown · instant</p>
               </div>
-              <dl className="divide-y divide-[var(--line)] text-sm">
-                <div className="flex justify-between px-5 py-3"><dt>Delegation fee</dt><dd className="font-mono">{formatRs(fee.delegationFee)}</dd></div>
-                <div className="flex justify-between gap-4 px-5 py-3">
-                  <dt>{fee.members} delegates × {formatRs(fee.perDelegate)} <span className="text-[var(--ink-muted)]">({fee.tier === "early" ? `early bird until ${formatDate(settings.early_bird_deadline)}` : "regular"})</span></dt>
-                  <dd className="whitespace-nowrap font-mono">{formatRs(fee.delegatesTotal)}</dd>
-                </div>
-                <div className="flex justify-between bg-[var(--surface-2)] px-5 py-4 text-base"><dt className="font-bold">Total</dt><dd className="font-mono text-xl font-extrabold text-[var(--primary-text)]">{formatRs(fee.total)}</dd></div>
-              </dl>
+              <FeeBreakdownView fee={fee} deadline={settings.early_bird_deadline} />
               <p className="px-5 py-3 text-xs text-[var(--ink-muted)]">
                 Pay by {formatDate(settings.payment_deadline, true)}. Bank details appear after you submit.
               </p>

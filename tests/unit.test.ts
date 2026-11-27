@@ -133,3 +133,33 @@ test("optional needs / heard_from_other normalise to null", () => {
   assert.equal(s5.safeParse({ ...base, needs: "Vegetarian" }).data?.needs, "Vegetarian");
   assert.ok(isBlank("  —  ") && !isBlank("0"));
 });
+
+// ---- early-bird discount maths ----
+import { earlyBirdOffer, earlyBirdMax, computeFee as cf, feeLabel, isEarlyBird } from "../src/lib/fees";
+const eb = { delegation_fee_early: 0, delegation_fee_regular: 4500, early_fee: 2500, regular_fee: 3500, early_bird_deadline: "2026-12-15T23:59:00+05:00" };
+test("early bird: team of 4 → 18,500 vs 10,000, save 8,500 (45%)", () => {
+  const o = earlyBirdOffer(eb, 4);
+  assert.deepEqual([o.regular, o.early, o.saving, o.percent], [18500, 10000, 8500, 45]);
+});
+test("early bird: max saving is the 6-member Rs, max % the 4-member", () => {
+  const m = earlyBirdMax(eb, 4, 6);
+  assert.equal(m.saving, 10500);
+  assert.equal(m.percent, 45);
+  assert.equal(m.delegationSaving, 4500);
+  assert.equal(m.perDelegateSaving, 1000);
+});
+test("early bird: free delegation fee label and computeFee discount", () => {
+  assert.equal(feeLabel(0), "FREE");
+  const f = cf(eb, 5, new Date("2026-12-01T10:00:00+05:00"));
+  assert.equal(f.total, 12500);
+  assert.equal(f.regularTotal, 22000);
+  assert.equal(f.discount, 9500);
+});
+test("early bird: exactly at the deadline still early; one ms later regular with no discount", () => {
+  const at = new Date(eb.early_bird_deadline);
+  assert.ok(isEarlyBird(eb, at));
+  const late = cf(eb, 5, new Date(at.getTime() + 1));
+  assert.equal(late.tier, "regular");
+  assert.equal(late.discount, 0);
+  assert.equal(late.total, late.regularTotal);
+});

@@ -1,5 +1,7 @@
 import type { Faq, Settings } from "@/lib/types";
 import { INSTAGRAM, SITE_URL } from "@/lib/seo";
+import { earlyBirdOffer } from "@/lib/fees";
+import { FEES_TOKEN, feesSentence } from "@/lib/fee-copy";
 
 /** Safe JSON-LD script: escapes "<" so database text can never close the script tag. */
 export function JsonLd({ data }: { data: object }) {
@@ -16,8 +18,30 @@ const ORG = {
 };
 
 export function homeJsonLd(s: Settings, faqs: Faq[]) {
-  const low = s.delegation_fee_early + s.team_min * s.early_fee;
-  const high = s.delegation_fee_regular + s.team_max * s.regular_fee;
+  // Offers are quoted for the smallest team; the early-bird offer is only valid until the deadline.
+  const ex = earlyBirdOffer(s, s.team_min);
+  const availability = s.registration_open ? "https://schema.org/InStock" : "https://schema.org/SoldOut";
+  const regularOffer = {
+    "@type": "Offer",
+    name: `Team registration (team of ${s.team_min}), regular price`,
+    price: ex.regular,
+    priceCurrency: "PKR",
+    availability,
+    validFrom: s.registration_opens_at,
+    priceValidUntil: s.registration_closes_at.slice(0, 10),
+    url: `${SITE_URL}/register`,
+  };
+  const earlyOffer = {
+    "@type": "Offer",
+    name: `Team registration (team of ${s.team_min}), early bird`,
+    price: ex.early,
+    priceCurrency: "PKR",
+    availability,
+    validFrom: s.registration_opens_at,
+    validThrough: s.early_bird_deadline,
+    priceValidUntil: s.early_bird_deadline.slice(0, 10),
+    url: `${SITE_URL}/register`,
+  };
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -39,21 +63,12 @@ export function homeJsonLd(s: Settings, faqs: Faq[]) {
         },
         image: [`${SITE_URL}/opengraph-image`],
         organizer: { "@id": `${SITE_URL}/#organization` },
-        offers: {
-          "@type": "AggregateOffer",
-          name: "Team registration",
-          priceCurrency: "PKR",
-          lowPrice: Math.min(low, high),
-          highPrice: Math.max(low, high),
-          availability: s.registration_open ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-          validFrom: s.registration_opens_at,
-          url: `${SITE_URL}/register`,
-        },
+        offers: ex.saving > 0 ? [regularOffer, earlyOffer] : [regularOffer],
       },
       {
         "@type": "FAQPage",
         "@id": `${SITE_URL}/#faq`,
-        mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+        mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer.replace(FEES_TOKEN, feesSentence(s, "on")) } })),
       },
     ],
   };

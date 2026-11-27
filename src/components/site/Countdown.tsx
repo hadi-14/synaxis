@@ -22,9 +22,10 @@ export function Countdown({ to, label = "Until Synaxis begins", onRed = false }:
     <div aria-label={label}>
       <p className={`mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.18em] ${onRed ? "text-[var(--band-body)]" : "text-[var(--ink-muted)]"}`}>{label}</p>
       <div className="flex gap-2 sm:gap-3" role="timer" aria-live="off">
-        {parts.map(([unit, v]) => (
+        {parts.map(([unit, v], i) => (
           <div
             key={unit}
+            style={{ "--d": i } as React.CSSProperties}
             className="panel-lines flex min-w-[64px] flex-col items-center rounded-[var(--radius-sm)] bg-[var(--band-deep)] px-2 py-2 text-white shadow-[0_6px_0_#5e0a12] sm:min-w-[76px]"
           >
             <span className="segment-digit text-3xl font-bold leading-none tabular-nums sm:text-4xl" suppressHydrationWarning>

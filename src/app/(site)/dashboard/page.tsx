@@ -20,6 +20,7 @@ import { FileDrop } from "@/components/dashboard/FileDrop";
 import { CopyButton } from "@/components/dashboard/CopyButton";
 import { WelcomeToast } from "@/components/dashboard/WelcomeToast";
 import { BaymaxGuide } from "@/components/guide/BaymaxGuide";
+import { FeeBreakdownView } from "@/components/earlybird/FeeBreakdownView";
 
 export const metadata: Metadata = { title: "My team", robots: { index: false } };
 
@@ -165,10 +166,8 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
               {latest.notes && <p className="mt-1">Reason: {latest.notes}</p>}
             </div>
           ) : null}
-          <dl className="mt-4 divide-y divide-[var(--line)] text-sm">
-            <div className="flex justify-between py-2"><dt>Delegation fee</dt><dd className="font-mono">{formatRs(fee.delegationFee)}</dd></div>
-            <div className="flex justify-between gap-3 py-2"><dt>{fee.members} delegates × {formatRs(fee.perDelegate)} ({fee.tier === "early" ? "early bird" : "regular"})</dt><dd className="whitespace-nowrap font-mono">{formatRs(fee.delegatesTotal)}</dd></div>
-            <div className="flex justify-between py-2"><dt className="font-bold">Total</dt><dd className="font-mono font-bold">{formatRs(team.total_fee)}</dd></div>
+          <FeeBreakdownView fee={fee} deadline={settings.early_bird_deadline} className="-mx-5 mt-4 sm:-mx-6" />
+          <dl className="mt-2 divide-y divide-[var(--line)] text-sm">
             {verifiedAmount > 0 && <div className="flex justify-between py-2"><dt>Verified so far</dt><dd className="font-mono text-[var(--success)]">− {formatRs(verifiedAmount)}</dd></div>}
             <div className="flex justify-between py-3 text-base"><dt className="font-bold">Balance due</dt><dd className="font-mono text-xl font-extrabold text-[var(--primary-text)]">{formatRs(balance)}</dd></div>
           </dl>

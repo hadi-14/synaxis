@@ -15,7 +15,8 @@
     "assets:process": "node scripts/process-assets.mjs",
     "make-admin": "node --env-file=.env.local scripts/make-admin.mjs",
     "check:live": "node --env-file=.env.local scripts/check-live.mjs",
-    "db:types:local": "supabase gen types typescript --local > src/lib/database.types.ts"
+    "db:types:local": "supabase gen types typescript --local > src/lib/database.types.ts",
+    "decor:build": "node --import tsx scripts/build-decor.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",

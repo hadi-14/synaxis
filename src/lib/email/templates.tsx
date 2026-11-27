@@ -1,23 +1,29 @@
 import { Button, Link, Section, Text } from "@react-email/components";
 import { EmailLayout, button, mono, p } from "./Layout";
-import { formatRs, type FeeBreakdown } from "../fees";
+import { feeLines, formatRs, type FeeBreakdown } from "../fees";
 import type { PaymentDetails } from "../types";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 function FeeTable({ fee }: { fee: FeeBreakdown }) {
-  const row = (k: string, v: string, bold = false) => (
-    <tr>
-      <td style={{ padding: "6px 0", fontSize: 14, color: "#5F5F63" }}>{k}</td>
-      <td style={{ ...mono, padding: "6px 0", textAlign: "right", fontWeight: bold ? 800 : 500 }}>{v}</td>
+  const f = feeLines(fee);
+  const row = (k: string, v: string, bold = false, color?: string) => (
+    <tr key={k}>
+      <td style={{ padding: "6px 0", fontSize: 14, color: color ?? "#5F5F63", fontWeight: color ? 700 : 400 }}>{k}</td>
+      <td style={{ ...mono, padding: "6px 0", textAlign: "right", fontWeight: bold ? 800 : color ? 700 : 500, color }}>{v}</td>
     </tr>
   );
   return (
     <table width="100%" style={{ borderCollapse: "collapse", margin: "8px 0 16px" }}>
       <tbody>
-        {row("Delegation fee", formatRs(fee.delegationFee))}
-        {row(`${fee.members} delegates × ${formatRs(fee.perDelegate)} (${fee.tier === "early" ? "early bird" : "regular"})`, formatRs(fee.delegatesTotal))}
-        {row("Total", formatRs(fee.total), true)}
+        {f.lines.map((l) => row(l.label, formatRs(l.amount)))}
+        {f.discount > 0 && row("Early-bird discount", `−${formatRs(f.discount)}`, false, "#C8102E")}
+        {row("Total", formatRs(f.total), true)}
+        {f.discount > 0 && (
+          <tr>
+            <td colSpan={2} style={{ padding: "8px 0 0", fontSize: 14, fontWeight: 700, color: "#C8102E" }}>You saved {formatRs(f.discount)} with early bird.</td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

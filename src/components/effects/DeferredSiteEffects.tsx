@@ -4,8 +4,9 @@ import { useIdle } from "./DeferredEffects";
 
 const BaymaxFlight = dynamic(() => import("./BaymaxFlight").then((m) => m.BaymaxFlight), { ssr: false });
 const CursorTrail = dynamic(() => import("./CursorTrail").then((m) => m.CursorTrail), { ssr: false });
+const DecorObservers = dynamic(() => import("./DecorObservers").then((m) => m.DecorObservers), { ssr: false });
 
-/** Site-layout effects (scroll Baymax, cursor trail), loaded when idle. */
+/** Site-layout effects (scroll Baymax, cursor trail, decor observers), loaded when idle. */
 export function DeferredSiteEffects() {
   const idle = useIdle();
   if (!idle) return null;
@@ -13,6 +14,7 @@ export function DeferredSiteEffects() {
     <>
       <BaymaxFlight />
       <CursorTrail />
+      <DecorObservers />
     </>
   );
 }

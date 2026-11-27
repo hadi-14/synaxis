@@ -8,18 +8,17 @@
  * sampled into particle targets, so the swarm always forms on top of the real text at any width.
  *
  * Sequence: fly in → assemble → swarm fades to 0 while the real text fades in → canvas removed.
- * Short links only (nearest neighbours) and only while assembling. Reduced motion: plain text.
+ * Bots are microbot.png rods one sample-step long, so a docked row reads as a linked chain. Reduced motion: plain text.
  */
-import { loadMicrobotSprite, microbotSprite } from "./microbot-sprite";
+import { drawMicrobot, loadMicrobotSprite } from "./microbot-sprite";
 
 type Bot = { sx: number; sy: number; tx: number; ty: number; d: number };
-type Entry = { el: HTMLElement; canvas: HTMLCanvasElement; bots: Bot[]; links: [number, number][]; t0: number; w: number; h: number; color: string; finished: boolean };
+type Entry = { el: HTMLElement; canvas: HTMLCanvasElement; bots: Bot[]; t0: number; w: number; h: number; color: string; finished: boolean; rod: number };
 
 const entries = new Set<Entry>();
 let raf = 0;
-const DURATION = 1000; // fly in + assemble
-const FADE = 380; // swarm out / text in
-const LINK_MAX = 9; // px: only close neighbours are linked
+const DURATION = 560; // fly in + assemble (≈0.8 s with the fade)
+const FADE = 240; // swarm out / text in
 
 function sampleTargets(el: HTMLElement, w: number, h: number) {
   const dpr = Math.min(2, devicePixelRatio || 1);
@@ -50,7 +49,7 @@ function sampleTargets(el: HTMLElement, w: number, h: number) {
   }
   const data = ctx.getImageData(0, 0, off.width, off.height).data;
   const fs = parseFloat(cs.fontSize);
-  const step = Math.max(3, Math.round(fs / 10)) * dpr;
+  const step = Math.max(4, Math.round(fs / 8)) * dpr; // = rod length, so neighbours in a row touch end to end
   const pts: [number, number][] = [];
   for (let y = 0; y < off.height; y += step)
     for (let x = 0; x < off.width; x += step) if (data[(y * off.width + x) * 4 + 3] > 120) pts.push([x / dpr, y / dpr]);
@@ -75,35 +74,16 @@ function tick(now: number) {
       continue;
     }
     ctx.globalAlpha = swarmAlpha;
-    const pos: [number, number][] = [];
     for (const b of e.bots) {
       const p = Math.min(1, Math.max(0, (t - b.d) / (1 - 0.3)));
       const k = 1 - Math.pow(1 - p, 3);
-      pos.push([b.sx + (b.tx - b.sx) * k, b.sy + (b.ty - b.sy) * k]);
+      const x = b.sx + (b.tx - b.sx) * k, y = b.sy + (b.ty - b.sy) * k;
+      // rotate along the flight path, then snap level as it docks
+      const heading = Math.atan2(b.ty - b.sy, b.tx - b.sx);
+      const angle = heading * (1 - Math.min(1, p * 1.25));
+      drawMicrobot(ctx, x, y, angle, e.rod, e.color, dpr);
     }
-    // short links only while assembling
-    if (t < 0.85) {
-      ctx.strokeStyle = e.color;
-      ctx.lineWidth = 0.6;
-      ctx.globalAlpha = swarmAlpha * 0.3 * (1 - t / 0.85);
-      ctx.beginPath();
-      for (const [a, b] of e.links) {
-        const [ax, ay] = pos[a], [bx, by] = pos[b];
-        if ((ax - bx) ** 2 + (ay - by) ** 2 > LINK_MAX * LINK_MAX * 4) continue;
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(bx, by);
-      }
-      ctx.stroke();
-      ctx.globalAlpha = swarmAlpha;
-    }
-    const spr = microbotSprite(e.color, 4, 3);
-    for (const [x, y] of pos) {
-      if (spr) ctx.drawImage(spr, x - 2, y - 1.5, 4, 3);
-      else {
-        ctx.fillStyle = e.color;
-        ctx.fillRect(x - 1.5, y - 1, 3, 2);
-      }
-    }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
   raf = any ? requestAnimationFrame(tick) : 0;
 }
@@ -132,7 +112,7 @@ export function registerHeading(el: HTMLElement) {
   canvas.className = "pointer-events-none absolute left-0 top-0";
   el.appendChild(canvas);
   el.classList.add("mb-pending");
-  const entry: Entry = { el, canvas, bots: [], links: [], t0: 0, w: 0, h: 0, color: "#000", finished: false };
+  const entry: Entry = { el, canvas, bots: [], t0: 0, w: 0, h: 0, color: "#000", finished: false, rod: 6 };
   entries.add(entry);
 
   const build = () => {
@@ -146,20 +126,15 @@ export function registerHeading(el: HTMLElement) {
     canvas.style.height = `${entry.h}px`;
     entry.color = getComputedStyle(el).color;
     const pts = sampleTargets(el, entry.w, entry.h);
-    const stride = Math.max(1, Math.ceil(pts.length / 900));
+    entry.rod = Math.max(4, Math.round(parseFloat(getComputedStyle(el).fontSize) / 8));
+    const stride = Math.max(1, Math.ceil(pts.length / 700));
     const kept = pts.filter((_, i) => i % stride === 0);
     entry.bots = kept.map(([tx, ty]) => ({
       tx, ty,
       sx: tx + (Math.random() - 0.5) * Math.min(entry.w, 600) * 0.6,
-      sy: ty + (Math.random() - 0.5) * 140,
+      sy: ty + 40 + Math.random() * 90, // pour up from below
       d: Math.random() * 0.3,
     }));
-    // link each point to its nearest neighbour to the right on the same scan row (short by construction)
-    entry.links = [];
-    for (let i = 0; i + 1 < kept.length; i++) {
-      const [x1, y1] = kept[i], [x2, y2] = kept[i + 1];
-      if (y1 === y2 && x2 - x1 <= LINK_MAX) entry.links.push([i, i + 1]);
-    }
   };
 
   let started = false;
@@ -180,10 +155,16 @@ export function registerHeading(el: HTMLElement) {
     entry.t0 = performance.now();
     kick();
     // Failsafe: the real text always ends up visible (throttled rAF, background tabs).
-    setTimeout(() => finish(entry), DURATION + FADE + 900);
+    setTimeout(() => finish(entry), DURATION + FADE + 500);
   };
 
-  const io = new IntersectionObserver(([e]) => e.isIntersecting && start(), { rootMargin: "0px 0px -15% 0px" });
+  const io = new IntersectionObserver(
+    ([e]) => {
+      if (e.isIntersecting) start();
+      else if (started && !entry.finished) finish(entry); // scrolled past mid-animation: show the text, never a half state
+    },
+    { rootMargin: "0px 0px -10% 0px" },
+  );
   io.observe(el);
   const onResize = () => {
     if (started && !entry.finished) finish(entry); // never animate against stale geometry
