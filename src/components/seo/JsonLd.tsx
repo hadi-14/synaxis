@@ -8,6 +8,16 @@ export function JsonLd({ data }: { data: object }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} />;
 }
 
+/** Parent brand. The logo is the black wordmark (Google shows logos on light backgrounds). */
+const HEUSER_COLLEGE = {
+  "@type": "CollegeOrUniversity",
+  "@id": `${SITE_URL}/#heuser-college`,
+  name: "Heuser College",
+  logo: `${SITE_URL}/brand/heuser/heuser-college-black.png`,
+  address: { "@type": "PostalAddress", addressLocality: "Karachi", addressCountry: "PK" },
+};
+
+/** Organizer: Heuser Science Society, part of Heuser College. */
 const ORG = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
@@ -15,6 +25,17 @@ const ORG = {
   url: SITE_URL,
   logo: `${SITE_URL}/icons/icon-512.png`,
   sameAs: [INSTAGRAM],
+  parentOrganization: { "@id": `${SITE_URL}/#heuser-college` },
+};
+
+/** Site name in Google results ("Synaxis" instead of the domain). url must be the home page with its trailing slash. */
+const WEBSITE = {
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  name: "Synaxis",
+  alternateName: ["Heuser Synaxis", "Synaxis 2027"],
+  url: `${SITE_URL}/`,
+  publisher: { "@id": `${SITE_URL}/#organization` },
 };
 
 export function homeJsonLd(s: Settings, faqs: Faq[]) {
@@ -45,7 +66,9 @@ export function homeJsonLd(s: Settings, faqs: Faq[]) {
   return {
     "@context": "https://schema.org",
     "@graph": [
+      WEBSITE,
       ORG,
+      HEUSER_COLLEGE,
       {
         "@type": "Event",
         "@id": `${SITE_URL}/#event`,

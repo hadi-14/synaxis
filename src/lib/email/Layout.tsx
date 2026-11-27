@@ -1,4 +1,4 @@
-import { Body, Container, Head, Hr, Html, Link, Preview, Section, Text } from "@react-email/components";
+import { Body, Container, Head, Hr, Html, Img, Link, Preview, Section, Text } from "@react-email/components";
 import type { ReactNode } from "react";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -11,6 +11,8 @@ export function EmailLayout({ preview, heading, children }: { preview: string; h
       <Preview>{preview}</Preview>
       <Body style={{ background: "#F7F5F0", fontFamily: "'Plus Jakarta Sans', Helvetica, Arial, sans-serif", margin: 0, padding: "24px 0" }}>
         <Container style={{ maxWidth: 560, margin: "0 auto", padding: "0 12px" }}>
+          {/* HEUSER / SYNAXIS lockup. PNG (traced Heuser lettering), black on this light background: email clients drop SVG. */}
+          <Img src={`${SITE}/brand/heuser/heuser-word-black.png`} alt="Heuser" width="76" height="12" style={{ display: "block", margin: "0 0 6px" }} />
           <Text style={{ fontSize: 22, fontWeight: 800, letterSpacing: 2, color: "#737375", margin: "0 0 12px" }}>
             SYNA<span style={{ color: "#DC2A35" }}>X</span>IS
           </Text>

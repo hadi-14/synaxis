@@ -1,7 +1,8 @@
 /** Single source for SEO constants. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://heusersynaxis.com").replace(/\/$/, "");
 export const SITE_NAME = "Synaxis";
-export const DEFAULT_TITLE = "Synaxis 2027 — Heuser Science Olympiad, Karachi | 15–17 January";
+/** Fits Google's ~55–60 character title width; the dates live in the description. */
+export const DEFAULT_TITLE = "Synaxis 2027 · Heuser Science Olympiad, Karachi";
 export const DEFAULT_DESCRIPTION =
   "Synaxis, Heuser Science Society's first science olympiad: 3 days, 9 modules, teams of 4–6. 15–17 January 2027, Karachi. Register your team now.";
 export const INSTAGRAM = "https://www.instagram.com/heusersynaxis/";

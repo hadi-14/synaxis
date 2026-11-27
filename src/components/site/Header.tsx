@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand/Logo";
+import { HeuserMark } from "@/components/brand/Heuser";
 import { ThemeToggle } from "./ThemeToggle";
 import { track } from "@/lib/analytics";
 
@@ -45,7 +46,15 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
-        <Link href="/" className="mr-auto flex items-center" aria-label="Synaxis home" data-header-logo>
+        {/* Compact lockup: Heuser mark | SYNAXIS. Own focus style: no box on click/tap, a neutral ring for keyboard only. */}
+        <Link
+          href="/"
+          className="mr-auto flex items-center gap-2.5 rounded-md focus:outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ink)] sm:gap-3"
+          aria-label="Synaxis by Heuser College, home"
+          data-header-logo
+        >
+          <HeuserMark className="h-7 w-auto text-[var(--ink)] sm:h-8" />
+          <span aria-hidden className="h-6 w-px bg-[var(--line)] sm:h-7" />
           <Logo className="h-5 w-auto sm:h-6" />
         </Link>
         <nav aria-label="Main" className="hidden items-center gap-5 text-sm font-semibold lg:flex">

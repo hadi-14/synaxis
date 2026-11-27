@@ -92,6 +92,10 @@ Supabase (Postgres + RLS, Auth, Storage) · Resend + React Email · zod + react-
    module page.
 5. Check rich results with Google's [Rich Results Test](https://search.google.com/test/rich-results)
    (Event, FAQ, Breadcrumbs).
+6. **After every deploy that changes the home page's icon, title or site name**: Search Console →
+   **URL Inspection** → `https://heusersynaxis.com/` → **Request indexing**, so Google recrawls it. The search
+   result icon (`/favicon.ico`, `/icon-48.png`, …) and the site name ("Synaxis", from the `WebSite` JSON-LD on `/`)
+   only update after a recrawl, which can take days to a few weeks.
 
 ### 6. PostHog (analytics)
 1. Create a PostHog project (US or EU cloud). Set `NEXT_PUBLIC_POSTHOG_KEY` (the project API key) and
@@ -149,6 +153,9 @@ until the check is removed.
 
 ## Regenerating assets
 - Logo SVG: `node scripts/trace-logo.mjs`, then `node scripts/build-logo-component.mjs`
+- Heuser College marks (SVGs, `src/components/brand/heuser-paths.ts`, email PNGs) from the PNG originals in
+  `public/brand/heuser/`: `node scripts/trace-heuser.mjs`
+- Favicons (`favicon.ico`, `icon-48/96/192.png`, `apple-touch-icon.png`) from `public/icon.svg`: `node scripts/make-icons.mjs`
 - DB types: `npm run db:types`
 
 ## Credits

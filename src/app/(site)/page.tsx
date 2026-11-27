@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageMeta } from "@/lib/seo";
 import { Logo } from "@/components/brand/Logo";
+import { HeuserMark } from "@/components/brand/Heuser";
 import { Countdown } from "@/components/site/Countdown";
 import { HeroArt } from "@/components/portal/HeroArt";
+import { HeroWatermark } from "@/components/portal/HeroWatermark";
 import { Ticker } from "@/components/portal/Ticker";
 import { IntroGate } from "@/components/landing/IntroGate";
 import { JsonLd, homeJsonLd } from "@/components/seo/JsonLd";
@@ -54,10 +56,13 @@ export default async function HomePage() {
       <IntroGate />
       {/* ------------------------------------------------------------ HERO */}
       {/* pb-11 reserves the ticker's height; the ticker is pinned to the bottom edge in front of Baymax's legs */}
-      <section className="band relative overflow-hidden pb-11">
+      <section className="band relative isolate overflow-hidden pb-11">
+        {/* Heuser College mark: a large white brand shape bleeding off the right edge, behind Baymax */}
+        <HeroWatermark />
         <div className="mx-auto grid max-w-6xl items-end gap-6 px-4 pt-10 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-16">
           <div className="pb-12 md:pb-20">
-            <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--band-body)]">
+            <p className="flex items-center gap-2.5 font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--band-body)]">
+              <HeuserMark className="h-5 w-auto shrink-0" />
               Heuser Science Society presents
             </p>
             <h1 className="mt-4" data-hero-item style={{ "--i": 0 } as React.CSSProperties}>
@@ -128,7 +133,7 @@ export default async function HomePage() {
           <ScanReadout
             rows={[
               ["Date", formatDateRange(settings.event_start, settings.event_end)],
-              ["Venue", settings.venue_name],
+              ["Venue", settings.venue_name, <HeuserMark key="mark" className="h-[1.15em] w-auto shrink-0" />],
               ["Team size", `${settings.team_min}–${settings.team_max} delegates`],
               ["Modules", `${settings.modules_min}–${settings.modules_max} per team`],
             ]}

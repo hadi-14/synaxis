@@ -18,6 +18,18 @@ export const metadata: Metadata = {
   title: { default: DEFAULT_TITLE, template: "%s · Synaxis 2027" },
   description: DEFAULT_DESCRIPTION,
   applicationName: SITE_NAME,
+  // Stable, un-hashed URLs in /public (built by scripts/make-icons.mjs). Google needs a square icon
+  // in a multiple of 48 px that robots.txt allows; the .ico covers old browsers and /favicon.ico probes.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: "/icon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   alternates: { canonical: "/" },
   openGraph: { type: "website", siteName: SITE_NAME, locale: "en_PK", url: "/", title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION },
   twitter: { card: "summary_large_image", title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION },

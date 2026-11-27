@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
+import { HeuserWordmark } from "@/components/brand/Heuser";
 import type { Settings } from "@/lib/types";
 import { LuckyCat } from "./LuckyCat";
 import { SecretsTracker } from "@/components/eggs/SecretsTracker";
@@ -11,6 +12,12 @@ export function Footer({ settings }: { settings: Settings }) {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <Logo mono className="h-6 w-auto" />
+          {/* The footer is red in both themes, so the white wordmark is right in both. */}
+          <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm font-semibold text-white">
+            <span>An initiative of Heuser Science Society</span>
+            <span aria-hidden>·</span>
+            <HeuserWordmark title="Heuser College" className="h-[13px] w-auto" />
+          </p>
           <p className="mt-4 max-w-sm text-sm text-white">
             Synaxis {settings.season_label} is organised by the Heuser Science Society. Big Hero 6 is a Disney property. This is a
             fan-themed student event and is not affiliated with or endorsed by Disney.
