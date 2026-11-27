@@ -29,7 +29,8 @@ export function loadMicrobotSprite(onReady?: () => void) {
 export const microbotReady = () => ready;
 
 function sprite(color: string, len: number) {
-  const bucket = Math.max(4, Math.round(len));
+  // 1 px buckets for small rods; coarser (and capped) for the big ones the intro's tunnel draws, so the cache stays small
+  const bucket = len <= 24 ? Math.max(4, Math.round(len)) : Math.min(160, Math.round(len / 8) * 8);
   const key = `${color}|${bucket}`;
   let c = cache.get(key);
   if (!c && img) {

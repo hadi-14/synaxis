@@ -19,6 +19,7 @@ export const BH6_ASSETS: BH6Asset[] = [
   C("baymax-wave", "Baymax waving", "Baymax guide: wave", "#F24B59", "baymax"),
   C("baymax-armor", "Baymax in red and purple armour", "Battle Mode hero", "#DC2A35", "baymax"),
   C("baymax-armor-flying", "Armoured Baymax flying", "Scroll thrusters (flame added in code)", "#DC2A35", "baymax", 1600, 900),
+  C("hiro-baymax-flying", "Armoured Baymax flying toward the viewer with Hiro on his back", "Intro: flies out of the portal past the camera", "#DC2A35", "baymax", 736, 585),
   C("hiro", "Hiro Hamada", "Microbot Matrix card", "#7C5CFF", "microbots"),
   C("tadashi", "Tadashi Hamada", "Hamada's Hangar card", "#3B82F6", "blueprint"),
   C("honey-lemon", "Honey Lemon", "Lemon's Labyrinth card", "#FF5FA2", "chem"),

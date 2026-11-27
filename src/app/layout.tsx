@@ -47,10 +47,16 @@ export const viewport: Viewport = {
 };
 
 /**
- * Runs before first paint. Intro overlay on "/" only when: not reduced motion, not a crawler /
- * Lighthouse / headless browser, and not a reload or same-site navigation. Full first, short after.
+ * Runs before first paint and decides the intro on "/" (html[data-intro], which also shows the opaque cover):
+ * - ?intro=full|short|off: testing override; works for any visitor (also automation) and never writes the flag.
+ * - crawlers / Lighthouse / headless / automation: none.
+ * - "seen" flag not set (first visit, private window, cleared storage): full, also on reload.
+ * - flag set: none on reload / back-forward / arriving from another page of this site; otherwise (from
+ *   outside) short, unless reduced motion.
+ * Client-side navigation to "/" never runs this, so it never plays an intro.
+ * If the intro code has not started within 8 s (very slow network), the cover is dropped.
  */
-const introScript = `(function(){try{if(location.pathname!=="/")return;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;if(/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|bing|google/i.test(navigator.userAgent)||navigator.webdriver)return;var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload")return;if(document.referrer&&new URL(document.referrer).origin===location.origin)return;document.documentElement.dataset.intro=localStorage.getItem("synaxis-intro-seen")==="1"?"short":"full"}catch(e){}})()`;
+const introScript = `(function(){try{if(location.pathname!=="/")return;var h=document.documentElement,q=new URLSearchParams(location.search).get("intro");function set(m){h.dataset.intro=m;setTimeout(function(){if(!h.dataset.introLive){delete h.dataset.intro;delete h.dataset.introOverride}},8000)}if(q==="off")return;if(q==="full"||q==="short"){h.dataset.introOverride="1";return set(q)}if(/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|bing|google/i.test(navigator.userAgent)||navigator.webdriver)return;var n=performance.getEntriesByType("navigation")[0],t=n&&n.type,ref=document.referrer,same=false;try{same=!!ref&&new URL(ref).origin===location.origin}catch(e){}var seen=localStorage.getItem("synaxis-intro-seen")==="1";if(!seen){if(same&&t!=="reload")return;return set("full")}if(t==="reload"||t==="back_forward"||same)return;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;set("short")}catch(e){}})()`;
 
 /** Runs before first paint: stored choice, else system preference. */
 const themeScript = `(function(){try{var t=localStorage.getItem("synaxis-theme");if(t!=="medical"&&t!=="battle"){t=matchMedia("(prefers-color-scheme: dark)").matches?"battle":"medical"}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme="medical"}})()`;

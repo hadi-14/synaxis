@@ -145,5 +145,12 @@
     "width": 286,
     "height": 472,
     "hash": "1dd49be989ee35e28deba19e957d95e8ea59e264a454ef8a32a1a6deb708b7f8"
+  },
+  "hiro-baymax-flying": {
+    "placeholder": false,
+    "missing": false,
+    "width": 612,
+    "height": 567,
+    "hash": "fbbe91eb767ef3b0425794d1c038a7d9eabbf00b1c1213a4ab1cdd94c8d4b00f"
   }
 }
