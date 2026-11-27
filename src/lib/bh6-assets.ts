@@ -58,7 +58,7 @@ export const MODULE_ART: Record<string, { character: string; prop: string }> = {
   blueprint: { character: "tadashi", prop: "tadashi-cap" },
   microbots: { character: "hiro", prop: "microbot" },
   plasma: { character: "wasabi", prop: "code:energy-blade" },
-  portal: { character: "callaghan", prop: "microbot" },
+  portal: { character: "callaghan", prop: "code:portal" },
   kaiju: { character: "fred", prop: "fred-kaiju-head" },
   kabuki: { character: "yokai", prop: "kabuki-mask" },
 };

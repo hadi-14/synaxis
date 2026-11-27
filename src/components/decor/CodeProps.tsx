@@ -49,8 +49,32 @@ export function EnergyBlade({ className = "" }: { className?: string }) {
   );
 }
 
+/** A generic glowing portal ring (psychology / "through the portal"). Original shape. */
+export function PortalRing({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" className={className} aria-hidden>
+      <defs>
+        <radialGradient id="pr-core" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor="#E9EEFF" />
+          <stop offset=".45" stopColor="#8EA2FF" />
+          <stop offset=".75" stopColor="#4B4FD6" stopOpacity=".6" />
+          <stop offset="1" stopColor="#4B4FD6" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="30" fill="url(#pr-core)" />
+      <g fill="none" strokeLinecap="round">
+        <circle cx="50" cy="50" r="38" stroke="#C9CEDA" strokeWidth="7" />
+        <circle cx="50" cy="50" r="38" stroke="#7C83A0" strokeWidth="7" strokeDasharray="14 10" />
+        <path d="M50 28a22 22 0 0 1 22 22M50 72a22 22 0 0 1-22-22" stroke="#fff" strokeWidth="3" opacity=".8" />
+      </g>
+    </svg>
+  );
+}
+
 /** Prop ids that are drawn in code instead of loaded from /public/assets/bh6. */
-export const CODE_PROPS = new Set(["code:chem-ball", "code:energy-blade"]);
+export const CODE_PROPS = new Set(["code:chem-ball", "code:energy-blade", "code:portal"]);
 export function CodeProp({ id, color, className }: { id: string; color?: string; className?: string }) {
-  return id === "code:chem-ball" ? <ChemBall color={color} className={className} /> : <EnergyBlade className={className} />;
+  if (id === "code:chem-ball") return <ChemBall color={color} className={className} />;
+  if (id === "code:portal") return <PortalRing className={className} />;
+  return <EnergyBlade className={className} />;
 }
