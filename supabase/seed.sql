@@ -46,13 +46,12 @@ on conflict (slug) do nothing;
 
 insert into public.faqs (question, answer, category, sort) values
   ('What is Synaxis?', 'Synaxis is the Heuser Science Society''s first science olympiad: three days of competitive modules across biology, chemistry, physics, computer science, robotics, maths, psychology, logic and criminology, themed around Big Hero 6.', 'General', 1),
-  ('When and where is it?', '15–17 January 2027 in Karachi. The exact venue will be announced on our Instagram and on this page.', 'General', 2),
-  ('Who can take part?', 'Students currently enrolled in high or secondary school (9th grade, O-Level/Matric, AS, A-Level/Intermediate or equivalent). HSSC completers preparing for MDCAT are welcome. University students are not eligible.', 'Eligibility', 3),
+  ('When and where is it?', '15–17 January 2027 at Heuser College, Karachi.', 'General', 2),
+  ('Who can take part?', 'Open to students currently in Grade 9, O-Level/Matric, AS or A-Level/Intermediate (or equivalent), and recent school graduates on a gap year, including those preparing for entrance tests like MDCAT, BizCAT or ECAT. University students are not eligible. Register as a Heuser team, an official school delegation or an independent team.', 'Eligibility', 3),
   ('How big is a team?', 'Teams have 4 to 6 members, including the Head Delegate. Only the Head Delegate fills in the registration form.', 'Teams', 4),
   ('How many modules does a team compete in?', 'Each team competes in 4 or 5 modules. Kabuki Caper (Criminology) is compulsory for every team. You rank the other modules you want, and we allocate by preference and availability. Preferences are not guaranteed.', 'Modules', 5),
   ('How much does it cost?', '{{fees}} You''ll see your exact total before you submit, and again on the payment screen.', 'Fees', 6),
   ('How do I pay?', 'After you submit, your dashboard shows our bank details, your exact total and your registration ID. Transfer the amount using the registration ID as the reference, then upload the receipt on the site or send it to us on WhatsApp.', 'Fees', 7),
-  ('What is the dress code?', 'Official school delegations wear school uniform. Independent delegations dress semi-formal.', 'Event', 8),
   ('Do I need a waiver?', 'Yes. Every delegate needs a signed waiver of liability. Download the template from your dashboard and upload the signed copies there (one combined PDF or one per member).', 'Event', 9),
   ('Can I edit my team after submitting?', 'Yes, until registration closes. Changes to members can change your fee, and your dashboard will always show the current amount.', 'Teams', 10);
 

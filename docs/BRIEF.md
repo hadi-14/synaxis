@@ -39,7 +39,7 @@ feel like San Fransokyo: playful, techy, warm and polished.
 - **Name:** Synaxis (Season 1)
 - **Dates:** 15, 16, 17 January 2027
 - **Organiser:** Heuser Science Society
-- **Core team:** "Cubinet" (President, Vice President, Module Heads, Module Co-Heads)
+- **Core team:** "Cabinet" (President, Vice President, Module Heads, Module Co-Heads)
 - **Instagram:** https://www.instagram.com/heusersynaxis/ (organisers will send
   screenshots; start from the logo and update when they arrive)
 - **Reference site:** https://kgso.net (study its structure and registration flow,
@@ -179,7 +179,7 @@ the audit log.
 Statuses: `draft → pending_payment → under_review → verified | rejected | reupload_requested`,
 plus `waiver_pending`, `modules_allocated`, `cancelled` and `checked_in`.
 
-## 9. Admin panel (Cubinet)
+## 9. Admin panel (Cabinet)
 Roles: Super Admin (everything), Module Head / Co-Head (read access to their
 modules' teams, edit access to their module content), Finance/Verifier (payments).
 Includes the dashboard stats, a teams table with a drawer, the allocation tool,

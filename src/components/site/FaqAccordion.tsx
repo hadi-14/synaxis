@@ -25,7 +25,7 @@ function PrintLine({ text, fees, i }: { text: string; fees?: { on: string; after
 }
 
 /** FAQ accordion: Wasabi's plasma blade slices the panel open along a clean line. */
-export function FaqAccordion({ faqs, fees }: { faqs: Faq[]; fees?: { on: string; after: string } }) {
+export function FaqAccordion({ faqs, fees, mapHref }: { faqs: Faq[]; fees?: { on: string; after: string }; mapHref?: string }) {
   const [open, setOpen] = useState<number | null>(faqs[0]?.id ?? null);
   const base = useId();
   if (!faqs.length) return null;
@@ -65,6 +65,11 @@ export function FaqAccordion({ faqs, fees }: { faqs: Faq[]; fees?: { on: string;
                       <PrintLine key={i} text={l} fees={fees} i={i} />
                     ))}
                   </p>
+                  {mapHref && /where/i.test(f.question) && (
+                    <p className="print-line mt-2" style={{ "--l": lines(f.answer).length } as React.CSSProperties}>
+                      <a href={mapHref} target="_blank" rel="noopener noreferrer" className="plasma-link font-semibold">Open in Google Maps ↗</a>
+                    </p>
+                  )}
                   <p aria-hidden className="print-line mt-3 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#1A8F56]" style={{ "--l": lines(f.answer).length } as React.CSSProperties}>
                     Scan complete ✓
                   </p>

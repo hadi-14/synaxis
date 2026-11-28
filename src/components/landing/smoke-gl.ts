@@ -16,7 +16,7 @@ export type SmokeFrame = {
   zoom: number; // camera push into the centre (1 = at rest)
   dive: number; // travel through the layers (~1 per layer)
   cover: number; // 0..1: vignette/skyline fade off, smoke fully opaque (during the dive)
-  burst: number; // 0..1: the smoke spreading out from the centre (short version), 1 = everywhere
+  burst: number; // 0..1: the smoke spreading out from the centre, 1 = everywhere (the intro always uses 1)
   part: number; // 0..1 curtain opening
 };
 

@@ -119,7 +119,7 @@ async function Council({ admin }: { admin: Admin }) {
   const [{ data }, { data: modules }] = await Promise.all([admin.from("council_members").select("*").order("sort"), admin.from("modules").select("id, name").order("sort")]);
   return (
     <div className="space-y-4">
-      <section className="card p-4"><h2 className="mb-3 font-display font-bold">Add a Cubinet member</h2><CouncilForm modules={modules} /></section>
+      <section className="card p-4"><h2 className="mb-3 font-display font-bold">Add a Cabinet member</h2><CouncilForm modules={modules} /></section>
       {(data ?? []).length === 0 && <Empty title="No council members yet" body="Add the President and VP first." />}
       {(data ?? []).map((c) => (
         <details key={c.id} className="card p-4">

@@ -10,7 +10,7 @@ const TEMPLATES: Record<string, { label: string; statuses: string[]; subject: st
     label: "Payment reminder",
     statuses: ["pending_payment", "reupload_requested", "rejected"],
     subject: "{{reg_code}} · Payment reminder",
-    body: "Hello {{team_name}},\n\nThis is a gentle reminder that your Synaxis fee of {{balance}} is still due. The payment deadline is {{payment_deadline}}.\n\nTransfer using {{reg_code}} as the reference, then upload the receipt on your dashboard.\n\nI am here to help. — Baymax, on behalf of the Cubinet",
+    body: "Hello {{team_name}},\n\nThis is a gentle reminder that your Synaxis fee of {{balance}} is still due. The payment deadline is {{payment_deadline}}.\n\nTransfer using {{reg_code}} as the reference, then upload the receipt on your dashboard.\n\nI am here to help. — Baymax, on behalf of the Cabinet",
   },
   waiver_reminder: {
     label: "Waiver reminder",

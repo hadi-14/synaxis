@@ -1,3 +1,4 @@
+import { venueMap } from "../src/lib/maps";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { computeFee } from "../src/lib/fees";
@@ -31,11 +32,11 @@ test("phone: PK mobile formats normalise to +92", () => {
 const rules: Rules = { team_min: 4, team_max: 6, modules_min: 4, modules_max: 5, internal_email_domain: "heusercollege.edu.pk", compulsoryModuleIds: [1], activeModuleIds: [1, 2, 3, 4, 5, 6] };
 const member = (n: number, inst = "KGS") => ({ full_name: `M ${n}`, email: `m${n}@x.com`, phone: "03001234567", grade: "Grade 9" as const, institution: inst });
 const base = (over: Partial<RegistrationData> = {}): RegistrationData => ({
-  delegation_type: "external_independent", elig_enrolled: true, elig_not_university: true, elig_read_rules: true,
+  delegation_type: "external_independent", elig_enrolled: true, elig_read_rules: true,
   head_name: "Head", head_email: "h@x.com", head_whatsapp: "03001234567", head_alt_phone: "", head_grade: "Grade 9", institution: "KGS", city: "Karachi",
   team_name: "T", guardian_name: "G", guardian_phone: "03001234567",
   members: [member(1), member(2), member(3)], module_ranking: [2, 3, 4],
-  heard_from: "Instagram", agree_rules: true, agree_conduct: true, agree_dress: true, agree_media: true, ...over,
+  heard_from: "Instagram", agree_rules: true, agree_conduct: true, agree_media: true, ...over,
 });
 
 test("rules: valid team has no issues", () => assert.deepEqual(ruleIssues(base(), rules), []));
@@ -125,7 +126,7 @@ test("optional alt phone: real digits are still validated", () => {
   assert.equal(ok.data.head_alt_phone, "021 34567890");
 });
 test("optional needs / heard_from_other normalise to null", () => {
-  const base = { heard_from: "Instagram", agree_rules: true, agree_conduct: true, agree_dress: true, agree_media: true };
+  const base = { heard_from: "Instagram", agree_rules: true, agree_conduct: true, agree_media: true };
   const r = s5.safeParse({ ...base, needs: " n/a ", heard_from_other: "-" });
   assert.ok(r.success);
   assert.equal(r.data.needs, null);
@@ -162,4 +163,19 @@ test("early bird: exactly at the deadline still early; one ms later regular with
   assert.equal(late.tier, "regular");
   assert.equal(late.discount, 0);
   assert.equal(late.total, late.regularTotal);
+});
+
+test("venue map: any Google Maps link or address becomes an embed URL", () => {
+  const fb = "Heuser College, Karachi, Pakistan";
+  assert.equal(venueMap("", fb), null);
+  const place = venueMap("https://www.google.com/maps/place/Heuser+College/@24.875102,67.066531,16z/data=!4m7!3m6!1s0x3e:0xe5!8m2!3d24.8716995!4d67.0800744!16s", fb)!;
+  assert.equal(place.embed, `https://www.google.com/maps?q=${encodeURIComponent("24.8716995,67.0800744 (Heuser College)")}&output=embed`);
+  assert.equal(venueMap("https://maps.app.goo.gl/abc", fb)!.embed, `https://www.google.com/maps?q=${encodeURIComponent(fb)}&output=embed`);
+  assert.equal(venueMap("https://maps.app.goo.gl/abc", fb)!.open, "https://maps.app.goo.gl/abc");
+  const pb = "https://www.google.com/maps/embed?pb=!1m18!2d67.08";
+  assert.equal(venueMap(pb, fb)!.embed, pb);
+  assert.equal(venueMap(`<iframe src="${pb}&amp;x=1" width="600"></iframe>`, fb)!.embed, pb + "&x=1");
+  assert.equal(venueMap("https://www.google.com/maps?q=Heuser+College", fb)!.embed, "https://www.google.com/maps?q=Heuser%20College&output=embed");
+  assert.equal(venueMap("Heuser College, Karachi", fb)!.embed, "https://www.google.com/maps?q=Heuser%20College%2C%20Karachi&output=embed");
+  assert.equal(venueMap("https://evil.example/x", "")?.embed, undefined);
 });

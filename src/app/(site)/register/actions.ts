@@ -113,7 +113,7 @@ export async function submitRegistration(raw: unknown, teamId?: string): Promise
     heard_from: d.heard_from,
     heard_from_other: d.heard_from_other ?? null,
     needs: d.needs ?? null,
-    consents: { rules: true, conduct: true, dress: true, media: true, eligibility: true, at: now.toISOString() },
+    consents: { rules: true, conduct: true, media: true, eligibility: true, at: now.toISOString() },
     member_count: fee.members,
     fee_tier: fee.tier,
     total_fee: fee.total,

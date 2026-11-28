@@ -1,4 +1,4 @@
--- Grant a Cubinet role to someone who has signed in at least once.
+-- Grant a Cabinet role to someone who has signed in at least once.
 -- Run in the Supabase dashboard → SQL editor (or psql). Replace the email and role.
 -- Roles: super_admin | finance | module_head (module_head also needs a module slug)
 insert into public.user_roles (user_id, role, module_id)

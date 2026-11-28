@@ -10,15 +10,13 @@ import { createIntroScene, type IntroScene, type SceneLayout, type SceneMode } f
  * Opening sequence (canvas + smoke in ./intro-scene.ts and ./smoke-gl.ts).
  * - Decided before first paint by the inline script in app/layout.tsx (html[data-intro]), which also shows
  *   an opaque cover from the very first frame (globals.css), so the page never shows through.
- *   Full: until the "seen" flag is set. Short: flag set + arriving from outside. ?intro=full|short|off overrides.
+ *   It plays in full on every full page load of "/" (never on client-side navigation). ?intro=full|off overrides.
  * - Full: "HELLO." types where the logo will be → microbots assemble SYNAXIS and lock into the crisp logo,
  *   a smoke nebula churns behind it in a soft energy ring → Heuser mark, subtitle, "Enter the portal" →
  *   dive into the vortex → the smoke parts onto the real hero.
- * - The flag is written only when the full intro reaches the hero or Skip is pressed (never by an override),
- *   and nothing but the Enter button starts the dive: stray keys while the page opens do nothing.
- * - Reduced motion: a still frame, then a crossfade. Skip intro is always there (and Escape).
+ * - Nothing but the Enter button starts the dive: stray keys while the page opens do nothing.
+ * - Reduced motion: a still frame, then a crossfade. Skip intro is always there (and Escape); it skips only this time.
  */
-const SEEN_KEY = "synaxis-intro-seen";
 const HELLO = "HELLO.";
 
 type Stage = 0 | 1 | 2 | 3 | 4 | 5; // hello · bots (hello fades) · Heuser · subtitle · Enter ready · diving
@@ -68,10 +66,10 @@ export function IntroOverlay() {
   useEffect(() => {
     const html = document.documentElement;
     const m = html.dataset.intro;
-    if (m !== "full" && m !== "short") return;
+    if (m !== "full") return;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     /* eslint-disable react-hooks/set-state-in-effect -- reads what the pre-paint script decided */
-    setMode(reduced ? "reduced" : m);
+    setMode(reduced ? "reduced" : "full");
     if (reduced) setStage(4);
     /* eslint-enable react-hooks/set-state-in-effect */
     html.dataset.introLive = "1"; // tells the pre-paint safety timer the intro is running
@@ -90,7 +88,7 @@ export function IntroOverlay() {
     return () => removeEventListener("keydown", k);
   }, []);
   useEffect(() => {
-    if (stage === 4 && mode !== "short" && usedKeys.current) enterBtn.current?.focus({ preventScroll: true });
+    if (stage === 4 && usedKeys.current) enterBtn.current?.focus({ preventScroll: true });
   }, [stage, mode]);
 
   // "HELLO." types out first, where the logo will form (one character per 90 ms)
@@ -100,20 +98,10 @@ export function IntroOverlay() {
     return () => clearTimeout(t);
   }, [mode, typed]);
 
-  /** The flag that makes later visits short: only for a real (non-override) intro that was seen or skipped. */
-  const markSeen = useCallback(() => {
-    if (document.documentElement.dataset.introOverride) return;
-    try {
-      localStorage.setItem(SEEN_KEY, "1");
-    } catch {}
-  }, []);
-
   const finish = useCallback(() => {
     const html = document.documentElement;
-    markSeen();
     delete html.dataset.intro;
     delete html.dataset.introLive;
-    delete html.dataset.introOverride;
     html.style.overflow = "";
     document.querySelector<HTMLElement>("#main")?.focus({ preventScroll: true });
     setTimeout(() => {
@@ -124,7 +112,7 @@ export function IntroOverlay() {
       });
     }, 1800);
     setMode("off");
-  }, [markSeen]);
+  }, []);
 
   const enter = useCallback(() => {
     if (started.current || !scene.current) return;
@@ -179,7 +167,6 @@ export function IntroOverlay() {
   }, [mode, finish, skip]);
 
   if (mode === "off") return null;
-  const full = mode !== "short";
   const ui = stage < 5;
   const glow = (on: boolean) => scene.current?.hover(on && !started.current);
   const show = (on: boolean, slow = "duration-700") => (on && ui ? `opacity-100 ${slow}` : "opacity-0 duration-150");
@@ -210,7 +197,7 @@ export function IntroOverlay() {
       {/* film grain over everything */}
       <div aria-hidden className="intro-grain pointer-events-none absolute -inset-[50%]" />
 
-      {full && box && (
+      {box && (
         <>
           {/* "HELLO." types first, in the logo's place, and fades as the bots arrive */}
           <p

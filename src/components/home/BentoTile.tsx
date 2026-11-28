@@ -8,7 +8,7 @@ import type { Module } from "@/lib/types";
  * Module bento tile. Featured (compulsory) tile: dark case board with the Yokai cutout, the kabuki mask
  * and a COMPULSORY stamp. Other tiles: the hero's suit colour as the panel (darkened only enough for
  * white text), armour seams, the prop icon, and the character cutout sliding in on hover/focus.
- * "Open the file": a case-file folder slides over the tile, then the module page opens (DecorObservers).
+ * "Open the file": opens the case-file dialog (CaseFileDialog); the tile stays a real link to the module page.
  * Server component: no per-tile hydration.
  */
 export type TileModule = Pick<Module, "slug" | "name" | "subject" | "character" | "tagline" | "motif">;
@@ -19,6 +19,8 @@ export function BentoTile({ m, panel, featured = false }: { m: TileModule; panel
   return (
     <Link
       href={href}
+      data-slug={m.slug}
+      aria-haspopup="dialog"
       className={`bento-tile group relative isolate flex h-full flex-col overflow-hidden text-white ${featured ? "min-h-[300px] p-6 sm:p-8" : "min-h-[180px] p-4 sm:p-5"}`}
       style={{ "--panel": panel, background: featured ? "#120B12" : panel } as React.CSSProperties}
     >
@@ -61,10 +63,6 @@ export function BentoTile({ m, panel, featured = false }: { m: TileModule; panel
           </span>
         </>
       )}
-      {/* case-file folder that slides over the tile on open */}
-      <span aria-hidden className="case-file pointer-events-none absolute inset-0 z-10 flex items-start p-4">
-        <span className="rounded-t-md bg-[#E9D9B5] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#5A4520]">Case file · {m.name}</span>
-      </span>
     </Link>
   );
 }

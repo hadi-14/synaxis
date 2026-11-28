@@ -51,7 +51,7 @@ token architecture won't need to change.
   another angle".
 - **Tadashi:** SFIT cap, his lab, the "bot fight" origin.
 - **Go Go:** maglev discs, speed, yellow/black. "Woman up."
-- **Wasabi:** plasma blades, neat grids, "There's a place for everything".
+- **Wasabi:** plasma blades, neat grids, "There's a place for everyone".
 - **Honey Lemon:** chem purse, chem balls (pink/yellow/blue), sticky foam.
 - **Fred:** kaiju suit, fire breath, comics.
 - **Callaghan / Yokai:** kabuki mask, microbot swirl, portal rings, Krei Tech.
@@ -146,7 +146,7 @@ Instagram screenshots show the actual post fonts.
 /                    Landing intro (microbot assemble → "Enter the portal")
 /portal              Main page: Hero+countdown · About · Modules · Register teaser · FAQ
 /modules/[slug]      Module detail
-/council             Cubinet
+/council             Cabinet
 /sponsors            Tiers + inquiry form
 /register            Sign-in gate → 6-step form → submit
 /dashboard           Head Delegate: status, payment, receipt, waivers, modules, QR
@@ -337,7 +337,7 @@ Timing defaults: micro ≤ 200 ms, UI ≤ 300 ms, scenes ≤ 1.2 s (intro ≤ 4.
 | 6 | Fred's kaiju | Idle 25 s on FAQ: kaiju doodle stomps along the bottom | ✅ |
 | 7 | "Look for another angle" | Third failed attempt on the same field | ✅ |
 | 8 | Low-battery Baymax | 60 s inactivity: guide droops | ✅ |
-| 9 | Wasabi straightens | A slightly tilted sticker in About straightens on hover, "There's a place for everything" | ✅ |
+| 9 | Wasabi straightens | A slightly tilted sticker in About straightens on hover, "There's a place for everyone" | ✅ |
 | 10 | Tadashi's cap | Hidden in the Hamada's Hangar card art | ✅ |
 | 11 | Console message | DevTools banner for CS students, hint about the rest | ✅ |
 | 12 | Secrets tracker | `found X/12`, unlocks a downloadable Instagram story card (canvas PNG) | ✅ |

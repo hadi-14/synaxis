@@ -47,7 +47,7 @@ export async function requireStaff(...roles: AppRole[]): Promise<StaffContext> {
   if (!staff) {
     const user = await getUser();
     if (!user) redirect("/login?next=/admin");
-    notFound(); // the admin layout already shows the "Cubinet-only" message
+    notFound(); // the admin layout already shows the "Cabinet-only" message
   }
   if (roles.length && !hasRole(staff, ...roles)) notFound(); // renders app/admin/not-found.tsx
   return staff;

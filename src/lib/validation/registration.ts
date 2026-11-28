@@ -6,7 +6,7 @@ export const GRADES = [
   "Grade 10 / O-Level / Matric",
   "Grade 11 / AS / First Year",
   "Grade 12 / A2 / Second Year",
-  "HSSC completed (MDCAT prep)",
+  "Recent graduate (gap year)",
   "Other equivalent",
 ] as const;
 
@@ -48,8 +48,9 @@ export const step1 = z.object({
   delegation_type: z.enum(["internal", "external_official", "external_independent"], {
     error: "Choose a delegation type.",
   }),
-  elig_enrolled: z.literal(true, { error: "Required: every delegate must be enrolled in school." }),
-  elig_not_university: z.literal(true, { error: "Required: university students aren't eligible." }),
+  elig_enrolled: z.literal(true, {
+    error: "Required: every member must be in school (Grade 9 to A-Level/Intermediate or equivalent) or a recent graduate on a gap year. University students aren't eligible.",
+  }),
   elig_read_rules: z.literal(true, { error: "Please confirm you've read the rules." }),
 });
 
@@ -89,7 +90,6 @@ export const step5 = z.object({
   needs: optional(z.string().max(500)),
   agree_rules: z.literal(true, { error: "Required." }),
   agree_conduct: z.literal(true, { error: "Required." }),
-  agree_dress: z.literal(true, { error: "Required." }),
   agree_media: z.literal(true, { error: "Required." }),
 });
 

@@ -2,11 +2,15 @@ import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { HeuserWordmark } from "@/components/brand/Heuser";
 import type { Settings } from "@/lib/types";
+import { venueMap } from "@/lib/maps";
+import { VenueMap } from "./VenueMap";
 import { LuckyCat } from "./LuckyCat";
 import { SecretsTracker } from "@/components/eggs/SecretsTracker";
 
 export function Footer({ settings }: { settings: Settings }) {
   const wa = settings.contact_whatsapp.replace(/\D/g, "");
+  const venue = [settings.venue_name, settings.venue_address].filter(Boolean).join(", ");
+  const map = venueMap(settings.venue_map_url, venue);
   return (
     <footer className="mt-0 bg-[#a3141f] pb-[env(safe-area-inset-bottom)] text-white battle:bg-[#7d0f18] [&_a:focus-visible]:outline-white" id="footer">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
@@ -33,8 +37,9 @@ export function Footer({ settings }: { settings: Settings }) {
             <li><a className="plasma-link" href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a></li>
             <li><a className="plasma-link" href={`https://wa.me/${wa}`} rel="noopener" target="_blank">WhatsApp {settings.contact_whatsapp}</a></li>
             <li><a className="plasma-link" href={settings.instagram_url} rel="noopener" target="_blank">Instagram @heusersynaxis</a></li>
-            <li className="text-white">{settings.venue_name}, {settings.venue_address}</li>
+            <li className="text-white">{venue}</li>
           </ul>
+          {map && <VenueMap map={map} title={`Map: ${venue}`} />}
         </div>
         <div>
           <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-white">Quick links</h2>
@@ -46,7 +51,7 @@ export function Footer({ settings }: { settings: Settings }) {
             <li><Link className="plasma-link" href="/sponsors">Sponsors</Link></li>
             <li><Link className="plasma-link" href="/terms">Terms of Service</Link></li>
             <li><Link className="plasma-link" href="/privacy">Privacy Policy</Link></li>
-            <li><Link className="plasma-link" href="/admin">Cubinet login</Link></li>
+            <li><Link className="plasma-link" href="/admin">Cabinet login</Link></li>
           </ul>
         </div>
       </div>

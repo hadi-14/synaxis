@@ -439,8 +439,8 @@ html[data-hero-enter] [data-hero-item] { animation: hero-in 600ms cubic-bezier(.
 /* the digits are real from the first frame: a quick flip, never hidden or empty */
 @keyframes digit-flip { from { transform: perspective(300px) rotateX(70deg); } to { transform: none; } }
 @keyframes ticker-in { from { transform: translateY(100%); } to { transform: none; } }
-html[data-hero-enter] [data-hero-fly] { animation: hero-fly 950ms cubic-bezier(.2,.85,.25,1) 150ms both; }
-html[data-hero-enter] [data-hero-flame] { display: block; animation: hero-flame 950ms ease-out 150ms both; }
+html[data-hero-enter] [data-hero-fly] { animation: hero-fly 1100ms cubic-bezier(.2,.85,.25,1) 250ms both; }
+html[data-hero-enter] [data-hero-flame] { display: block; animation: hero-flame 1100ms ease-out 250ms both; }
 html[data-hero-enter] .segment-digit { display: inline-block; animation: digit-flip 380ms cubic-bezier(.22,1,.36,1) backwards; animation-delay: calc(250ms + var(--d, 0) * 70ms); }
 html[data-hero-enter] [data-hero-ticker] { animation: ticker-in 480ms cubic-bezier(.22,1,.36,1) 900ms both; }
 @media (prefers-reduced-motion: reduce) {
@@ -477,10 +477,29 @@ html:not([data-eb="after"]) [data-eb-only="after"] { display: none !important; }
   font: 800 .85rem/1.2 ui-monospace, var(--font-mono), monospace; letter-spacing: .22em; text-transform: uppercase;
   transform: rotate(-8deg); mask-image: radial-gradient(circle at 30% 40%, #000 60%, rgba(0,0,0,.75));
 }
-.case-file { background: linear-gradient(180deg, #F3E6C8, #E2CFA3); transform: translateY(105%); transition: transform .3s cubic-bezier(.3,.8,.3,1); padding-top: 0; }
-.case-file > span { margin-top: -1px; }
-.bento-tile.is-opening .case-file { transform: translateY(0); }
-@media (prefers-reduced-motion: reduce) { .bento-tile, .case-file { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .bento-tile { transition: none; } }
+
+/* Case-file dialog ("Open the file" on the module tiles): a manila folder; a bottom sheet on phones. */
+.case-dialog {
+  margin: auto; padding: 0; border: 0; color: #2A1F0C; overflow: visible;
+  width: min(640px, calc(100vw - 2rem)); max-height: min(86dvh, 760px);
+  background: linear-gradient(180deg, #F6EBD0, #E9D9B5); border-radius: 4px 18px 18px 18px;
+  box-shadow: 0 10px 0 #B89A5E, 0 30px 80px rgba(0,0,0,.45);
+}
+.case-dialog > div { max-height: min(86dvh, 760px); }
+.case-dialog::backdrop { background: rgba(8,6,14,.62); backdrop-filter: blur(3px); }
+.case-dialog-tab { position: absolute; left: 0; bottom: 100%; background: #F6EBD0; color: #5A4520; padding: .45rem .9rem .3rem; border-radius: 10px 10px 0 0; white-space: nowrap; }
+.case-dialog[open] { animation: case-open .32s cubic-bezier(.22,1,.36,1); }
+.case-dialog[open]::backdrop { animation: case-fade .32s ease-out; }
+@keyframes case-open { from { transform: translateY(28px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes case-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 639px) {
+  .case-dialog { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 4px 18px 0 0; box-shadow: 0 -20px 60px rgba(0,0,0,.4); padding-bottom: env(safe-area-inset-bottom); }
+  .case-dialog, .case-dialog > div { max-height: 88dvh; }
+  .case-dialog[open] { animation: case-sheet .34s cubic-bezier(.22,1,.36,1); }
+  @keyframes case-sheet { from { transform: translateY(100%); } to { transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) { .case-dialog[open], .case-dialog[open]::backdrop { animation: case-fade .2s ease-out; } }
 
 /* ---------- About: HUD readout + admission card ---------- */
 .hud-panel {
@@ -505,7 +524,7 @@ html:not([data-eb="after"]) [data-eb-only="after"] { display: none !important; }
 [data-theme="battle"] .admission { background: #141A2A; }
 .stamp-ink { border-color: #1FA463; color: #1A8F56; transform: rotate(-11deg); }
 [data-theme="battle"] .stamp-ink { border-color: #3BE08A; color: #3BE08A; }
-.cubinet-badge { border-radius: 14px; background: #0B1220; color: #fff; box-shadow: 0 10px 0 #05070d; }
+.cabinet-badge { border-radius: 14px; background: #0B1220; color: #fff; box-shadow: 0 10px 0 #05070d; }
 
 /* ---------- Registration: charging track ---------- */
 .track-chain { background: var(--line-strong); opacity: .45; border-radius: 99px; mask: var(--mb) center/12px 52px repeat-y; }

@@ -75,13 +75,12 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
     initial = {
       delegation_type: team.delegation_type,
       elig_enrolled: true,
-      elig_not_university: true,
       elig_read_rules: true,
       head_name: team.head_name,
       head_email: team.head_email,
       head_whatsapp: team.head_whatsapp,
       head_alt_phone: team.head_alt_phone ?? "",
-      head_grade: team.head_grade,
+      head_grade: legacyGrade(team.head_grade),
       institution: team.institution,
       city: team.city,
       team_name: team.team_name,
@@ -93,7 +92,7 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
           full_name: m.full_name,
           email: m.email,
           phone: m.phone,
-          grade: m.grade,
+          grade: legacyGrade(m.grade),
           institution: m.institution,
         })),
       module_ranking: [...team.module_preferences]
@@ -105,7 +104,6 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
       needs: team.needs ?? "",
       agree_rules: true,
       agree_conduct: true,
-      agree_dress: true,
       agree_media: true,
     } as Partial<WizardValues>;
   } else {
@@ -130,4 +128,9 @@ async function RegisterGate({ searchParams }: { searchParams: PageProps<"/regist
       submittedAt={team && editing ? team.submitted_at : null}
     />
   );
+}
+
+/** The "HSSC completed (MDCAT prep)" option was renamed; keep teams saved with it editable. */
+function legacyGrade(g: string) {
+  return g === "HSSC completed (MDCAT prep)" ? "Recent graduate (gap year)" : g;
 }

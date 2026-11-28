@@ -11,7 +11,7 @@ export default async function ExportsPage() {
     <div className="mx-auto max-w-4xl">
       <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--primary-text)]">Data port</p>
       <h1 className="font-display text-3xl font-extrabold">Exports</h1>
-      <p className="mt-1 text-sm text-[var(--ink-muted)]">Every download is recorded in the audit log. Files contain personal data; share them only inside the Cubinet.</p>
+      <p className="mt-1 text-sm text-[var(--ink-muted)]">Every download is recorded in the audit log. Files contain personal data; share them only inside the Cabinet.</p>
       <ul className="mt-6 space-y-3">
         <Row title="All teams" desc="One row per team with status, fees, preferences and allocation." q="dataset=teams" />
         <Row title="All delegates" desc="One row per member with contact details." q="dataset=members" />

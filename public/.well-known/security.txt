@@ -1,4 +1,4 @@
-# Security contact for heusersynaxis.com (placeholder: replace with the real Cubinet address before launch)
+# Security contact for heusersynaxis.com (placeholder: replace with the real Cabinet address before launch)
 Contact: mailto:security@heusersynaxis.com
 Expires: 2027-12-31T23:59:59.000Z
 Preferred-Languages: en, ur

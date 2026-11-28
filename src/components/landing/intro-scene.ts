@@ -12,11 +12,10 @@ import { createSmoke, type Smoke } from "./smoke-gl";
  * fallback) · this 2D canvas (dust, orbiting bots, logo, streaks, Baymax) · DOM text and the Enter button.
  * - The mouse breaks bots off the formed logo near the cursor (a soft hole opens in the solid logo); they
  *   spring back. A tap sends a ripple through it.
- * - Short (repeat visits): a burst of smoke from the centre that parts onto the hero (~1 s).
  * - Reduced motion: a still frame, then a crossfade. No WebGL, or too slow → layered CSS gradients.
  * Time only advances while the tab is visible. All moves use expo/quint/cubic curves.
  */
-export type SceneMode = "full" | "short" | "reduced";
+export type SceneMode = "full" | "reduced";
 export type SceneLayout = { cx: number; cy: number; ring: number; heuserTop: number; logoTop: number; logoBottom: number; logoCy: number; logoW: number; subTop: number; btnCy: number; phone: boolean };
 export type SceneEvents = {
   /** 1 HELLO fades (bots arriving) · 2 Heuser mark · 3 subtitle · 4 Enter ready */
@@ -34,9 +33,8 @@ type Streak = { a: number; d: number; w: number };
 
 // assemble (ms from mount)
 const A = { pour: 650, pourDur: 1500, lock: 2150, lockDur: 380, shimmer: 700, hello: 800, brand: 1900, sub: 2350, ready: 2650, ring: 900, ringDur: 1300, smokeDur: 1400 };
-// dive (ms after Enter): ≈ 1.6 s
-const D = { burst: 700, zoom: 1250, ring: 800, baymax: 150, baymaxDur: 1050, open: 880, part: 1000, partDur: 600 };
-const SHORT = { burst: 450, zoom: 1000, open: 400, part: 420, partDur: 560 };
+// dive (ms after Enter): ≈ 2.7 s, unhurried enough to read: a longer push-in and Baymax pass, then a slower parting
+const D = { burst: 1100, zoom: 2050, ring: 1300, cover: 250, coverDur: 1000, baymax: 250, baymaxDur: 1700, open: 1530, part: 1650, partDur: 1050 };
 const FADE = 480; // reduced motion / skip crossfade
 const SLOW_MS = 28; // average frame time over the first smoke frames above which the CSS smoke takes over
 
@@ -72,7 +70,6 @@ export function createIntroScene(opts: {
   const { canvas: cv, glCanvas, fallback, root, shell, mode, ev } = opts;
   const ctx = cv.getContext("2d")!;
   const reduced = mode === "reduced";
-  const short = mode === "short";
   const phone = innerWidth < 640;
   loadMicrobotSprite();
   const dustDot = glowSprite("rgba(255,244,255,1)", "rgba(214,170,255,.5)");
@@ -94,7 +91,7 @@ export function createIntroScene(opts: {
 
   let W = 0, H = 0, dpr = 1, raf = 0, last = 0;
   let clock = reduced ? A.ready + 400 : 0;
-  let actAt = short ? 0 : -1, skipAt = -1, openAt = -1, fadeT0 = -1, finished = false, stageSent = reduced ? 4 : 0;
+  let actAt = -1, skipAt = -1, openAt = -1, fadeT0 = -1, finished = false, stageSent = reduced ? 4 : 0;
   let cx = 0, cy = 0, R0 = 0, diag = 0, ox = 0, oy = 0, lw = 0, lh = 0;
   let twist = 0, bright = 0, hover = false;
   let bots: Bot[] = [], orbit: Orbiter[] = [], dust: Dust[] = [], streaks: Streak[] = [];
@@ -150,7 +147,7 @@ export function createIntroScene(opts: {
     fallback.style.setProperty("--cx", `${cx}px`);
     fallback.style.setProperty("--cy", `${cy}px`);
     bots = [];
-    if (!short) {
+    {
       const off = document.createElement("canvas");
       off.width = Math.ceil(lw);
       off.height = Math.ceil(lh);
@@ -231,19 +228,18 @@ export function createIntroScene(opts: {
 
     // hover: the vortex speeds up and brightens, the ring glows
     bright += ((hover ? 1 : 0) - bright) * Math.min(1, s * 5);
-    const P = short ? SHORT : D;
-    const zt = act < 0 ? 0 : clamp(act / P.zoom);
-    const speed = act < 0 ? 0 : smooth(0, 0.75, zt) * (short ? 0.6 : 1); // for streaks / dust / twist
+    const zt = act < 0 ? 0 : clamp(act / D.zoom);
+    const speed = act < 0 ? 0 : smooth(0, 0.75, zt); // for streaks / dust / twist
     twist += s * (0.16 + bright * 0.7 + speed * 3.2);
-    const part = act < 0 || reduced ? 0 : inOutCubic((act - P.part) / P.partDur);
-    if (!reduced && act >= P.open) doOpen();
+    const part = act < 0 || reduced ? 0 : inOutCubic((act - D.part) / D.partDur);
+    if (!reduced && act >= D.open) doOpen();
     if (!reduced && skipAt < 0 && act >= 0 && part >= 1) return end();
 
-    const ringOpen = short ? 0 : reduced ? 1 : outQuint((clock - A.ring) / A.ringDur);
-    const ringR = act < 0 || short ? R0 * (0.8 + 0.2 * ringOpen) : R0 * (1 + 9 * inExpo(act / D.ring));
+    const ringOpen = reduced ? 1 : outQuint((clock - A.ring) / A.ringDur);
+    const ringR = act < 0 ? R0 * (0.8 + 0.2 * ringOpen) : R0 * (1 + 9 * inExpo(act / D.ring));
     const ringA = ringOpen * (0.7 + bright * 0.5) * (1 - smooth(diag * 0.45, diag * 0.9, ringR));
-    const zoom = 1 + (short ? 1.6 * inCubic(zt) : 7 * inExpo(zt));
-    const fadeIn = reduced || short ? 1 : outCubic(clock / A.smokeDur);
+    const zoom = 1 + 7 * inExpo(zt);
+    const fadeIn = reduced ? 1 : outCubic(clock / A.smokeDur);
 
     // smoke
     if (smoke) {
@@ -251,9 +247,9 @@ export function createIntroScene(opts: {
         glCanvas.style.opacity = fadeIn < 1 ? fadeIn.toFixed(3) : "";
         smoke.render({
           time: clock / 1000, cx, cy, ring: ringR, ringA, twist, bright, zoom,
-          dive: act < 0 ? 0 : short ? 0.8 * outCubic(zt) : 2 * inQuint(zt),
-          cover: short ? 1 : act < 0 ? 0 : inOutCubic((act - 150) / 600),
-          burst: short ? outQuint(act / SHORT.burst) : 1,
+          dive: act < 0 ? 0 : 2 * inQuint(zt),
+          cover: act < 0 ? 0 : inOutCubic((act - D.cover) / D.coverDur),
+          burst: 1,
           part,
         });
         smokeDirty = false;
@@ -266,7 +262,7 @@ export function createIntroScene(opts: {
     if (!smoke) {
       // CSS smoke: full-screen layered gradients; pushes in with the camera, fades as the smoke parts
       fallback.style.transform = `scale(${zoom.toFixed(3)})`;
-      fallback.style.opacity = String(fadeIn * (1 - part) * (short ? outQuint(act / SHORT.burst) : 1));
+      fallback.style.opacity = String(fadeIn * (1 - part));
       fallback.style.setProperty("--spin", `${(twist * 57.3).toFixed(1)}deg`);
       fallback.style.filter = bright > 0.01 ? `brightness(${(1 + bright * 0.3).toFixed(2)})` : "";
     }
@@ -283,7 +279,7 @@ export function createIntroScene(opts: {
         drawHalo(fadeIn * smooth(A.pour, A.lock, clock));
         drawLogo(s);
       } else {
-        if (!short) drawBurst(act);
+        drawBurst(act);
         drawStreaks(s, speed * a2);
         if (mode === "full") drawBaymax((act - D.baymax) / D.baymaxDur);
       }
@@ -343,7 +339,7 @@ export function createIntroScene(opts: {
 
   /** A few microbots orbiting the energy ring. */
   const drawOrbit = (act: number, r: number, alpha: number) => {
-    if (short || alpha <= 0) return;
+    if (alpha <= 0) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.globalAlpha = alpha;
     const k = r / R0;

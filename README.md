@@ -14,13 +14,13 @@ Supabase (Postgres + RLS, Auth, Storage) · Resend + React Email · zod + react-
 ## Map
 | Path | What |
 |---|---|
-| `/` | Main page (hero + countdown, about, modules, fees, FAQ) with the microbot intro as an overlay on first visit |
+| `/` | Main page (hero + countdown, about, modules, fees, FAQ) with the microbot intro as an overlay on every full page load |
 | `/portal` | Redirects permanently to `/` |
 | `/terms` · `/privacy` | Drafts in `content/legal/*.mdx` |
 | `/modules/[slug]` · `/council` · `/sponsors` | Public content (editable in admin) |
 | `/register` | 6-step team registration (Head Delegate), autosaved |
 | `/dashboard` | Head Delegate: payment, receipt upload, WhatsApp, waivers, modules, check-in QR |
-| `/admin` | Cubinet panel: overview, teams, allocation, check-in, emails, content, settings, roles, exports, audit |
+| `/admin` | Cabinet panel: overview, teams, allocation, check-in, emails, content, settings, roles, exports, audit |
 | `/waiver` | Printable waiver template |
 
 ## Setup
@@ -131,7 +131,7 @@ npm run dev
 | `test` | Unit tests (fees, phone numbers, registration rules, allocation, safe redirects) |
 | `test:rls` | Security tests against the **local** stack only |
 | `check:live` | Health check of the project in `.env.local` (creates and deletes one throwaway user) |
-| `make-admin -- <email> [role] [module]` | Grant a Cubinet role |
+| `make-admin -- <email> [role] [module]` | Grant a Cabinet role |
 | `db:types` / `db:types:local` | Regenerate DB types from the linked project / local stack |
 | `assets:process` | Trim, resize and register new Big Hero 6 images |
 | `assets:placeholders` | Recreate labelled placeholders for missing images |

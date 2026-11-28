@@ -33,6 +33,9 @@ import { FaqKaiju } from "@/components/eggs/FaqKaiju";
 import { getFaqs, getModules, getSettings } from "@/lib/content";
 import { earlyBirdMax, formatRs } from "@/lib/fees";
 import { formatDateRange } from "@/lib/dates";
+import { ELIGIBILITY } from "@/lib/eligibility";
+import { CaseFileDialog } from "@/components/home/CaseFileDialog";
+import { venueMap } from "@/lib/maps";
 
 export const metadata: Metadata = {
   ...pageMeta("/", DEFAULT_TITLE, DEFAULT_DESCRIPTION),
@@ -42,6 +45,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const [settings, modules, faqs] = await Promise.all([getSettings(), getModules(), getFaqs()]);
   const compulsory = modules.filter((m) => m.is_compulsory);
+  const map = venueMap(settings.venue_map_url, [settings.venue_name, settings.venue_address].filter(Boolean).join(", "));
   const pickMin = Math.max(0, settings.modules_min - compulsory.length);
   const pickMax = Math.max(0, settings.modules_max - compulsory.length);
   const eb = earlyBirdMax(settings, settings.team_min, settings.team_max);
@@ -143,20 +147,18 @@ export default async function HomePage() {
           <Reveal>
             <AdmissionCard>
               <p className="pr-20 sm:pr-24">
-                Students currently enrolled in Grade 9, O-Level/Matric, AS or A-Level/Intermediate (or equivalent). HSSC completers
-                preparing for MDCAT are welcome. University students are not eligible. Register as a Heuser team, an official
-                school delegation or an independent team.
+                {ELIGIBILITY}
               </p>
               <WasabiSticker />
             </AdmissionCard>
           </Reveal>
           <Reveal delay={80}>
-            <Link href="/council" className="cubinet-badge group relative flex h-full flex-col justify-between overflow-hidden p-6">
+            <Link href="/council" className="cabinet-badge group relative flex h-full flex-col justify-between overflow-hidden p-6">
               <span aria-hidden className="absolute -right-6 -top-6 h-24 w-24 rounded-full border-[10px] border-[#DC2A35]/40" />
               <div>
                 <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#FF8A94]">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>
-                  Cubinet access
+                  The Cabinet
                 </p>
                 <p className="mt-2 font-display text-lg font-bold">Meet the council running Synaxis</p>
               </div>
@@ -201,6 +203,12 @@ export default async function HomePage() {
               </li>
             ))}
           </ul>
+          <CaseFileDialog
+            modules={[...compulsory, ...modules.filter((m) => !m.is_compulsory)].map((m) => ({
+              slug: m.slug, name: m.name, subject: m.subject, character: m.character, tagline: m.tagline, description: m.description, format: m.format,
+              team_size_note: m.team_size_note, schedule_slot: m.schedule_slot, head_name: m.head_name, cohead_name: m.cohead_name, is_compulsory: m.is_compulsory, motif: m.motif,
+            }))}
+          />
         </div>
       </section>
 
@@ -246,7 +254,7 @@ export default async function HomePage() {
         <AmbientMicrobots className="-z-10 text-[var(--ink-muted)]" count={3} />
       <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
         <SectionHeading eyebrow="04 · FAQ" title="Questions? Scan complete." />
-        <FaqAccordion faqs={faqs} fees={{ on: feesSentence(settings, "on"), after: feesSentence(settings, "after") }} />
+        <FaqAccordion faqs={faqs} mapHref={map?.open} fees={{ on: feesSentence(settings, "on"), after: feesSentence(settings, "after") }} />
         <p className="mt-6 text-center text-sm text-[var(--ink-muted)]">
           Still stuck? Message us on{" "}
           <a className="plasma-link font-semibold text-[var(--ink)]" href={settings.instagram_url} target="_blank" rel="noopener">

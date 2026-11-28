@@ -15,7 +15,7 @@ export default function LoginPage() {
       <div className="card p-6 sm:p-8">
         <h1 className="font-display text-2xl font-extrabold">Sign in to continue</h1>
         <p className="mt-2 text-sm text-[var(--ink-muted)]">
-          Head Delegates sign in to register and track their team. Cubinet members use the same sign-in for the admin panel.
+          Head Delegates sign in to register and track their team. Cabinet members use the same sign-in for the admin panel.
         </p>
         <Suspense fallback={<div className="skeleton mt-6 h-40" />}>
           <LoginForm />

@@ -1,4 +1,4 @@
-// Grant a Cubinet role.  Usage:
+// Grant a Cabinet role.  Usage:
 //   npm run make-admin -- someone@example.com [super_admin|finance|module_head] [module-slug]
 // The person must have signed in once (so their account exists). Uses SUPABASE_SECRET_KEY from .env.local.
 import { createClient } from "@supabase/supabase-js";

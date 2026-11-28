@@ -81,8 +81,14 @@ export function homeJsonLd(s: Settings, faqs: Faq[]) {
         eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
         location: {
           "@type": "Place",
-          name: s.venue_name,
-          address: { "@type": "PostalAddress", streetAddress: s.venue_address, addressLocality: "Karachi", addressCountry: "PK" },
+          name: "Heuser College",
+          address: {
+            "@type": "PostalAddress",
+            // street address comes from admin settings; omitted while it is still the generic "Karachi, Pakistan"
+            ...(s.venue_address && !/^karachi(,\s*pakistan)?$/i.test(s.venue_address.trim()) ? { streetAddress: s.venue_address } : {}),
+            addressLocality: "Karachi",
+            addressCountry: "PK",
+          },
         },
         image: [`${SITE_URL}/opengraph-image`],
         organizer: { "@id": `${SITE_URL}/#organization` },

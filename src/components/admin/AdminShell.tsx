@@ -16,7 +16,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
       <main id="main" className="grid min-h-dvh place-items-center bg-blueprint px-4">
         <div className="card max-w-md p-8 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--danger)]">Access denied · HUD</p>
-          <h1 className="mt-2 font-display text-2xl font-extrabold">This lab is Cubinet-only</h1>
+          <h1 className="mt-2 font-display text-2xl font-extrabold">This lab is Cabinet-only</h1>
           <p className="mt-2 text-sm text-[var(--ink-muted)]">
             You&apos;re signed in as {user.email}, which has no admin role. Ask the President or VP to add you.
           </p>
@@ -31,7 +31,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
         <div className="flex items-center justify-between gap-3 px-4 py-4">
           <a href="/admin" className="flex flex-col">
             <Logo className="h-4 w-auto" />
-            <span className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--ink-muted)]">Cubinet lab</span>
+            <span className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--ink-muted)]">Cabinet lab</span>
           </a>
           <div className="lg:hidden"><ThemeToggle compact /></div>
         </div>

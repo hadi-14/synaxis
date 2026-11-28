@@ -1,5 +1,6 @@
 "use server";
 import { updateTag } from "next/cache";
+import { expandMapShortLink } from "@/lib/maps";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { assertStaff, hasRole } from "@/lib/auth";
@@ -182,7 +183,7 @@ export async function saveSettings(_: FormResult | null, f: FormData): Promise<F
       event_end: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).parse(str(f, "event_end")),
       venue_name: str(f, "venue_name"),
       venue_address: str(f, "venue_address"),
-      venue_map_url: url.parse(str(f, "venue_map_url")),
+      venue_map_url: await expandMapShortLink(str(f, "venue_map_url").slice(0, 2000)), // any Google Maps link or an address
       delegation_fee_early: int("delegation_fee_early"),
       delegation_fee_regular: int("delegation_fee_regular"),
       early_fee: int("early_fee"),

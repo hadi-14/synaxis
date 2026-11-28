@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { InquiryForm } from "./InquiryForm";
 import type { Sponsor } from "@/lib/types";
 
-export const metadata: Metadata = pageMeta("/sponsors", "Sponsors and partners", "Sponsor Synaxis 2027, a 3-day science olympiad in Karachi for school teams from across Pakistan. See sponsorship tiers and send the Cubinet an inquiry.");
+export const metadata: Metadata = pageMeta("/sponsors", "Sponsors and partners", "Sponsor Synaxis 2027, a 3-day science olympiad in Karachi for school teams from across Pakistan. See sponsorship tiers and send the Cabinet an inquiry.");
 
 const TIERS: { key: Sponsor["tier"]; label: string; size: string }[] = [
   { key: "title", label: "Title sponsor", size: "h-28" },

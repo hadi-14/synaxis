@@ -41,11 +41,11 @@ const STEPS = [
 ] as const;
 
 const STEP_FIELDS: Record<number, FieldPath<WizardValues>[]> = {
-  1: ["delegation_type", "elig_enrolled", "elig_not_university", "elig_read_rules"],
+  1: ["delegation_type", "elig_enrolled", "elig_read_rules"],
   2: ["head_name", "head_email", "head_whatsapp", "head_alt_phone", "head_grade", "institution", "city", "team_name", "guardian_name", "guardian_phone"],
   3: ["members"],
   4: ["module_ranking"],
-  5: ["heard_from", "heard_from_other", "needs", "agree_rules", "agree_conduct", "agree_dress", "agree_media"],
+  5: ["heard_from", "heard_from_other", "needs", "agree_rules", "agree_conduct", "agree_media"],
   6: [],
 };
 
@@ -95,7 +95,6 @@ export function RegisterWizard(props: {
   const defaults: WizardValues = {
     delegation_type: undefined as unknown as WizardValues["delegation_type"],
     elig_enrolled: false as true,
-    elig_not_university: false as true,
     elig_read_rules: false as true,
     head_name: user.name ?? "",
     head_email: user.email,
@@ -114,7 +113,6 @@ export function RegisterWizard(props: {
     needs: "",
     agree_rules: false as true,
     agree_conduct: false as true,
-    agree_dress: false as true,
     agree_media: false as true,
   };
 
@@ -372,8 +370,8 @@ export function RegisterWizard(props: {
                         {v === "internal"
                           ? `Every member needs a @${rules.internal_email_domain} email.`
                           : v === "external_official"
-                            ? "Sent by your school. All members are from one institution and wear school uniform."
-                            : "Students who enter on their own. Members may come from different schools. Semi-formal dress."}
+                            ? "Sent by your school. All members are from one institution."
+                            : "Students who enter on their own. Members may come from different schools."}
                       </span>
                     </span>
                   </label>
@@ -384,11 +382,8 @@ export function RegisterWizard(props: {
             <fieldset className="space-y-3">
               <legend className="mb-1 text-sm font-semibold">Eligibility (all required)</legend>
               <Check reg={register("elig_enrolled")} error={errors.elig_enrolled?.message}>
-                Every member is currently enrolled in high or secondary school (Grade 9, O-Level/Matric, AS, A-Level/Inter or equivalent; HSSC
-                completers preparing for MDCAT are allowed).
-              </Check>
-              <Check reg={register("elig_not_university")} error={errors.elig_not_university?.message}>
-                No member is a university student.
+                Every member is in school (Grade 9 to A-Level/Intermediate or equivalent) or a recent graduate on a gap year, and{" "}
+                <strong>no member is enrolled in a university</strong>.
               </Check>
               <Check reg={register("elig_read_rules")} error={errors.elig_read_rules?.message}>
                 I have read the competition rules.
@@ -578,9 +573,6 @@ export function RegisterWizard(props: {
                 <a href="/privacy" target="_blank" rel="noopener" className="font-semibold text-[var(--primary-text)] underline">Privacy Policy</a>, including the competition rules.
               </Check>
               <Check reg={register("agree_conduct")} error={errors.agree_conduct?.message}>My team agrees to the code of conduct.</Check>
-              <Check reg={register("agree_dress")} error={errors.agree_dress?.message}>
-                We&apos;ll follow the dress code ({official ? "school uniform" : values.delegation_type === "internal" ? "college uniform" : "semi-formal"}).
-              </Check>
               <Check reg={register("agree_media")} error={errors.agree_media?.message}>
                 We consent to photos and videos taken at Synaxis being used by the Heuser Science Society.
               </Check>

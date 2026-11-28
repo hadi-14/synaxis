@@ -21,7 +21,7 @@ export default async function RolesPage() {
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--primary-text)]">Access</p>
-        <h1 className="font-display text-3xl font-extrabold">Cubinet roles</h1>
+        <h1 className="font-display text-3xl font-extrabold">Cabinet roles</h1>
         <p className="mt-1 text-sm text-[var(--ink-muted)]">Super Admin: everything. Finance: payments, waivers, exports. Module Head/Co-Head: their module&apos;s teams (read) and module content.</p>
       </div>
       <section className="card p-5">

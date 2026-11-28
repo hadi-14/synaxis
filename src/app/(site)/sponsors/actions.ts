@@ -30,5 +30,5 @@ export async function submitInquiry(_: InquiryState, f: FormData): Promise<Inqui
   if (error) return { ok: false, message: "Couldn't send right now. Please email us instead.", values };
   const to = adminInbox();
   if (to.length) await sendEmail({ to, subject: `Sponsor inquiry: ${row.organisation}`, template: "sponsor-inquiry", react: SponsorInquiry(row) });
-  return { ok: true, message: "Thank you! The Cubinet will get back to you within a few days." };
+  return { ok: true, message: "Thank you! The Cabinet will get back to you within a few days." };
 }
