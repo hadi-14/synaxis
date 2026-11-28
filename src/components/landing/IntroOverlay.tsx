@@ -62,6 +62,7 @@ export function IntroOverlay() {
   const enterBtn = useRef<HTMLButtonElement>(null);
   const scene = useRef<IntroScene | null>(null);
   const started = useRef(false);
+  const skipQueued = useRef(false); // Skip pressed before the scene existed: applied as soon as it does
 
   useEffect(() => {
     const html = document.documentElement;
@@ -73,6 +74,7 @@ export function IntroOverlay() {
     if (reduced) setStage(4);
     /* eslint-enable react-hooks/set-state-in-effect */
     html.dataset.introLive = "1"; // tells the pre-paint safety timer the intro is running
+    scrollTo({ top: 0, left: 0, behavior: "instant" }); // land on the hero (a reload may have restored the old position)
     html.style.overflow = "hidden";
   }, []);
 
@@ -102,7 +104,9 @@ export function IntroOverlay() {
     const html = document.documentElement;
     delete html.dataset.intro;
     delete html.dataset.introLive;
+    delete html.dataset.introReady;
     html.style.overflow = "";
+    if ("scrollRestoration" in history) history.scrollRestoration = "auto"; // turned off by the pre-paint script
     document.querySelector<HTMLElement>("#main")?.focus({ preventScroll: true });
     setTimeout(() => {
       delete html.dataset.heroEnter;
@@ -125,7 +129,8 @@ export function IntroOverlay() {
   const skip = useCallback(() => {
     started.current = true;
     setStage(5);
-    scene.current?.skip();
+    if (scene.current) scene.current.skip();
+    else skipQueued.current = true;
   }, []);
 
   useEffect(() => {
@@ -143,7 +148,10 @@ export function IntroOverlay() {
       ev: {
         stage: (n) => setStage((cur) => (cur >= 5 ? cur : n)),
         layout: setBox,
+        // the cover (pre-paint) stays visible until the scene has drawn its first frame; then the intro takes over
+        ready: () => (html.dataset.introReady = "1"),
         open: (x, y) => {
+          scrollTo({ top: 0, left: 0, behavior: "instant" }); // still covered: the page is revealed at the hero
           // Baymax lands in the hero from the portal's centre (globals.css: hero-fly)
           document.querySelectorAll<HTMLElement>("[data-hero-fly]").forEach((el) => {
             const r = el.getBoundingClientRect();
@@ -157,6 +165,7 @@ export function IntroOverlay() {
       },
     });
     scene.current = s;
+    if (skipQueued.current) s.skip();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && skip();
     addEventListener("keydown", onKey);
     return () => {
@@ -178,7 +187,7 @@ export function IntroOverlay() {
       aria-modal="true"
       aria-label="Synaxis intro"
       tabIndex={-1}
-      className="fixed inset-0 z-[201] select-none outline-none"
+      className="intro-root fixed inset-0 z-[201] select-none outline-none"
       onPointerMove={(e) => e.pointerType === "mouse" && scene.current?.pointer({ x: e.clientX, y: e.clientY })}
       onPointerLeave={() => scene.current?.pointer(null)}
       onPointerDown={(e) => {

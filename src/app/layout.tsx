@@ -52,10 +52,27 @@ export const viewport: Viewport = {
  * - crawlers / Lighthouse / headless / automation: none.
  * - everyone else: the full intro on every full page load of "/" (first visit, return visit, reload).
  *   Reduced motion gets the static version (IntroOverlay). Nothing is stored between visits.
+ * When it plays:
+ * - scroll restoration is turned off and the page is scrolled to the top (again on load, since a reload can
+ *   still restore it; IntroOverlay also does it before the page is revealed), so the visitor lands on the hero;
+ * - view transitions are skipped as soon as they start: React's <ViewTransition> (site layout) starts one when
+ *   the streamed page arrives, and its snapshots paint in the top layer, above the cover and the intro, which
+ *   flashed the page. React handles a skipped transition (its DOM update still runs).
  * Client-side navigation to "/" never runs this, so it never plays an intro.
  * If the intro code has not started within 8 s (very slow network), the cover is dropped.
  */
-const introScript = `(function(){try{if(location.pathname!=="/")return;var h=document.documentElement,q=new URLSearchParams(location.search).get("intro");function set(){h.dataset.intro="full";setTimeout(function(){if(!h.dataset.introLive)delete h.dataset.intro},8000)}if(q==="off")return;if(q==="full")return set();if(/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|bing|google/i.test(navigator.userAgent)||navigator.webdriver)return;set()}catch(e){}})()`;
+const introScript = `(function(){try{
+if(location.pathname!=="/")return;
+var h=document.documentElement,q=new URLSearchParams(location.search).get("intro");
+if(q==="off")return;
+if(q!=="full"&&(/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|bing|google/i.test(navigator.userAgent)||navigator.webdriver))return;
+h.dataset.intro="full";
+if("scrollRestoration" in history)history.scrollRestoration="manual";
+var top=function(){if(h.dataset.intro)scrollTo({top:0,left:0,behavior:"instant"})};top();addEventListener("load",top);
+var svt=document.startViewTransition;
+if(svt)document.startViewTransition=function(){var t=svt.apply(document,arguments);if(h.dataset.intro){try{t.skipTransition()}catch(e){}}return t};
+setTimeout(function(){if(!h.dataset.introLive){delete h.dataset.intro;if("scrollRestoration" in history)history.scrollRestoration="auto"}},8000);
+}catch(e){}})()`;
 
 /** Runs before first paint: stored choice, else system preference. */
 const themeScript = `(function(){try{var t=localStorage.getItem("synaxis-theme");if(t!=="medical"&&t!=="battle"){t=matchMedia("(prefers-color-scheme: dark)").matches?"battle":"medical"}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme="medical"}})()`;

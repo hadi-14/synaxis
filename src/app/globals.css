@@ -376,7 +376,9 @@ html[data-vt="suit"]::view-transition-new(root) {
 /* Intro: an opaque cover from the very first paint (set by the pre-paint script in app/layout.tsx), drawn on
    <body> so it does not depend on when the page streams. It matches the intro's backdrop (navy + night skyline).
    IntroOverlay sets data-intro="open" when the portal opens onto the real page, which drops the cover. */
-html[data-intro] { overflow: hidden; }
+html[data-intro], html[data-intro] body { overflow: hidden; overscroll-behavior: none; }
+/* The intro stays invisible (the cover shows) until its scene has drawn a first frame (IntroOverlay → introReady). */
+html:not([data-intro-ready]) .intro-root { opacity: 0; }
 /* React's <ViewTransition> (site layout) fires when the streamed page arrives; its snapshots paint in the top
    layer above any z-index, so the page would flash through the cover (dotted, from the microbot dissolve).
    While the intro is up, page content is captured with the root, which includes the cover and the intro. */

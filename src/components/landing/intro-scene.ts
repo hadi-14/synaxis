@@ -21,6 +21,8 @@ export type SceneEvents = {
   /** 1 HELLO fades (bots arriving) · 2 Heuser mark · 3 subtitle · 4 Enter ready */
   stage(n: 1 | 2 | 3 | 4): void;
   layout(l: SceneLayout): void;
+  /** the first frame is drawn: the intro may now replace the pre-paint cover (same frame) */
+  ready(): void;
   /** the smoke now covers the screen (or the crossfade starts): start the hero entrance, drop the cover */
   open(x: number, y: number): void;
   done(): void;
@@ -91,6 +93,7 @@ export function createIntroScene(opts: {
 
   let W = 0, H = 0, dpr = 1, raf = 0, last = 0;
   let clock = reduced ? A.ready + 400 : 0;
+  let readySent = false;
   let actAt = -1, skipAt = -1, openAt = -1, fadeT0 = -1, finished = false, stageSent = reduced ? 4 : 0;
   let cx = 0, cy = 0, R0 = 0, diag = 0, ox = 0, oy = 0, lw = 0, lh = 0;
   let twist = 0, bright = 0, hover = false;
@@ -211,7 +214,9 @@ export function createIntroScene(opts: {
 
   // ---------------------------------------------------------------- frame
   const frame = (now: number) => {
-    const dt = Math.min(50, now - last);
+    // rAF's timestamp can be earlier than the performance.now() taken in start(): never let the clock run backwards
+    // (a negative clock made Skip/Enter, which record the clock, look unset).
+    const dt = Math.max(0, Math.min(50, now - last));
     last = now;
     if (!reduced) clock += dt;
     const s = dt / 1000;
@@ -290,6 +295,11 @@ export function createIntroScene(opts: {
       if (stageSent < 2 && clock > A.brand) ev.stage((stageSent = 2));
       if (stageSent < 3 && clock > A.sub) ev.stage((stageSent = 3));
       if (stageSent < 4 && clock > A.ready) ev.stage((stageSent = 4));
+    }
+    if (!readySent) {
+      // first frame drawn (smoke + canvas): show the intro in this same frame; until now the cover is on top
+      readySent = true;
+      ev.ready();
     }
     if (!finished) raf = requestAnimationFrame(frame);
   };
