@@ -379,39 +379,87 @@ html[data-vt="suit"]::view-transition-new(root) {
 html[data-intro], html[data-intro] body { overflow: hidden; overscroll-behavior: none; }
 /* The intro stays invisible (the cover shows) until its scene has drawn a first frame (IntroOverlay → introReady). */
 html:not([data-intro-ready]) .intro-root { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { .intro-lanterns { animation: intro-fade-in .8s ease-out both; } }
+@keyframes intro-fade-in { from { opacity: 0; } }
 /* React's <ViewTransition> (site layout) fires when the streamed page arrives; its snapshots paint in the top
    layer above any z-index, so the page would flash through the cover (dotted, from the microbot dissolve).
    While the intro is up, page content is captured with the root, which includes the cover and the intro. */
 html[data-intro] #main > * { view-transition-name: none !important; }
 html[data-intro]:not([data-intro="open"]) body::before,
-html[data-intro]:not([data-intro="open"]) body::after { content: ""; position: fixed; z-index: 200; pointer-events: none; }
-html[data-intro]:not([data-intro="open"]) body::before { inset: 0; background: #0B1220; }
+html[data-intro]:not([data-intro="open"]) body::after,
+html[data-intro]:not([data-intro="open"])::before,
+html[data-intro]:not([data-intro="open"])::after { position: fixed; z-index: 200; pointer-events: none; }
+/* The first paint already looks like the intro: a still of the real smoke (captured from smoke-gl.ts, see
+   scripts/intro-still/) with the vortex centre at 50% / 46%, exactly where the live scene puts it. */
+.intro-still, html[data-intro]:not([data-intro="open"]) body::before {
+  background-color: #090a1c;
+  background-image: url("/intro/smoke-landscape.webp");
+  background-image: image-set(url("/intro/smoke-landscape.avif") type("image/avif"), url("/intro/smoke-landscape.webp") type("image/webp"));
+  background-position: 50% 46%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+@media (max-aspect-ratio: 1/1) {
+  .intro-still, html[data-intro]:not([data-intro="open"]) body::before {
+    background-image: url("/intro/smoke-portrait.webp");
+    background-image: image-set(url("/intro/smoke-portrait.avif") type("image/avif"), url("/intro/smoke-portrait.webp") type("image/webp"));
+  }
+}
+html[data-intro]:not([data-intro="open"]) body::before { content: ""; inset: 0; }
 html[data-intro]:not([data-intro="open"]) body::after {
-  inset: auto 0 0 0; height: min(36vh, max(150px, 18.75vw));
+  content: ""; inset: auto 0 0 0; height: min(36vh, max(150px, 18.75vw));
   background: url("/decor/skyline-night.svg") 50% 100% / cover no-repeat;
 }
+/* "HELLO." + cursor, in the place, font and size the intro uses (IntroOverlay; layout() in intro-scene.ts):
+   the line's centre is the logo's centre, which works out to the 46% vortex line minus 40px (32px on phones),
+   snapped to the same 8px grid. */
+html[data-intro]:not([data-intro="open"]) {
+  --hello-size: 1.875rem;
+  --hello-lw: min(66vw, 70vh, 600px);
+  --hello-lw: round(nearest, min(66vw, 70dvh, 600px), 8px);
+  --hello-top: calc(46vh - 32px);
+  --hello-top: calc(round(nearest, round(nearest, 46dvh, 8px) - (160px + var(--hello-lw) * 0.14157) / 2, 8px) + 48px + var(--hello-lw) * 0.07079);
+}
+@media (min-width: 640px) {
+  html[data-intro]:not([data-intro="open"]) {
+    --hello-size: 3rem;
+    --hello-top: calc(46vh - 40px);
+    --hello-top: calc(round(nearest, round(nearest, 46dvh, 8px) - (208px + var(--hello-lw) * 0.14157) / 2, 8px) + 64px + var(--hello-lw) * 0.07079);
+  }
+}
+html[data-intro]:not([data-intro="open"])::after {
+  content: "HELLO."; left: 50%; top: var(--hello-top); transform: translate(-50%, -50%); white-space: nowrap;
+  font: 700 var(--hello-size) / 1 var(--font-mono); letter-spacing: .32em; color: #fff; text-shadow: 0 0 18px rgba(192,75,217,.8);
+}
+html[data-intro]:not([data-intro="open"])::before {
+  content: ""; font-size: var(--hello-size); left: calc(50% + 2.76em + .25rem); top: var(--hello-top); width: .5em; height: .9em;
+  transform: translateY(-50%); background: #C04BD9;
+  z-index: 201; /* html::before comes before <body> in paint order: lift it over the cover */
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-intro]:not([data-intro="open"])::before { animation: intro-blink 1s steps(2) infinite; }
+}
+@keyframes intro-blink { 50% { opacity: 0; } }
 /* Intro smoke without WebGL (or on a slow device): full-screen layered gradients with a vortex at the centre
    (--cx/--cy), fading into the night sky. The scene turns the layers with --spin and scales the whole thing
    for the dive; nothing here is blurred per frame. */
 .intro-smoke-css {
+  /* slow devices: the same still as the cover, with two copies turning slowly around the vortex (the scene sets
+     --spin, scales it for the dive and fades it as the smoke parts); visually matches the WebGL smoke */
+  overflow: hidden;
   transform-origin: var(--cx, 50%) var(--cy, 46%);
-  background:
-    radial-gradient(circle at var(--cx, 50%) var(--cy, 46%), rgba(243,214,255,.55) 0, rgba(192,75,217,.45) 6%, rgba(107,47,214,.5) 16%, rgba(66,76,188,.45) 30%, rgba(18,20,70,.5) 46%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 46%, #000 45%, transparent 100%);
-          mask-image: radial-gradient(ellipse 75% 70% at 50% 46%, #000 45%, transparent 100%);
 }
 .intro-smoke-css::before, .intro-smoke-css::after {
-  content: ""; position: absolute; width: 140vmax; height: 140vmax; left: calc(var(--cx, 50vw) - 70vmax); top: calc(var(--cy, 46vh) - 70vmax);
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, rgba(192,75,217,.45), rgba(66,76,188,0) 20%, rgba(107,47,214,.42) 38%, rgba(7,8,33,.35) 55%, rgba(192,75,217,.35) 76%, rgba(192,75,217,.45));
-  transform: rotate(var(--spin, 0deg));
-  -webkit-mask-image: radial-gradient(circle, #000 4%, transparent 45%);
-          mask-image: radial-gradient(circle, #000 4%, transparent 45%);
+  content: ""; position: absolute; width: 150vmax; height: 150vmax; left: calc(var(--cx, 50vw) - 75vmax); top: calc(var(--cy, 46vh) - 75vmax);
+  background-image: url("/intro/smoke-landscape.webp");
+  background-image: image-set(url("/intro/smoke-landscape.avif") type("image/avif"), url("/intro/smoke-landscape.webp") type("image/webp"));
+  background-size: 66.7% auto; background-position: 50% 50%; background-repeat: no-repeat;
+  transform: rotate(var(--spin, 0deg)) scale(1.5);
+  -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 34%);
+          mask-image: radial-gradient(circle, #000 8%, transparent 34%);
+  opacity: .55;
 }
-.intro-smoke-css::after {
-  background: conic-gradient(from 90deg, rgba(66,76,188,.45), rgba(243,214,255,.25) 16%, rgba(7,8,33,0) 38%, rgba(107,47,214,.4) 64%, rgba(66,76,188,.45));
-  transform: rotate(calc(var(--spin, 0deg) * -1.6)) scale(.8, .9);
-}
+.intro-smoke-css::after { transform: rotate(calc(var(--spin, 0deg) * -0.6)) scale(1.25, 1.35); opacity: .4; }
 /* Film grain: a tiny tiled noise texture, shifted in 4 steps (no per-frame painting). */
 .intro-grain {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");

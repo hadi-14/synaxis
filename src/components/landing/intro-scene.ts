@@ -33,12 +33,17 @@ type Orbiter = { a: number; w: number; dr: number; len: number; sx: number; sy: 
 type Dust = { x: number; y: number; z: number; vx: number; vy: number };
 type Streak = { a: number; d: number; w: number };
 
-// assemble (ms from mount)
-const A = { pour: 650, pourDur: 1500, lock: 2150, lockDur: 380, shimmer: 700, hello: 800, brand: 1900, sub: 2350, ready: 2650, ring: 900, ringDur: 1300, smokeDur: 1400 };
+// assemble (ms since first paint: the cover shows "HELLO." from 0): bots pour in → logo locks at 1.55 s →
+// Enter is clickable the moment the logo has formed (1.85 s). The scene's clock starts at the time already
+// spent on the cover, but never past the start of the pour, so a late start still shows the assembly.
+const A = { pour: 450, pourDur: 1100, lock: 1550, lockDur: 300, shimmer: 700, hello: 600, brand: 1450, sub: 1700, ready: 1850, ring: 600, ringDur: 1100 };
+const SMOKE_IN = 600; // the live smoke fades in over the matching still
 // dive (ms after Enter): ≈ 2.7 s, unhurried enough to read: a longer push-in and Baymax pass, then a slower parting
 const D = { burst: 1100, zoom: 2050, ring: 1300, cover: 250, coverDur: 1000, baymax: 250, baymaxDur: 1700, open: 1530, part: 1650, partDur: 1050 };
 const FADE = 480; // reduced motion / skip crossfade
-const SLOW_MS = 28; // average frame time over the first smoke frames above which the CSS smoke takes over
+// slow device → CSS smoke: average frame time over 24 frames, after 8 warm-up frames (shader compile, first
+// uploads), above which the still-based CSS smoke takes over: below ~30 fps
+const SLOW_MS = 34, PERF_SKIP = 8, PERF_N = 24;
 
 const clamp = (x: number) => Math.min(1, Math.max(0, x));
 const outCubic = (x: number) => 1 - Math.pow(1 - clamp(x), 3);
@@ -68,6 +73,8 @@ function glowSprite(inner: string, mid: string) {
 export function createIntroScene(opts: {
   canvas: HTMLCanvasElement; glCanvas: HTMLCanvasElement; fallback: HTMLElement; root: HTMLElement; shell: HTMLElement;
   mode: SceneMode; baymaxSrc: string; forceCss?: boolean; ev: SceneEvents;
+  /** ms the cover has already been on screen (since first paint) */
+  startAt?: number;
 }) {
   const { canvas: cv, glCanvas, fallback, root, shell, mode, ev } = opts;
   const ctx = cv.getContext("2d")!;
@@ -92,7 +99,8 @@ export function createIntroScene(opts: {
   let perfN = 0, perfSum = 0, smokeDirty = true;
 
   let W = 0, H = 0, dpr = 1, raf = 0, last = 0;
-  let clock = reduced ? A.ready + 400 : 0;
+  let clock = reduced ? A.ready + 400 : Math.min(Math.max(0, opts.startAt ?? 0), A.pour);
+  const clock0 = clock;
   let readySent = false;
   let actAt = -1, skipAt = -1, openAt = -1, fadeT0 = -1, finished = false, stageSent = reduced ? 4 : 0;
   let cx = 0, cy = 0, R0 = 0, diag = 0, ox = 0, oy = 0, lw = 0, lh = 0;
@@ -244,7 +252,7 @@ export function createIntroScene(opts: {
     const ringR = act < 0 ? R0 * (0.8 + 0.2 * ringOpen) : R0 * (1 + 9 * inExpo(act / D.ring));
     const ringA = ringOpen * (0.7 + bright * 0.5) * (1 - smooth(diag * 0.45, diag * 0.9, ringR));
     const zoom = 1 + 7 * inExpo(zt);
-    const fadeIn = reduced ? 1 : outCubic(clock / A.smokeDur);
+    const fadeIn = reduced ? 1 : outCubic((clock - clock0) / SMOKE_IN);
 
     // smoke
     if (smoke) {
@@ -258,9 +266,9 @@ export function createIntroScene(opts: {
           part,
         });
         smokeDirty = false;
-        if (!reduced && perfN < 24) {
-          perfSum += dt;
-          if (++perfN === 24 && perfSum / 24 > SLOW_MS) switchToCss();
+        if (!reduced && perfN < PERF_SKIP + PERF_N) {
+          if (++perfN > PERF_SKIP) perfSum += dt;
+          if (perfN === PERF_SKIP + PERF_N && perfSum / PERF_N > SLOW_MS) switchToCss();
         }
       }
     }

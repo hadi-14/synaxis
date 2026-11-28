@@ -45,3 +45,4 @@ next-env.d.ts
 supabase-start.err
 !.env.example
 .playwright-mcp/
+scripts/intro-still/entry.js

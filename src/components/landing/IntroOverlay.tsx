@@ -9,9 +9,11 @@ import { createIntroScene, type IntroScene, type SceneLayout, type SceneMode } f
 /**
  * Opening sequence (canvas + smoke in ./intro-scene.ts and ./smoke-gl.ts).
  * - Decided before first paint by the inline script in app/layout.tsx (html[data-intro]), which also shows
- *   an opaque cover from the very first frame (globals.css), so the page never shows through.
+ *   the cover from the very first frame (globals.css): a still of the real smoke with "HELLO." in place, so the
+ *   page never shows through and something is on screen at once. This overlay takes over on its first drawn
+ *   frame with the same still underneath, and the live smoke fades in over it.
  *   It plays in full on every full page load of "/" (never on client-side navigation). ?intro=full|off overrides.
- * - Full: "HELLO." types where the logo will be → microbots assemble SYNAXIS and lock into the crisp logo,
+ * - Full: "HELLO." (already on the cover) where the logo will be → microbots assemble SYNAXIS and lock into the crisp logo,
  *   a smoke nebula churns behind it in a soft energy ring → Heuser mark, subtitle, "Enter the portal" →
  *   dive into the vortex → the smoke parts onto the real hero.
  * - Nothing but the Enter button starts the dive: stray keys while the page opens do nothing.
@@ -30,7 +32,7 @@ function Lanterns() {
     { x: "96%", y: 56, s: 1.15, d: 3.4, blur: 3 },
   ];
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[40vh] opacity-60">
+    <div aria-hidden className="intro-lanterns pointer-events-none absolute inset-x-0 top-0 h-[40vh] opacity-60">
       {L.map((l, i) => (
         <div key={i} className={`absolute top-0 -translate-x-1/2 ${i === 1 || i === 2 ? "hidden sm:block" : ""}`} style={{ left: l.x, filter: `blur(${l.blur}px)` }}>
           <div className="flex origin-top flex-col items-center motion-safe:animate-[lantern-sway_9s_ease-in-out_infinite]" style={{ animationDelay: `-${l.d}s` }}>
@@ -52,8 +54,8 @@ function Lanterns() {
 export function IntroOverlay() {
   const [mode, setMode] = useState<SceneMode | "off">("off");
   const [stage, setStage] = useState<Stage>(0);
-  const [typed, setTyped] = useState(0);
   const [box, setBox] = useState<SceneLayout | null>(null);
+  const [drawn, setDrawn] = useState(false); // the scene has drawn its first frame
   const canvas = useRef<HTMLCanvasElement>(null);
   const glCanvas = useRef<HTMLCanvasElement>(null);
   const fallback = useRef<HTMLDivElement>(null);
@@ -78,6 +80,14 @@ export function IntroOverlay() {
     html.style.overflow = "hidden";
   }, []);
 
+  // Take over from the cover only once the scene has drawn AND its text layer ("HELLO." etc.) is rendered:
+  // the attribute flips on the next frame, so both appear in the same paint and nothing goes missing.
+  useEffect(() => {
+    if (!drawn || !box) return;
+    const r = requestAnimationFrame(() => (document.documentElement.dataset.introReady = "1"));
+    return () => cancelAnimationFrame(r);
+  }, [drawn, box]);
+
   // Modal focus: the dialog itself first (so a stray key does nothing), the Enter button once it is ready.
   useEffect(() => {
     if (mode !== "off") root.current?.focus({ preventScroll: true });
@@ -93,13 +103,6 @@ export function IntroOverlay() {
     if (stage === 4 && usedKeys.current) enterBtn.current?.focus({ preventScroll: true });
   }, [stage, mode]);
 
-  // "HELLO." types out first, where the logo will form (one character per 90 ms)
-  useEffect(() => {
-    if (mode !== "full" || typed >= HELLO.length) return;
-    const t = setTimeout(() => setTyped((n) => n + 1), typed === 0 ? 150 : 90);
-    return () => clearTimeout(t);
-  }, [mode, typed]);
-
   const finish = useCallback(() => {
     const html = document.documentElement;
     delete html.dataset.intro;
@@ -107,6 +110,7 @@ export function IntroOverlay() {
     delete html.dataset.introReady;
     html.style.overflow = "";
     if ("scrollRestoration" in history) history.scrollRestoration = "auto"; // turned off by the pre-paint script
+    dispatchEvent(new Event("synaxis:intro-done")); // deferred work (analytics, effects) waits for this (whenIdle)
     document.querySelector<HTMLElement>("#main")?.focus({ preventScroll: true });
     setTimeout(() => {
       delete html.dataset.heroEnter;
@@ -143,13 +147,15 @@ export function IntroOverlay() {
       root: root.current!,
       shell: shell.current!,
       mode,
+      // the cover has been on screen since first paint: the scene picks up from there instead of starting over
+      startAt: performance.now() - ((performance.getEntriesByName("first-paint")[0]?.startTime as number | undefined) ?? 0),
       forceCss: new URLSearchParams(location.search).get("smoke") === "css", // testing aid: the no-WebGL path
       baymaxSrc: `/_next/image?url=${encodeURIComponent(bh6("hiro-baymax-flying").src)}&w=640&q=75`,
       ev: {
         stage: (n) => setStage((cur) => (cur >= 5 ? cur : n)),
         layout: setBox,
         // the cover (pre-paint) stays visible until the scene has drawn its first frame; then the intro takes over
-        ready: () => (html.dataset.introReady = "1"),
+        ready: () => setDrawn(true),
         open: (x, y) => {
           scrollTo({ top: 0, left: 0, behavior: "instant" }); // still covered: the page is revealed at the hero
           // Baymax lands in the hero from the portal's centre (globals.css: hero-fly)
@@ -195,7 +201,7 @@ export function IntroOverlay() {
       }}
     >
       {/* the night sky: deep navy, a few out-of-focus lanterns, the skyline silhouette */}
-      <div ref={shell} className="absolute inset-0 overflow-hidden bg-[radial-gradient(120%_90%_at_50%_45%,#11102e_0%,#090a1c_55%,#05060f_100%)]">
+      <div ref={shell} className="intro-still absolute inset-0 overflow-hidden">
         <Lanterns />
         <Skyline variant="night" eager className="absolute inset-x-0 bottom-0 h-[min(32vh,max(130px,16vw))] w-full opacity-80" />
       </div>
@@ -208,14 +214,16 @@ export function IntroOverlay() {
 
       {box && (
         <>
-          {/* "HELLO." types first, in the logo's place, and fades as the bots arrive */}
+          {/* "HELLO." (shown by the cover from first paint, same place/font) fades as the bots arrive */}
           <p
             aria-live="polite"
-            className={`pointer-events-none absolute inset-x-0 -translate-y-1/2 text-center font-mono text-3xl font-bold tracking-[0.32em] text-white [text-shadow:0_0_18px_rgba(192,75,217,.8)] transition-opacity sm:text-5xl ${stage === 0 && ui ? "opacity-100 duration-200" : "opacity-0 duration-500"}`}
+            className={`pointer-events-none absolute inset-x-0 -translate-y-1/2 text-center font-mono text-3xl leading-none font-bold tracking-[0.32em] text-white [text-shadow:0_0_18px_rgba(192,75,217,.8)] transition-opacity sm:text-5xl sm:leading-none ${stage === 0 && ui ? "opacity-100 duration-200" : "opacity-0 duration-500"}`}
             style={{ top: box.logoCy }}
           >
-            {HELLO.slice(0, typed)}
-            <span aria-hidden className="ml-1 inline-block h-[.9em] w-[.5em] translate-y-[.1em] bg-[#C04BD9] motion-safe:animate-[blink_1s_steps(2)_infinite]" />
+            <span className="relative inline-block">
+              {HELLO}
+              <span aria-hidden className="absolute left-full top-1/2 ml-1 h-[.9em] w-[.5em] -translate-y-1/2 bg-[#C04BD9] motion-safe:animate-[blink_1s_steps(2)_infinite]" />
+            </span>
           </p>
           {/* Heuser mark + traced HEUSER lettering */}
           <div className={`pointer-events-none absolute left-1/2 flex h-8 -translate-x-1/2 items-center gap-3 text-white transition-opacity sm:h-10 ${show(stage >= 2)}`} style={{ top: box.heuserTop }}>

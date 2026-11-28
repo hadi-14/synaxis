@@ -11,7 +11,8 @@ const unbounded = Unbounded({ variable: "--font-unbounded", subsets: ["latin"], 
 // Body: highly legible on phones, gently rounded terminals.
 const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" });
 // Mono/HUD: counters, registration IDs, Battle Mode labels.
-const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"], display: "swap", preload: false });
+// preloaded: the intro's "HELLO." and the hero's mono labels use it from the first paint
+const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,15 +50,19 @@ export const viewport: Viewport = {
 /**
  * Runs before first paint and decides the intro on "/" (html[data-intro], which also shows the opaque cover):
  * - ?intro=full|off: testing override; works for any visitor (also automation).
- * - crawlers / Lighthouse / headless / automation: none.
+ * - crawlers / audit tools / link previews: none. The proxy (src/proxy.ts) decides this on the server: it serves
+ *   them /home-static (no intro component) and sets a short cookie that keeps this snippet inert. The UA test
+ *   and navigator.webdriver check here are a second line for anything that slips through.
  * - everyone else: the full intro on every full page load of "/" (first visit, return visit, reload).
  *   Reduced motion gets the static version (IntroOverlay). Nothing is stored between visits.
  * When it plays:
+ * - the cover's smoke still (globals.css) is preloaded at high priority, so the first paint already shows it;
  * - scroll restoration is turned off and the page is scrolled to the top (again on load, since a reload can
  *   still restore it; IntroOverlay also does it before the page is revealed), so the visitor lands on the hero;
- * - view transitions are skipped as soon as they start: React's <ViewTransition> (site layout) starts one when
- *   the streamed page arrives, and its snapshots paint in the top layer, above the cover and the intro, which
- *   flashed the page. React handles a skipped transition (its DOM update still runs).
+ * - no view transitions while it is up: React's <ViewTransition> (site layout) starts one when the streamed page
+ *   arrives, and its snapshots paint in the top layer, above the cover and the intro, which flashed the page.
+ *   The wrapper runs React's DOM update straight away and returns an already-settled transition (a skipped
+ *   real one would be reported by React as an error).
  * Client-side navigation to "/" never runs this, so it never plays an intro.
  * If the intro code has not started within 8 s (very slow network), the cover is dropped.
  */
@@ -65,13 +70,14 @@ const introScript = `(function(){try{
 if(location.pathname!=="/")return;
 var h=document.documentElement,q=new URLSearchParams(location.search).get("intro");
 if(q==="off")return;
-if(q!=="full"&&(/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|bing|google/i.test(navigator.userAgent)||navigator.webdriver))return;
+if(q!=="full"&&(/(?:^|; )synaxis-intro=off/.test(document.cookie)||/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|bing|google/i.test(navigator.userAgent)||navigator.webdriver))return;
 h.dataset.intro="full";
+var portrait=innerHeight>=innerWidth,l=document.createElement("link");l.rel="preload";l.as="image";l.type="image/avif";l.setAttribute("fetchpriority","high");l.href="/intro/smoke-"+(portrait?"portrait":"landscape")+".avif";document.head.appendChild(l);var k=document.createElement("link");k.rel="preload";k.as="image";k.href="/decor/skyline-night.svg";document.head.appendChild(k);
 if("scrollRestoration" in history)history.scrollRestoration="manual";
 var top=function(){if(h.dataset.intro)scrollTo({top:0,left:0,behavior:"instant"})};top();addEventListener("load",top);
 var svt=document.startViewTransition;
-if(svt)document.startViewTransition=function(){var t=svt.apply(document,arguments);if(h.dataset.intro){try{t.skipTransition()}catch(e){}}return t};
-setTimeout(function(){if(!h.dataset.introLive){delete h.dataset.intro;if("scrollRestoration" in history)history.scrollRestoration="auto"}},8000);
+if(svt)document.startViewTransition=function(o){if(!h.dataset.intro)return svt.apply(document,arguments);var cb=typeof o==="function"?o:o&&o.update,done=Promise.resolve().then(function(){return cb&&cb()}),ok=done.then(function(){},function(){});return{updateCallbackDone:done,ready:ok,finished:ok,skipTransition:function(){},types:new Set()}};
+setTimeout(function(){if(!h.dataset.introLive){delete h.dataset.intro;if("scrollRestoration" in history)history.scrollRestoration="auto";dispatchEvent(new Event("synaxis:intro-done"))}},8000);
 }catch(e){}})()`;
 
 /** Runs before first paint: stored choice, else system preference. */
