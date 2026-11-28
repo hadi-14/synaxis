@@ -118,7 +118,29 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Themed page scrollbar: red thumb on a dark (Battle) or light (Medical) track. The gutter is always
+     reserved, so nothing shifts when the scrollbar appears (e.g. when the intro unlocks scrolling). */
+  scrollbar-gutter: stable;
+  --sb-thumb: #dc2a35;
+  --sb-thumb-hover: #f24b59;
+  --sb-track: #0b1220;
 }
+html[data-theme="medical"] { --sb-track: #e6e2d9; }
+/* Chrome/Edge/Safari: ::-webkit-scrollbar (8px). Chrome ignores these once the standard properties are set,
+   so those are applied only where ::-webkit-scrollbar isn't supported (Firefox). */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-track { background: var(--sb-track); }
+::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 999px; border: 1px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--sb-thumb-hover); }
+::-webkit-scrollbar-corner { background: transparent; }
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+  body { scrollbar-color: var(--sb-thumb) transparent; } /* inner scroll areas: no track band */
+}
+/* Intro: scrolling is locked (overflow: hidden) so there's no scrollbar; the reserved gutter is painted the
+   intro's backdrop colour so it reads as part of the cover. */
+html[data-intro] { background: #090a1c; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
