@@ -55,7 +55,7 @@ export function Footer({ settings }: { settings: Settings }) {
           </ul>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-1.5 border-t border-white/30 px-4 py-5 text-center font-mono text-[11px] text-white sm:flex-row sm:justify-between sm:text-left">
+      <div className="flex flex-col items-center gap-1.5 border-t border-white/30 px-4 py-5 text-center font-mono text-[11px] text-white sm:flex-row sm:justify-between sm:pr-20 sm:text-left">
         <p>Big Hero 6 © Disney. Fan-made for a student event. · {settings.season_label} · Heuser Science Society · Karachi</p>
         <p>
           Website by{" "}

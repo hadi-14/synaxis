@@ -28,7 +28,6 @@ Transparent PNG, at least 1200px tall, full body unless noted, one character per
 | `baymax-healthcare.png` | White Baymax, standing, facing the camera, arms relaxed. **Hero image in light mode**, so pick the best one. | `Baymax PNG transparent full body front` |
 | `baymax-wave.png` | White Baymax waving one hand (the "Hello" pose) | `Baymax waving PNG transparent` |
 | `baymax-armor.png` | Baymax in red armour with purple trim, standing heroic, facing the camera. **Hero image in dark mode.** | `Baymax armor PNG transparent full body` |
-| `baymax-armor-flying.png` | Armoured Baymax flying, **side view**, horizontal, arms forward. A wide image (about 1600×900) is fine. The flame is added in code. | `Baymax armor flying side view PNG` |
 | `hiro.png` | Hiro Hamada in his purple and black hero suit, standing | `Hiro Hamada suit PNG transparent full body` |
 | `tadashi.png` | Tadashi in his cap and cardigan, friendly pose | `Tadashi Hamada PNG transparent` |
 | `honey-lemon.png` | Honey Lemon in her pink hero suit, ideally holding her purse or a chem ball | `Honey Lemon suit PNG transparent` |
@@ -65,9 +64,8 @@ The current homepage only uses a few of these, so begin with the ones that show 
 
 1. `baymax-healthcare.png` and `baymax-armor.png`: the homepage hero
 2. `baymax-wave.png`: the registration guide (the fist bump is animated in code)
-3. `honey-lemon-purse.png`: the payment step
-4. `baymax-armor-flying.png`: the scroll indicator
-5. The nine module characters (`hiro`, `tadashi`, `honey-lemon`, `gogo`, `wasabi`, `fred`, `callaghan`,
+3. `honey-lemon-purse.png`: the payment step (the scroll indicator's rocket fist is cut from `baymax-armor.png`)
+4. The nine module characters (`hiro`, `tadashi`, `honey-lemon`, `gogo`, `wasabi`, `fred`, `callaghan`,
    `yokai`, plus Baymax): the module pages and card hover avatars
 
 Until a slot has its real file, the live site hides it or shows a small icon. Add `?debug=assets` to any

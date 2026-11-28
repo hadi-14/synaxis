@@ -16,6 +16,7 @@ export const SECRETS = {
   "tadashi-cap": "Found Tadashi's cap",
   console: "Opened the dev console",
   "kabuki-mask": "Unmasked Yokai",
+  "rocket-fist": "Fist-bumped the footer",
 } as const;
 export type SecretId = keyof typeof SECRETS;
 export const SECRET_TOTAL = Object.keys(SECRETS).length;

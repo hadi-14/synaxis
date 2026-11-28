@@ -573,3 +573,35 @@ html:not([data-eb="after"]) [data-eb-only="after"] { display: none !important; }
 .printout .print-line { display: block; }
 .printout p > .print-line + .print-line { margin-top: .35rem; }
 @media (prefers-reduced-motion: reduce) { .faq-q.is-open::after, .printout .print-line { animation: none; } }
+
+/* Rocket-fist scroll indicator + back to top (components/effects/RocketFist.tsx). Transform/opacity only. */
+.rocket-fist { position: fixed; top: 0; right: 10px; z-index: 45; width: 44px; height: 100dvh; pointer-events: none; }
+html[data-intro] .rocket-fist { display: none; }
+.rf-track { position: absolute; right: 20.5px; top: var(--rf-top, 90px); height: calc(var(--rf-bottom, 90vh) - var(--rf-top, 90px)); width: 3px; overflow: hidden; border-radius: 3px; background: rgba(128,128,128,.16); }
+.rf-fill { display: block; height: 100%; width: 100%; transform: scaleY(0); transform-origin: 50% 0; border-radius: 3px; background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.rf-btn { position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 44px; height: 62px; border-radius: 14px; pointer-events: auto; cursor: pointer; touch-action: manipulation; will-change: transform; -webkit-tap-highlight-color: transparent; }
+.rf-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgba(255,255,255,.6); }
+.rf-spin, .rf-pop, .rf-bob { display: block; position: relative; }
+/* readable on red, dark and light sections: a thin light outline glow + a soft dark shadow */
+.rf-img { display: block; height: 54px; width: auto; filter: drop-shadow(0 0 1px rgba(255,255,255,.95)) drop-shadow(0 0 2px rgba(255,255,255,.45)) drop-shadow(0 4px 6px rgba(0,0,0,.45)); user-select: none; -webkit-user-drag: none; }
+.rf-flame { position: absolute; left: 50%; bottom: calc(100% - 3px); width: 18px; height: 34px; transform-origin: 50% 100%; pointer-events: none; }
+/* bright core right at the fist's open end, cooling to orange/red at the tip */
+.rf-flame-core { display: block; height: 100%; width: 100%; border-radius: 50% 50% 40% 40% / 75% 75% 25% 25%; background: radial-gradient(ellipse 48% 75% at 50% 100%, #fff 0, #FFF3C4 22%, #FFB347 48%, rgba(242,75,89,.75) 72%, transparent 100%); transform-origin: 50% 100%; filter: drop-shadow(0 0 4px rgba(255,179,71,.85)); }
+.rocket-fist[data-idle] .rf-bob { animation: rf-bob 2.4s ease-in-out infinite; }
+.rf-flame-core { animation: rf-flicker .16s ease-in-out infinite alternate; }
+@keyframes rf-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes rf-flicker { from { transform: scaleY(.86) scaleX(.94); opacity: .85; } to { transform: scaleY(1) scaleX(1.04); opacity: 1; } }
+.rf-bubble { position: absolute; right: 52px; bottom: 34px; opacity: 0; white-space: nowrap; border-radius: 999px; background: #0B1220; color: #fff; padding: 4px 10px; font: 700 11px/1.2 var(--font-mono, ui-monospace), monospace; letter-spacing: .08em; box-shadow: 0 4px 12px rgba(0,0,0,.3); pointer-events: none; }
+@media (max-width: 639px) {
+  .rocket-fist { top: auto; bottom: calc(16px + env(safe-area-inset-bottom)); right: 14px; width: auto; height: auto; }
+  .rf-track, .rf-bubble { display: none; }
+  .rf-btn { position: relative; width: 46px; height: 46px; border-radius: 999px; background: rgba(11,18,32,.78); box-shadow: 0 6px 16px rgba(0,0,0,.3); opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
+  .rocket-fist[data-past-hero] .rf-btn { opacity: 1; transform: none; pointer-events: auto; }
+  .rf-img { height: 30px; }
+  .rf-flame { width: 11px; height: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rf-flame { display: none; }
+  .rocket-fist[data-idle] .rf-bob, .rf-flame-core { animation: none; }
+  .rf-btn { transition: none; }
+}

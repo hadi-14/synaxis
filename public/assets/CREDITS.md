@@ -10,8 +10,7 @@ files. Record where each one came from below when you replace a placeholder, the
 |---|---|---|---|
 | `baymax-healthcare.png` | Guide, Medical Mode hero | LIVE | _supplied by the HSS team, add source_ |
 | `baymax-wave.png` | Baymax guide: wave | LIVE | _supplied by the HSS team, add source_ |
-| `baymax-armor.png` | Battle Mode hero | LIVE | _supplied by the HSS team, add source_ |
-| `baymax-armor-flying.png` | Scroll thrusters (flame added in code) | LIVE | _supplied by the HSS team, add source_ |
+| `baymax-armor.png` | Battle Mode hero; also the source of `derived/rocket-fist.png` (scroll indicator, cut by `scripts/make-rocket-fist.mjs`) | LIVE | _supplied by the HSS team, add source_ |
 | `hiro.png` | Microbot Matrix card | LIVE | _supplied by the HSS team, add source_ |
 | `tadashi.png` | Hamada's Hangar card | LIVE | _supplied by the HSS team, add source_ |
 | `honey-lemon.png` | Lemon's Labyrinth card | LIVE | _supplied by the HSS team, add source_ |

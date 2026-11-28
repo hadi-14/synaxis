@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { BH6Image } from "@/components/brand/BH6Image";
 import { FistBump } from "@/components/effects/FistBump";
-import { foundSecret } from "./secrets";
+import { SECRET_TOTAL, foundSecret } from "./secrets";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
@@ -57,7 +57,7 @@ export function EasterEggs() {
     if ((window as unknown as { __synaxisHello?: boolean }).__synaxisHello) return;
     (window as unknown as { __synaxisHello?: boolean }).__synaxisHello = true;
     console.log(
-      "%cSYNA%cX%cIS%c\n\nHello. I am Baymax. I noticed you opened the console.\nOn a scale of 1 to 10, how curious are you?\n\n> There are 12 secrets on this site. One of them is up up down down…\n> Hamada's Hangar (Computer Science) might be your module.\n> Built with Next.js + Supabase by the Heuser Science Society.\n\nType baymax() to say hello.",
+      `%cSYNA%cX%cIS%c\n\nHello. I am Baymax. I noticed you opened the console.\nOn a scale of 1 to 10, how curious are you?\n\n> There are ${SECRET_TOTAL} secrets on this site. One of them is up up down down…\n> Hamada's Hangar (Computer Science) might be your module.\n> Built with Next.js + Supabase by the Heuser Science Society.\n\nType baymax() to say hello.`,
       "font:900 28px system-ui;color:#737375",
       "font:900 28px system-ui;color:#DC2A35",
       "font:900 28px system-ui;color:#737375",
