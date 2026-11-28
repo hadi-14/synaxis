@@ -31,7 +31,6 @@ import { getFaqs, getModules, getSettings } from "@/lib/content";
 import { earlyBirdMax, formatRs } from "@/lib/fees";
 import { formatDateRange } from "@/lib/dates";
 import { ELIGIBILITY } from "@/lib/eligibility";
-import { CaseFileDialog } from "@/components/home/CaseFileDialog";
 import { venueMap } from "@/lib/maps";
 
 /**
@@ -199,12 +198,6 @@ export async function Home() {
               </li>
             ))}
           </ul>
-          <CaseFileDialog
-            modules={[...compulsory, ...modules.filter((m) => !m.is_compulsory)].map((m) => ({
-              slug: m.slug, name: m.name, subject: m.subject, character: m.character, tagline: m.tagline, description: m.description, format: m.format,
-              team_size_note: m.team_size_note, schedule_slot: m.schedule_slot, head_name: m.head_name, cohead_name: m.cohead_name, is_compulsory: m.is_compulsory, motif: m.motif,
-            }))}
-          />
         </div>
       </section>
 

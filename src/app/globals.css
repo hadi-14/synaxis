@@ -336,14 +336,14 @@ body {
    dots that shrink away; the new page assembles from growing dots.
    --------------------------------------------------------------------- */
 ::view-transition-old(.microbot-swap) {
-  animation: mb-dissolve-out 260ms ease-in both;
+  animation: mb-dissolve-out 180ms ease-in both;
   -webkit-mask-image: radial-gradient(circle, #000 var(--mb-r, 72%), transparent calc(var(--mb-r, 72%) + 1%));
   mask-image: radial-gradient(circle, #000 var(--mb-r, 72%), transparent calc(var(--mb-r, 72%) + 1%));
   -webkit-mask-size: 10px 10px;
   mask-size: 10px 10px;
 }
 ::view-transition-new(.microbot-swap) {
-  animation: mb-dissolve-in 340ms 80ms ease-out both;
+  animation: mb-dissolve-in 240ms 60ms ease-out both; /* whole swap done in 300 ms */
   -webkit-mask-image: radial-gradient(circle, #000 var(--mb-r, 72%), transparent calc(var(--mb-r, 72%) + 1%));
   mask-image: radial-gradient(circle, #000 var(--mb-r, 72%), transparent calc(var(--mb-r, 72%) + 1%));
   -webkit-mask-size: 10px 10px;
@@ -515,6 +515,7 @@ html:not([data-eb="after"]) [data-eb-only="after"] { display: none !important; }
 /* ---------- Modules bento ---------- */
 .bento-tile { border-radius: 22px; box-shadow: 0 8px 0 color-mix(in srgb, var(--panel, #120b12) 55%, #000); transition: transform .2s, box-shadow .2s; }
 .bento-tile:hover, .bento-tile:focus-visible { transform: translateY(-3px); box-shadow: 0 11px 0 color-mix(in srgb, var(--panel, #120b12) 55%, #000); }
+.bento-tile:focus-visible { outline: 3px solid #fff; outline-offset: 3px; } /* tiles sit on the red band in both themes */
 .bento-seams {
   background:
     linear-gradient(115deg, transparent 0 62%, rgba(255,255,255,.10) 62% 62.6%, transparent 62.6%),
@@ -529,27 +530,6 @@ html:not([data-eb="after"]) [data-eb-only="after"] { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) { .bento-tile { transition: none; } }
 
-/* Case-file dialog ("Open the file" on the module tiles): a manila folder; a bottom sheet on phones. */
-.case-dialog {
-  margin: auto; padding: 0; border: 0; color: #2A1F0C; overflow: visible;
-  width: min(640px, calc(100vw - 2rem)); max-height: min(86dvh, 760px);
-  background: linear-gradient(180deg, #F6EBD0, #E9D9B5); border-radius: 4px 18px 18px 18px;
-  box-shadow: 0 10px 0 #B89A5E, 0 30px 80px rgba(0,0,0,.45);
-}
-.case-dialog > div { max-height: min(86dvh, 760px); }
-.case-dialog::backdrop { background: rgba(8,6,14,.62); backdrop-filter: blur(3px); }
-.case-dialog-tab { position: absolute; left: 0; bottom: 100%; background: #F6EBD0; color: #5A4520; padding: .45rem .9rem .3rem; border-radius: 10px 10px 0 0; white-space: nowrap; }
-.case-dialog[open] { animation: case-open .32s cubic-bezier(.22,1,.36,1); }
-.case-dialog[open]::backdrop { animation: case-fade .32s ease-out; }
-@keyframes case-open { from { transform: translateY(28px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
-@keyframes case-fade { from { opacity: 0; } to { opacity: 1; } }
-@media (max-width: 639px) {
-  .case-dialog { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 4px 18px 0 0; box-shadow: 0 -20px 60px rgba(0,0,0,.4); padding-bottom: env(safe-area-inset-bottom); }
-  .case-dialog, .case-dialog > div { max-height: 88dvh; }
-  .case-dialog[open] { animation: case-sheet .34s cubic-bezier(.22,1,.36,1); }
-  @keyframes case-sheet { from { transform: translateY(100%); } to { transform: none; } }
-}
-@media (prefers-reduced-motion: reduce) { .case-dialog[open], .case-dialog[open]::backdrop { animation: case-fade .2s ease-out; } }
 
 /* ---------- About: HUD readout + admission card ---------- */
 .hud-panel {
