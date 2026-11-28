@@ -31,6 +31,7 @@ import { getFaqs, getModules, getSettings } from "@/lib/content";
 import { earlyBirdMax, formatRs } from "@/lib/fees";
 import { formatDateRange } from "@/lib/dates";
 import { ELIGIBILITY } from "@/lib/eligibility";
+import { BROCHURE_INTRO } from "@/lib/brochure";
 import { venueMap } from "@/lib/maps";
 
 /**
@@ -178,6 +179,7 @@ export async function Home() {
             title="9 labs. Pick your mission."
             intro={
               <p>
+                {BROCHURE_INTRO}{" "}
                 Every team competes in {settings.modules_min}–{settings.modules_max} modules.{" "}
                 {compulsory.length > 0 && (
                   <>

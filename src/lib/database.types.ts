@@ -348,19 +348,28 @@ export type Database = {
       modules: {
         Row: {
           accent: string
+          brochure_number: number | null
           capacity: number | null
           category_id: number | null
           character: string
+          character_role: string
+          character_tie_in: string
+          cohead_member_id: number | null
           cohead_name: string
           description: string
           format: string
+          head_member_id: number | null
           head_name: string
           id: number
+          ideal_for: string[]
           is_active: boolean
           is_compulsory: boolean
           motif: string
           name: string
+          overview: string
+          rules_highlights: Json
           schedule_slot: string
+          skills_tested: string[]
           slug: string
           sort: number
           subject: string
@@ -370,19 +379,28 @@ export type Database = {
         }
         Insert: {
           accent?: string
+          brochure_number?: number | null
           capacity?: number | null
           category_id?: number | null
           character: string
+          character_role?: string
+          character_tie_in?: string
+          cohead_member_id?: number | null
           cohead_name?: string
           description?: string
           format?: string
+          head_member_id?: number | null
           head_name?: string
           id?: never
+          ideal_for?: string[]
           is_active?: boolean
           is_compulsory?: boolean
           motif?: string
           name: string
+          overview?: string
+          rules_highlights?: Json
           schedule_slot?: string
+          skills_tested?: string[]
           slug: string
           sort?: number
           subject: string
@@ -392,19 +410,28 @@ export type Database = {
         }
         Update: {
           accent?: string
+          brochure_number?: number | null
           capacity?: number | null
           category_id?: number | null
           character?: string
+          character_role?: string
+          character_tie_in?: string
+          cohead_member_id?: number | null
           cohead_name?: string
           description?: string
           format?: string
+          head_member_id?: number | null
           head_name?: string
           id?: never
+          ideal_for?: string[]
           is_active?: boolean
           is_compulsory?: boolean
           motif?: string
           name?: string
+          overview?: string
+          rules_highlights?: Json
           schedule_slot?: string
+          skills_tested?: string[]
           slug?: string
           sort?: number
           subject?: string
@@ -413,6 +440,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "modules_cohead_member_id_fkey"
+            columns: ["cohead_member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "modules_head_member_id_fkey"
+            columns: ["head_member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "modules_category_id_fkey"
             columns: ["category_id"]

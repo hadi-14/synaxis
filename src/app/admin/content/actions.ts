@@ -13,6 +13,9 @@ export type FormResult = { ok: boolean; message: string };
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 const num = (f: FormData, k: string) => (str(f, k) === "" ? null : Number(str(f, k)));
 const bool = (f: FormData, k: string) => f.get(k) === "on" || f.get(k) === "true";
+/** A textarea with one item per line → trimmed, non-empty items (capped). */
+const lines = (f: FormData, k: string, max: number, len: number) =>
+  str(f, k).split(/\r?\n/).map((l) => l.trim().slice(0, len)).filter(Boolean).slice(0, max);
 const done = (message: string): FormResult => {
   updateTag(CONTENT_TAG);
   revalidatePath("/admin", "layout");
@@ -32,12 +35,20 @@ export async function saveModule(_: FormResult | null, f: FormData): Promise<For
     const content = {
       name: z.string().min(2).max(60).parse(str(f, "name")),
       tagline: z.string().max(140).parse(str(f, "tagline")),
-      description: z.string().max(2000).parse(str(f, "description")),
+      overview: z.string().max(2000).parse(str(f, "overview")),
+      ideal_for: lines(f, "ideal_for", 8, 200),
+      skills_tested: lines(f, "skills_tested", 6, 40),
+      character_role: z.string().max(120).parse(str(f, "character_role")),
+      character_tie_in: z.string().max(400).parse(str(f, "character_tie_in")),
+      rules_highlights: lines(f, "rules_highlights", 12, 600).map((l) => {
+        const [title, ...rest] = l.split("|");
+        return { title: title.trim().slice(0, 120), body: rest.join("|").trim() };
+      }),
       format: z.string().max(200).parse(str(f, "format")),
       team_size_note: z.string().max(100).parse(str(f, "team_size_note")),
       schedule_slot: z.string().max(100).parse(str(f, "schedule_slot")),
-      head_name: z.string().max(80).parse(str(f, "head_name")),
-      cohead_name: z.string().max(80).parse(str(f, "cohead_name")),
+      head_member_id: num(f, "head_member_id"),
+      cohead_member_id: num(f, "cohead_member_id"),
     };
     const structural = isSuper
       ? {
@@ -48,6 +59,7 @@ export async function saveModule(_: FormResult | null, f: FormData): Promise<For
           is_compulsory: bool(f, "is_compulsory"),
           is_active: bool(f, "is_active"),
           sort: num(f, "sort") ?? 0,
+          brochure_number: num(f, "brochure_number"),
         }
       : {};
     const admin = createAdminClient();

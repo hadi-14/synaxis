@@ -1,3 +1,6 @@
+/** One rules highlight on a module page (accordion item). */
+export type RuleHighlight = { title: string; body: string };
+
 export type Module = {
   id: number;
   slug: string;
@@ -11,8 +14,17 @@ export type Module = {
   format: string;
   team_size_note: string;
   schedule_slot: string;
-  head_name: string;
+  head_name: string; // legacy free text (pre-council link); dropped in a later migration
   cohead_name: string;
+  brochure_number: number | null;
+  overview: string;
+  ideal_for: string[];
+  skills_tested: string[];
+  character_role: string;
+  character_tie_in: string;
+  rules_highlights: RuleHighlight[];
+  head_member_id: number | null;
+  cohead_member_id: number | null;
   capacity: number | null;
   is_compulsory: boolean;
   is_active: boolean;

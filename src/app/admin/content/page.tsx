@@ -55,7 +55,8 @@ type CouncilRow = Tables["council_members"]["Row"];
 type SponsorRow = Tables["sponsors"]["Row"];
 
 async function Modules({ admin, isSuper, moduleIds }: { admin: Admin; isSuper: boolean; moduleIds: number[] }) {
-  const { data } = await admin.from("modules").select("*").order("sort");
+  const [{ data }, { data: council }] = await Promise.all([admin.from("modules").select("*").order("sort"), admin.from("council_members").select("id, name, role").order("sort")]);
+  const people = council ?? [];
   const mods = (data ?? []).filter((m) => isSuper || moduleIds.includes(m.id));
   if (!mods.length) return <Empty title="No modules assigned to you" />;
   return (
@@ -72,20 +73,30 @@ async function Modules({ admin, isSuper, moduleIds }: { admin: Admin; isSuper: b
             <input type="hidden" name="id" value={m.id} />
             <div className="grid gap-4 sm:grid-cols-2">
               <F label="Name"><input className="field" name="name" defaultValue={m.name} required /></F>
-              <F label="Tagline"><input className="field" name="tagline" defaultValue={m.tagline} /></F>
-              <F label="Description" className="sm:col-span-2"><textarea className="field min-h-28" name="description" defaultValue={m.description} /></F>
-              <F label="Format"><input className="field" name="format" defaultValue={m.format} /></F>
-              <F label="Team size"><input className="field" name="team_size_note" defaultValue={m.team_size_note} /></F>
-              <F label="Schedule slot"><input className="field" name="schedule_slot" defaultValue={m.schedule_slot} /></F>
-              <F label="Module Head"><input className="field" name="head_name" defaultValue={m.head_name} /></F>
-              <F label="Module Co-Head"><input className="field" name="cohead_name" defaultValue={m.cohead_name} /></F>
+              <F label="Tagline" hint="The bold first sentence (also the pull quote)"><input className="field" name="tagline" defaultValue={m.tagline} maxLength={140} /></F>
+              <F label="Overview" className="sm:col-span-2"><textarea className="field min-h-28" name="overview" defaultValue={m.overview || m.description} maxLength={2000} /></F>
+              <F label="This module is for you if…" hint="One point per line"><textarea className="field min-h-24" name="ideal_for" defaultValue={(m.ideal_for ?? []).join("\n")} /></F>
+              <F label="Skills tested" hint="3–5, one per line (an icon is picked from the wording)"><textarea className="field min-h-24" name="skills_tested" defaultValue={(m.skills_tested ?? []).join("\n")} /></F>
+              <F label="Character's role" hint="One line, for the dossier card"><input className="field" name="character_role" defaultValue={m.character_role} maxLength={120} /></F>
+              <F label="Character tie-in" hint="Up to 2 sentences"><textarea className="field min-h-20" name="character_tie_in" defaultValue={m.character_tie_in} maxLength={400} /></F>
+              <F label="Rules highlights" className="sm:col-span-2" hint="One per line: Title | details. Leave empty to hide the section."><textarea className="field min-h-24 font-mono text-xs" name="rules_highlights" defaultValue={((m.rules_highlights ?? []) as { title?: string; body?: string }[]).map((r) => (r.body ? `${r.title} | ${r.body}` : r.title ?? "")).join("\n")} /></F>
+              <F label="Format" hint="Empty = “Announced soon”"><input className="field" name="format" defaultValue={m.format} /></F>
+              <F label="Team size" hint="Empty = “Announced soon”"><input className="field" name="team_size_note" defaultValue={m.team_size_note} /></F>
+              <F label="Schedule (day / slot)" hint="Empty = “Announced soon”"><input className="field" name="schedule_slot" defaultValue={m.schedule_slot} /></F>
+              <F label="Module Head" hint="From the council (Content → Council)">
+                <select className="field" name="head_member_id" defaultValue={m.head_member_id ?? ""}><option value="">Announced soon</option>{people.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.role}</option>)}</select>
+              </F>
+              <F label="Module Co-Head">
+                <select className="field" name="cohead_member_id" defaultValue={m.cohead_member_id ?? ""}><option value="">Announced soon</option>{people.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.role}</option>)}</select>
+              </F>
               {isSuper && (
                 <>
                   <F label="Subject"><input className="field" name="subject" defaultValue={m.subject} /></F>
                   <F label="Character"><input className="field" name="character" defaultValue={m.character} /></F>
                   <F label="Accent colour"><input className="field" name="accent" defaultValue={m.accent} pattern="#[0-9a-fA-F]{6}" /></F>
                   <F label="Capacity (teams)" hint="Blank = unlimited"><input className="field" name="capacity" type="number" min={0} defaultValue={m.capacity ?? ""} /></F>
-                  <F label="Order"><input className="field" name="sort" type="number" defaultValue={m.sort} /></F>
+                  <F label="Order" hint="Also the case-file number on the site"><input className="field" name="sort" type="number" defaultValue={m.sort} /></F>
+                  <F label="Brochure number"><input className="field" name="brochure_number" type="number" min={1} defaultValue={m.brochure_number ?? ""} /></F>
                   <div className="flex flex-col gap-3 pt-6">
                     <Toggle name="is_compulsory" defaultChecked={m.is_compulsory} label="Compulsory for every team" />
                     <Toggle name="is_active" defaultChecked={m.is_active} label="Visible on the site" />

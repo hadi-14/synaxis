@@ -16,6 +16,33 @@ export async function getSettings(): Promise<Settings> {
   return data as Settings;
 }
 
+/**
+ * Fills defaults for the module-page fields, so a row from before migration 20261128120000_module_pages
+ * (or one an organiser left half-filled) still renders: lists become [], the overview falls back to the old
+ * description, and the legacy free-text head names are kept for display.
+ */
+function normalizeModule(row: Record<string, unknown>): Module {
+  const m = row as Partial<Module> & Module;
+  const list = (v: unknown) => (Array.isArray(v) ? v.map(String).map((x) => x.trim()).filter(Boolean) : []);
+  return {
+    ...m,
+    overview: (m.overview ?? "").trim() || (m.description ?? "").trim(),
+    ideal_for: list(m.ideal_for),
+    skills_tested: list(m.skills_tested),
+    character_role: m.character_role ?? "",
+    character_tie_in: m.character_tie_in ?? "",
+    brochure_number: m.brochure_number ?? null,
+    head_member_id: m.head_member_id ?? null,
+    cohead_member_id: m.cohead_member_id ?? null,
+    rules_highlights: Array.isArray(m.rules_highlights)
+      ? (m.rules_highlights as unknown[])
+          .map((x) => (x && typeof x === "object" ? (x as Record<string, unknown>) : {}))
+          .map((x) => ({ title: String(x.title ?? "").trim(), body: String(x.body ?? "").trim() }))
+          .filter((x) => x.title)
+      : [],
+  };
+}
+
 export async function getModules(): Promise<Module[]> {
   "use cache";
   cacheLife("hours");
@@ -26,7 +53,7 @@ export async function getModules(): Promise<Module[]> {
     .eq("is_active", true)
     .order("sort");
   if (error) throw new Error(`modules: ${error.message}`);
-  return (data ?? []) as Module[];
+  return (data ?? []).map(normalizeModule);
 }
 
 export async function getModule(slug: string): Promise<Module | null> {
@@ -34,7 +61,7 @@ export async function getModule(slug: string): Promise<Module | null> {
   cacheLife("hours");
   cacheTag(CONTENT_TAG, "modules");
   const { data } = await createPublicClient().from("modules").select("*").eq("slug", slug).eq("is_active", true).maybeSingle();
-  return (data as Module) ?? null;
+  return data ? normalizeModule(data) : null;
 }
 
 export async function getFaqs(): Promise<Faq[]> {
