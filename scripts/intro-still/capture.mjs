@@ -11,8 +11,8 @@ import { mkdirSync } from "node:fs";
 const dir = new URL(".", import.meta.url).pathname;
 mkdirSync("public/intro", { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, args: ["--use-angle=gl", "--ignore-gpu-blocklist", "--enable-gpu"] });
-// same octaves / render scale as the live scene (desktop 5 @ 0.5, phone 4 @ 0.4)
-for (const [name, w, h, oct, scale] of [["landscape", 1600, 1000, 5, 0.5], ["portrait", 900, 1600, 4, 0.4]]) {
+// same octaves / render scale as the live scene (desktop 5 @ 0.5, phone 4 @ ~0.65–0.9)
+for (const [name, w, h, oct, scale] of [["landscape", 1600, 1000, 5, 0.5], ["portrait", 900, 1600, 4, 0.75]]) {
   const page = await browser.newPage({ viewport: { width: w, height: h } });
   await page.goto(`file://${dir}index.html?t=1.5&oct=${oct}&scale=${scale}`);
   await page.waitForFunction(() => window.__done);

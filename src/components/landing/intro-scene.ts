@@ -4,7 +4,7 @@ import { createSmoke, type Smoke } from "./smoke-gl";
 
 /**
  * The intro: "HELLO." → microbots assemble SYNAXIS and lock into the crisp logo, a full-screen smoke
- * nebula churns behind it inside a soft energy ring → (Enter) → the logo bursts into microbots that are
+ * nebula (violet core, red-crimson outer clouds) churns behind it inside a red energy ring → (Enter) → the logo bursts into microbots that are
  * sucked into the vortex, the camera pushes in with speed streaks, Baymax (with Hiro on his back) flies out
  * of the vortex and past the camera, and the smoke parts onto the real hero. One continuous sequence.
  *
@@ -31,6 +31,7 @@ export type SceneEvents = {
 type Bot = { sx: number; sy: number; tx: number; ty: number; c: string; delay: number; dock: number; len: number; ox: number; oy: number; vx: number; vy: number; fx: number; fy: number; fa: number; fl: number; lag: number };
 type Orbiter = { a: number; w: number; dr: number; len: number; sx: number; sy: number; lag: number; c: string };
 type Dust = { x: number; y: number; z: number; vx: number; vy: number };
+type Ember = { x: number; y: number; vy: number; s: number; ph: number };
 type Streak = { a: number; d: number; w: number };
 
 // assemble (ms since first paint: the cover shows "HELLO." from 0): bots pour in → logo locks at 1.55 s →
@@ -38,12 +39,24 @@ type Streak = { a: number; d: number; w: number };
 // spent on the cover, but never past the start of the pour, so a late start still shows the assembly.
 const A = { pour: 450, pourDur: 1100, lock: 1550, lockDur: 300, shimmer: 700, hello: 600, brand: 1450, sub: 1700, ready: 1850, ring: 600, ringDur: 1100 };
 const SMOKE_IN = 600; // the live smoke fades in over the matching still
-// dive (ms after Enter): ≈ 2.7 s, unhurried enough to read: a longer push-in and Baymax pass, then a slower parting
-const D = { burst: 1100, zoom: 2050, ring: 1300, cover: 250, coverDur: 1000, baymax: 250, baymaxDur: 1700, open: 1530, part: 1650, partDur: 1050 };
+// dive (ms after Enter): ≈ 1.9 s, a brisk push-in and Baymax pass, then the smoke parts
+const D = { burst: 770, zoom: 1435, ring: 910, cover: 175, coverDur: 700, baymax: 175, baymaxDur: 1190, open: 1070, part: 1155, partDur: 735 };
 const FADE = 480; // reduced motion / skip crossfade
 // slow device → CSS smoke: average frame time over 24 frames, after 8 warm-up frames (shader compile, first
 // uploads), above which the still-based CSS smoke takes over: below ~30 fps
 const SLOW_MS = 34, PERF_SKIP = 8, PERF_N = 24;
+// phones render the smoke at 0.65× devicePixelRatio (capped at 0.9 CSS px, i.e. close to full detail) so the
+// clouds stay smooth, not blocky; under ~45 fps (TARGET_MS) the resolution steps down before the CSS fallback
+const TARGET_MS = 22, PHONE_MIN_SCALE = 0.5;
+const phoneScale = () => Math.min(0.9, Math.max(0.6, 0.65 * (devicePixelRatio || 1)));
+/** The dive's colour shift (purple → magenta → hero red): from the push-in to just before the smoke opens. */
+const HEAT = { from: 245, dur: 840 };
+/** "#dc2a35" → [0.86, 0.16, 0.21]; falls back to the logo red. */
+function rgb01(hex: string): [number, number, number] {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  const n = parseInt(m ? m[1] : "dc2a35", 16);
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+}
 
 const clamp = (x: number) => Math.min(1, Math.max(0, x));
 const outCubic = (x: number) => 1 - Math.pow(1 - clamp(x), 3);
@@ -83,12 +96,13 @@ export function createIntroScene(opts: {
   loadMicrobotSprite();
   const dustDot = glowSprite("rgba(255,244,255,1)", "rgba(214,170,255,.5)");
   const fireDot = glowSprite("rgba(255,250,230,1)", "rgba(255,170,80,.6)");
+  const emberDot = glowSprite("rgba(255,214,200,1)", "rgba(242,60,72,.75)");
   const baymax = new Image();
   baymax.decoding = "async";
   if (mode === "full") baymax.src = opts.baymaxSrc;
 
   // smoke: WebGL unless unavailable (or forced off); a slow device switches to the CSS smoke after its first frames
-  let smoke: Smoke | null = opts.forceCss ? null : createSmoke(glCanvas, phone ? 0.4 : 0.5, phone ? 4 : 5, reduced);
+  let smoke: Smoke | null = opts.forceCss ? null : createSmoke(glCanvas, phone ? phoneScale() : 0.5, phone ? 4 : 5, reduced);
   const switchToCss = () => {
     smoke?.destroy();
     smoke = null;
@@ -105,7 +119,8 @@ export function createIntroScene(opts: {
   let actAt = -1, skipAt = -1, openAt = -1, fadeT0 = -1, finished = false, stageSent = reduced ? 4 : 0;
   let cx = 0, cy = 0, R0 = 0, diag = 0, ox = 0, oy = 0, lw = 0, lh = 0;
   let twist = 0, bright = 0, hover = false;
-  let bots: Bot[] = [], orbit: Orbiter[] = [], dust: Dust[] = [], streaks: Streak[] = [];
+  let bots: Bot[] = [], orbit: Orbiter[] = [], dust: Dust[] = [], streaks: Streak[] = [], embers: Ember[] = [];
+  let heatCol: [number, number, number] = [0.86, 0.165, 0.21];
   let pointer: { x: number; y: number } | null = null;
   const ripples: { x: number; y: number; t: number }[] = [];
   // the crisp logo (white letters, red X) and a scratch layer to cut the cursor hole into
@@ -157,6 +172,7 @@ export function createIntroScene(opts: {
     layout();
     fallback.style.setProperty("--cx", `${cx}px`);
     fallback.style.setProperty("--cy", `${cy}px`);
+    heatCol = rgb01(getComputedStyle(document.documentElement).getPropertyValue("--band")); // the hero's red (per theme)
     bots = [];
     {
       const off = document.createElement("canvas");
@@ -186,9 +202,10 @@ export function createIntroScene(opts: {
     }
     orbit = Array.from({ length: phone ? 18 : 28 }, (_, i) => {
       const a = Math.random() * Math.PI * 2, far = diag * 0.7;
-      return { a, w: (0.12 + Math.random() * 0.22) * (i % 3 === 0 ? -1 : 1), dr: (Math.random() - 0.5) * 14, len: 11 + Math.random() * 6, sx: cx + Math.cos(a + 1) * far, sy: cy + Math.sin(a + 1) * far, lag: Math.random() * 400, c: i % 5 === 0 ? "#F24B59" : "#EDEDF2" };
+      return { a, w: (0.12 + Math.random() * 0.22) * (i % 3 === 0 ? -1 : 1), dr: (Math.random() - 0.5) * 14, len: 11 + Math.random() * 6, sx: cx + Math.cos(a + 1) * far, sy: cy + Math.sin(a + 1) * far, lag: Math.random() * 400, c: i % 2 === 0 ? "#F24B59" : "#EDEDF2" };
     });
     dust = Array.from({ length: phone ? 40 : 70 }, () => ({ x: Math.random() * W, y: Math.random() * H, z: Math.random(), vx: (Math.random() - 0.5) * 6, vy: -3 - Math.random() * 8 }));
+    embers = Array.from({ length: phone ? 5 : 9 }, () => ({ x: Math.random() * W, y: H * (0.35 + Math.random() * 0.7), vy: 10 + Math.random() * 16, s: 3 + Math.random() * 4, ph: Math.random() * 6.28 }));
     streaks = Array.from({ length: phone ? 40 : 70 }, () => ({ a: Math.random() * Math.PI * 2, d: 0.04 + Math.random() * 0.6, w: 0.6 + Math.random() * 1.4 }));
   };
 
@@ -251,6 +268,7 @@ export function createIntroScene(opts: {
     const ringOpen = reduced ? 1 : outQuint((clock - A.ring) / A.ringDur);
     const ringR = act < 0 ? R0 * (0.8 + 0.2 * ringOpen) : R0 * (1 + 9 * inExpo(act / D.ring));
     const ringA = ringOpen * (0.7 + bright * 0.5) * (1 - smooth(diag * 0.45, diag * 0.9, ringR));
+    const heat = act < 0 || reduced ? 0 : inOutCubic((act - HEAT.from) / HEAT.dur);
     const zoom = 1 + 7 * inExpo(zt);
     const fadeIn = reduced ? 1 : outCubic((clock - clock0) / SMOKE_IN);
 
@@ -264,11 +282,21 @@ export function createIntroScene(opts: {
           cover: act < 0 ? 0 : inOutCubic((act - D.cover) / D.coverDur),
           burst: 1,
           part,
+          heat,
+          heatCol,
         });
         smokeDirty = false;
         if (!reduced && perfN < PERF_SKIP + PERF_N) {
           if (++perfN > PERF_SKIP) perfSum += dt;
-          if (perfN === PERF_SKIP + PERF_N && perfSum / PERF_N > SLOW_MS) switchToCss();
+          if (perfN === PERF_SKIP + PERF_N) {
+            const avg = perfSum / PERF_N;
+            if (avg > TARGET_MS && smoke.scale > PHONE_MIN_SCALE) {
+              // too slow for ~45 fps: render fewer pixels first, then measure again
+              smoke.setScale(Math.max(PHONE_MIN_SCALE, smoke.scale * 0.7));
+              perfN = PERF_SKIP - 2;
+              perfSum = 0;
+            } else if (avg > SLOW_MS) switchToCss();
+          }
         }
       }
     }
@@ -286,14 +314,15 @@ export function createIntroScene(opts: {
     const a2 = 1 - part;
     if (a2 > 0) {
       drawDust(s, speed, a2 * fadeIn);
-      if (!smoke && ringA > 0.01) drawRingGlow(ringR, ringA * a2);
+      drawEmbers(s, a2 * fadeIn * (1 - speed));
+      if (!smoke && ringA > 0.01) drawRingGlow(ringR, ringA * a2 * (1 + bright * (0.3 + 0.3 * Math.sin(clock / 1000 * 6))));
       drawOrbit(act, ringR, ringA > 0 ? a2 * (1 - smooth(diag * 0.45, diag * 0.9, ringR)) : 0);
       if (actAt < 0) {
         drawHalo(fadeIn * smooth(A.pour, A.lock, clock));
         drawLogo(s);
       } else {
         drawBurst(act);
-        drawStreaks(s, speed * a2);
+        drawStreaks(s, speed * a2, heat);
         if (mode === "full") drawBaymax((act - D.baymax) / D.baymaxDur);
       }
     }
@@ -338,12 +367,32 @@ export function createIntroScene(opts: {
     ctx.globalAlpha = 1;
   };
 
+  /** A few red embers drifting up out of the city, flickering. */
+  const drawEmbers = (s: number, alpha: number) => {
+    if (alpha <= 0.01) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = "lighter";
+    const t = clock / 1000;
+    for (const e of embers) {
+      if (!reduced) {
+        e.y -= e.vy * s;
+        if (e.y < H * 0.15) { e.y = H + 10; e.x = Math.random() * W; }
+      }
+      const x = e.x + Math.sin(t * 0.8 + e.ph) * 14;
+      const life = smooth(H * 0.15, H * 0.4, e.y) * (1 - smooth(H * 0.92, H + 10, e.y));
+      ctx.globalAlpha = alpha * life * (0.45 + 0.25 * Math.sin(t * 7 + e.ph * 3));
+      ctx.drawImage(emberDot, x - e.s, e.y - e.s, e.s * 2, e.s * 2);
+    }
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1;
+  };
+
   /** CSS-smoke path only: the energy ring drawn here (the shader draws it otherwise). */
   const drawRingGlow = (r: number, alpha: number) => {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // soft bloom: wide faint strokes under a thin violet core (no hard outline)
     ctx.globalCompositeOperation = "lighter";
-    for (const [w, c] of [[44, "rgba(107,47,214,.10)"], [22, "rgba(192,75,217,.16)"], [9, "rgba(192,75,217,.28)"], [2.5, "rgba(226,170,255,.55)"]] as const) {
+    for (const [w, c] of [[52, "rgba(179,18,58,.12)"], [24, "rgba(220,42,53,.2)"], [10, "rgba(242,75,89,.32)"], [2.5, "rgba(255,214,218,.6)"]] as const) {
       ctx.globalAlpha = alpha;
       ctx.strokeStyle = c;
       ctx.lineWidth = w;
@@ -368,7 +417,8 @@ export function createIntroScene(opts: {
       const rr = r + b.dr * k;
       const tx = cx + Math.cos(a) * rr, ty = cy + Math.sin(a) * rr;
       const heading = Math.atan2(ty - b.sy, tx - b.sx);
-      drawMicrobot(ctx, b.sx + (tx - b.sx) * p, b.sy + (ty - b.sy) * p, lerpAngle(heading, a + Math.PI / 2, p), Math.min(200, b.len * k), b.c, dpr);
+      const glint = Math.sin(clock * 0.003 + b.a * 9) > 0.93; // a brief white-hot glint now and then
+      drawMicrobot(ctx, b.sx + (tx - b.sx) * p, b.sy + (ty - b.sy) * p, lerpAngle(heading, a + Math.PI / 2, p), Math.min(200, b.len * k), glint ? "#FFFFFF" : b.c, dpr);
     }
     ctx.globalAlpha = 1;
   };
@@ -495,7 +545,8 @@ export function createIntroScene(opts: {
   };
 
   /** Speed streaks rushing outward from the centre while the camera pushes in. */
-  const drawStreaks = (s: number, speed: number) => {
+  const drawStreaks = (s: number, speed: number, heat: number) => {
+    const sr = Math.round(214 + 41 * heat), sg = Math.round(190 - 60 * heat), sb = Math.round(255 - 105 * heat); // lilac → warm red
     if (speed < 0.03) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.globalCompositeOperation = "lighter";
@@ -505,7 +556,7 @@ export function createIntroScene(opts: {
       st.d *= 1 + s * (1.2 + speed * 7);
       if (st.d > 1) { st.d = 0.03 + Math.random() * 0.12; st.a = Math.random() * Math.PI * 2; }
       const r1 = st.d * half, r2 = r1 * (1 + 0.12 + speed * 0.35);
-      ctx.strokeStyle = `rgba(214,190,255,${(speed * 0.55 * Math.min(1, st.d * 4)).toFixed(3)})`;
+      ctx.strokeStyle = `rgba(${sr},${sg},${sb},${(speed * 0.55 * Math.min(1, st.d * 4)).toFixed(3)})`;
       ctx.lineWidth = st.w * (1 + st.d * 2);
       ctx.beginPath();
       ctx.moveTo(cx + Math.cos(st.a) * r1, cy + Math.sin(st.a) * r1);

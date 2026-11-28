@@ -1,10 +1,7 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 // Decorative effects load after the page is idle so they never compete with first paint / interaction.
-const EasterEggs = dynamic(() => import("@/components/eggs/EasterEggs").then((m) => m.EasterEggs), { ssr: false });
-const MicrobotBurst = dynamic(() => import("./MicrobotBurst").then((m) => m.MicrobotBurst), { ssr: false });
 
 /**
  * Run when the page is idle. While the intro is playing (html[data-intro]) everything deferred (analytics,
@@ -23,14 +20,34 @@ export function useIdle() {
   return idle;
 }
 
+/**
+ * Import modules once the page is idle, then render them. A plain import() + setState on purpose, not
+ * next/dynamic: dynamic() resolves through Suspense, and a Suspense reveal starts a React view transition,
+ * which played the page's microbot dissolve over the hero right after the intro.
+ */
+export function useIdleImport<T>(load: () => Promise<T>): T | null {
+  const [mod, setMod] = useState<{ m: T } | null>(null);
+  useEffect(() => {
+    let live = true;
+    whenIdle(() => void load().then((m) => live && setMod({ m })));
+    return () => {
+      live = false;
+    };
+  }, [load]);
+  return mod ? mod.m : null;
+}
+
+const loadGlobal = () =>
+  Promise.all([import("@/components/eggs/EasterEggs"), import("./MicrobotBurst")]).then(([a, b]) => ({ EasterEggs: a.EasterEggs, MicrobotBurst: b.MicrobotBurst }));
+
 /** Global (root layout) effects, loaded when idle. */
 export function DeferredEffects() {
-  const idle = useIdle();
-  if (!idle) return null;
+  const m = useIdleImport(loadGlobal);
+  if (!m) return null;
   return (
     <>
-      <EasterEggs />
-      <MicrobotBurst />
+      <m.EasterEggs />
+      <m.MicrobotBurst />
     </>
   );
 }

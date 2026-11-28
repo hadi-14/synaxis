@@ -23,18 +23,16 @@ const HELLO = "HELLO.";
 
 type Stage = 0 | 1 | 2 | 3 | 4 | 5; // hello · bots (hello fades) · Heuser · subtitle · Enter ready · diving
 
-/** A few paper lanterns at the edges, out of focus (blurred, dim) and swaying slowly: depth, not decoration. */
+/** Two soft red paper lanterns at the edges, out of focus (blurred, dim) and swaying slowly: depth, not decoration. */
 function Lanterns() {
   const L = [
     { x: "4%", y: 70, s: 1.1, d: 0, blur: 3 },
-    { x: "13%", y: 128, s: 0.7, d: 2.2, blur: 1.5 },
-    { x: "88%", y: 112, s: 0.75, d: 1.1, blur: 1.5 },
     { x: "96%", y: 56, s: 1.15, d: 3.4, blur: 3 },
   ];
   return (
     <div aria-hidden className="intro-lanterns pointer-events-none absolute inset-x-0 top-0 h-[40vh] opacity-60">
       {L.map((l, i) => (
-        <div key={i} className={`absolute top-0 -translate-x-1/2 ${i === 1 || i === 2 ? "hidden sm:block" : ""}`} style={{ left: l.x, filter: `blur(${l.blur}px)` }}>
+        <div key={i} className="absolute top-0 -translate-x-1/2" style={{ left: l.x, filter: `blur(${l.blur}px)` }}>
           <div className="flex origin-top flex-col items-center motion-safe:animate-[lantern-sway_9s_ease-in-out_infinite]" style={{ animationDelay: `-${l.d}s` }}>
             <div className="w-px bg-white/15" style={{ height: l.y }} />
             <svg viewBox="0 0 40 56" className="-mt-px drop-shadow-[0_0_14px_rgba(242,75,89,.45)]" style={{ width: 40 * l.s }}>

@@ -1,20 +1,22 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useIdle } from "./DeferredEffects";
+import { useIdleImport } from "./DeferredEffects";
 
-const RocketFist = dynamic(() => import("./RocketFist").then((m) => m.RocketFist), { ssr: false });
-const CursorTrail = dynamic(() => import("./CursorTrail").then((m) => m.CursorTrail), { ssr: false });
-const DecorObservers = dynamic(() => import("./DecorObservers").then((m) => m.DecorObservers), { ssr: false });
+const load = () =>
+  Promise.all([import("./RocketFist"), import("./CursorTrail"), import("./DecorObservers")]).then(([a, b, c]) => ({
+    RocketFist: a.RocketFist,
+    CursorTrail: b.CursorTrail,
+    DecorObservers: c.DecorObservers,
+  }));
 
 /** Site-layout effects (rocket-fist scroll indicator, cursor trail, decor observers), loaded when idle. */
 export function DeferredSiteEffects() {
-  const idle = useIdle();
-  if (!idle) return null;
+  const m = useIdleImport(load);
+  if (!m) return null;
   return (
     <>
-      <RocketFist />
-      <CursorTrail />
-      <DecorObservers />
+      <m.RocketFist />
+      <m.CursorTrail />
+      <m.DecorObservers />
     </>
   );
 }

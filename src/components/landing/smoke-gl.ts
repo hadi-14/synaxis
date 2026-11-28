@@ -1,11 +1,14 @@
 /**
  * The portal's smoke: a full-screen WebGL fragment shader (original art).
  * A nebula of domain-warped fractal noise (fbm) in three depth layers, twisting into a vortex at the
- * centre, fading softly into the night sky (vignette, thinner toward the skyline). On top: a soft energy
- * ring (bloom), a highlight boost on the brightest wisps, and a noisy "curtain" (uPart) that opens from
- * the centre. The camera can push in (uZoom) and fly through the layers (uDive).
+ * centre, fading softly into the night sky (vignette, thinner toward the skyline). Purple is the portal,
+ * red is Heuser / Synaxis: a violet-indigo core, red-crimson wisps in soft patches toward the edges
+ * (meeting the violet through magenta), three red energy streaks spiralling in, and a red rim light from
+ * the city below. On top: a red energy ring (bloom; pulses on hover), a highlight boost on the brightest
+ * wisps, and a noisy "curtain" (uPart) that opens from the centre. The camera can push in (uZoom) and fly
+ * through the layers (uDive); during the dive the colour shifts purple → magenta → the hero's red (uHeat).
  * Output is premultiplied alpha, so wherever the smoke is thin or parted the page underneath shows.
- * Rendered at a fraction of CSS resolution; the browser's bilinear upscale keeps it soft.
+ * Rendered at a fraction of CSS resolution (dithered against banding); the bilinear upscale keeps it soft.
  */
 export type SmokeFrame = {
   time: number; // seconds
@@ -18,6 +21,8 @@ export type SmokeFrame = {
   cover: number; // 0..1: vignette/skyline fade off, smoke fully opaque (during the dive)
   burst: number; // 0..1: the smoke spreading out from the centre, 1 = everywhere (the intro always uses 1)
   part: number; // 0..1 curtain opening
+  heat: number; // 0..1: the dive's colour shift, purple → magenta → the hero's red (heatCol)
+  heatCol: [number, number, number]; // the hero red, 0..1 RGB
 };
 
 const VERT = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
@@ -29,7 +34,7 @@ precision highp float;
 precision mediump float;
 #endif
 uniform vec2 uRes; uniform float uScale; uniform vec2 uC; uniform vec2 uRing;
-uniform float uTime, uTwist, uBright, uZoom, uDive, uCover, uBurst, uPart;
+uniform float uTime, uTwist, uBright, uZoom, uDive, uCover, uBurst, uPart, uHeat; uniform vec3 uHeatCol;
 
 float hash(vec2 p){ p = fract(p * vec2(234.34, 435.345)); p += dot(p, p + 34.23); return fract(p.x * p.y); }
 float noise(vec2 p){
@@ -48,6 +53,13 @@ vec3 palette(float f, float hot){
   c = mix(c, violet, smoothstep(0.47, 0.66, f));
   c = mix(c, magenta, smoothstep(0.64, 0.84, f) * 0.45);
   return mix(c, wisp, smoothstep(0.76, 0.96, f) * hot);
+}
+// the red-crimson clouds (Heuser / Synaxis red): deep wine → crimson #B3123A → red #DC2A35, hot wisps pink-white
+vec3 redPalette(float f, float hot){
+  vec3 wine = vec3(0.12, 0.015, 0.05), crimson = vec3(0.70, 0.07, 0.23), red = vec3(0.92, 0.18, 0.22);
+  vec3 c = mix(wine, crimson, smoothstep(0.3, 0.55, f));
+  c = mix(c, red, smoothstep(0.52, 0.74, f));
+  return mix(c, vec3(1.0, 0.82, 0.86), smoothstep(0.78, 0.97, f) * hot * 0.8);
 }
 void main(){
   vec2 px = vec2(gl_FragCoord.x, uRes.y * uScale - gl_FragCoord.y) / uScale; // CSS px, y down
@@ -73,12 +85,29 @@ void main(){
     float t = uTime * (0.1 + 0.03 * fi);
     vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t));
     float f = fbm(p + 2.6 * q + vec2(t * 0.6, -t * 0.4));
-    vec3 c = palette(f, 0.3 + 0.7 * hot) * (0.55 + uBright * 0.45 + hot * 0.7);
+    // red mostly in the outer clouds and at the edges, in soft patches (a slow, large noise), never stripes;
+    // where it meets the violet the two average out to magenta
+    float patchy = noise(p * 0.55 + vec2(fi * 3.3 - t, t * 0.7));
+    float redK = smoothstep(0.14, 0.52, r0) * smoothstep(0.12, 0.58, patchy + 0.3 * smoothstep(0.25, 0.55, r0));
+    vec3 c = mix(palette(f, 0.3 + 0.7 * hot), redPalette(f, 0.3 + 0.7 * hot), redK * 0.85);
+    c *= 0.55 + uBright * 0.45 + hot * 0.7;
     float k = smoothstep(0.24, 0.74, f) * la;
     col = mix(col, c, k);
     dens = max(dens, k);
   }
   col += vec3(0.48, 0.34, 0.95) * exp(-r0 * 7.0) * (0.22 + uBright * 0.35) * (1.0 - 0.6 * uCover); // light through the vortex
+  // three red energy streaks spiralling slowly into the centre (log spiral; the phase moves inward over time),
+  // broken up by noise so they read as charged wisps rather than lines
+  float arm = 3.0 * (ang + uTwist * 0.9) + 4.2 * log(r + 0.02) + uTime * 0.9;
+  float streak = pow(0.5 + 0.5 * cos(arm), 10.0) * smoothstep(0.06, 0.2, r) * (1.0 - smoothstep(0.42, 0.75, r));
+  float tw = uTwist * 0.9;
+  vec2 su = mat2(cos(tw), -sin(tw), sin(tw), cos(tw)) * uv; // turns with the vortex (no seam, unlike atan)
+  streak *= smoothstep(0.3, 0.75, noise(su * 5.0 + vec2(uTime * 0.2, 0.0)));
+  col = mix(col, vec3(0.95, 0.16, 0.24) * 1.15, streak * 0.75 * (1.0 - uCover));
+  dens = max(dens, streak * 0.6);
+  // warm red rim light from below (the city glows red): lights the underside of the clouds only
+  float below = smoothstep(0.45, 1.0, px.y / uRes.y);
+  col += vec3(0.86, 0.12, 0.18) * below * dens * 0.55 * (1.0 - uCover);
   // bloom: the brightest wisps glow a little beyond themselves
   float lum = dot(col, vec3(0.3, 0.5, 0.2));
   col += col * smoothstep(0.38, 0.9, lum) * 0.4;
@@ -93,10 +122,25 @@ void main(){
   // the energy ring: a thin hot core with a wide soft bloom
   float rd = (length(uv0) - uRing.x / m);
   float core = exp(-pow(rd / 0.0045, 2.0)), bloom = exp(-pow(rd / 0.07, 2.0));
-  vec3 ringCol = mix(vec3(0.55, 0.26, 0.92), vec3(0.86, 0.45, 1.0), 0.5 + 0.5 * sin(ang * 3.0 + uTime * 1.5));
-  float ra = uRing.y * (core * 0.5 + bloom * (0.2 + uBright * 0.25));
-  col += ringCol * ra;
+  // a red energy ring (#DC2A35 → #F24B59) with a soft red bloom; on hover it glows brighter and pulses
+  float bloomW = exp(-pow(rd / 0.12, 2.0));
+  vec3 ringCol = mix(vec3(0.86, 0.165, 0.21), vec3(0.95, 0.29, 0.35), 0.5 + 0.5 * sin(ang * 3.0 + uTime * 1.5));
+  float pulse = 1.0 + uBright * (0.35 + 0.35 * sin(uTime * 6.0));
+  // mixed in (not added) so it stays red over the violet, not pink
+  float ra = clamp(uRing.y * (core * 0.95 + bloom * (0.4 + uBright * 0.3)) * pulse, 0.0, 1.0);
+  col = mix(col, ringCol * (1.0 + 0.35 * uBright), ra);
+  col += ringCol * uRing.y * bloomW * 0.14 * pulse + vec3(1.0, 0.8, 0.82) * uRing.y * core * 0.18 * pulse; // wide bloom, white-hot core
   a = max(a, min(1.0, ra));
+
+  // the dive: purple → magenta → the hero's red, so the last frames before the smoke parts match the hero
+  if (uHeat > 0.0) {
+    float l = dot(col, vec3(0.3, 0.5, 0.2));
+    vec3 mag = vec3(0.78, 0.22, 0.66) * (0.6 + l * 1.2);
+    vec3 hero = uHeatCol * (1.0 + (l - 0.12) * 0.3); // a little smoke texture left in the red…
+    hero = mix(hero, uHeatCol, smoothstep(0.8, 1.0, uHeat)); // …gone by the end: exactly the hero's red
+    col = mix(col, mag, smoothstep(0.0, 0.5, uHeat) * 0.8);
+    col = mix(col, hero, smoothstep(0.45, 1.0, uHeat));
+  }
 
   // short version: the smoke spreads out from the centre
   if (uBurst < 1.0) a *= 1.0 - smoothstep(uBurst * 1.3 - 0.12, uBurst * 1.3 + 0.12, length(uv0) + (fbm(uv0 * 4.0 + uTime) - 0.5) * 0.3);
@@ -106,11 +150,14 @@ void main(){
     float open = uPart * 1.8 - 0.12;
     a *= smoothstep(open - 0.14, open + 0.14, length(uv0 * vec2(0.62, 1.3)) + (pn - 0.5) * 0.42);
   }
+  // dither (±1 level) so the soft gradients don't band, especially on phones
+  col += (hash(gl_FragCoord.xy + fract(uTime) * 61.0) - 0.5) / 255.0 * 2.0;
   gl_FragColor = vec4(col * a, a);
 }`;
 
 /** `still`: one frame that must stay on screen (reduced motion), so the drawing buffer is kept. */
 export function createSmoke(canvas: HTMLCanvasElement, scale: number, octaves: number, still = false) {
+  let sc = scale;
   const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false, depth: false, stencil: false, powerPreference: "high-performance", preserveDrawingBuffer: still });
   if (!gl) return null;
   const sh = (type: number, src: string) => {
@@ -134,15 +181,15 @@ export function createSmoke(canvas: HTMLCanvasElement, scale: number, octaves: n
   gl.enableVertexAttribArray(loc);
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   const U = (n: string) => gl.getUniformLocation(prog, n);
-  const u = { res: U("uRes"), scale: U("uScale"), c: U("uC"), ring: U("uRing"), time: U("uTime"), twist: U("uTwist"), bright: U("uBright"), zoom: U("uZoom"), dive: U("uDive"), cover: U("uCover"), burst: U("uBurst"), part: U("uPart") };
+  const u = { res: U("uRes"), scale: U("uScale"), c: U("uC"), ring: U("uRing"), time: U("uTime"), twist: U("uTwist"), bright: U("uBright"), zoom: U("uZoom"), dive: U("uDive"), cover: U("uCover"), burst: U("uBurst"), part: U("uPart"), heat: U("uHeat"), heatCol: U("uHeatCol") };
   let W = 0, H = 0;
 
   return {
     resize(w: number, h: number) {
       W = w;
       H = h;
-      canvas.width = Math.max(1, Math.round(w * scale));
-      canvas.height = Math.max(1, Math.round(h * scale));
+      canvas.width = Math.max(1, Math.round(w * sc));
+      canvas.height = Math.max(1, Math.round(h * sc));
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -160,7 +207,17 @@ export function createSmoke(canvas: HTMLCanvasElement, scale: number, octaves: n
       gl.uniform1f(u.cover, f.cover);
       gl.uniform1f(u.burst, f.burst);
       gl.uniform1f(u.part, f.part);
+      gl.uniform1f(u.heat, f.heat);
+      gl.uniform3f(u.heatCol, ...f.heatCol);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+    },
+    /** Render resolution (fraction of CSS px): lowered on a device that can't keep up. */
+    get scale() {
+      return sc;
+    },
+    setScale(s: number) {
+      sc = s;
+      this.resize(W, H);
     },
     destroy() {
       gl.getExtension("WEBGL_lose_context")?.loseContext();

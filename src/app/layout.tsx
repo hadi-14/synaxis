@@ -77,7 +77,7 @@ if("scrollRestoration" in history)history.scrollRestoration="manual";
 var top=function(){if(h.dataset.intro)scrollTo({top:0,left:0,behavior:"instant"})};top();addEventListener("load",top);
 var svt=document.startViewTransition;
 if(svt)document.startViewTransition=function(o){if(!h.dataset.intro)return svt.apply(document,arguments);var cb=typeof o==="function"?o:o&&o.update,done=Promise.resolve().then(function(){return cb&&cb()}),ok=done.then(function(){},function(){});return{updateCallbackDone:done,ready:ok,finished:ok,skipTransition:function(){},types:new Set()}};
-setTimeout(function(){if(!h.dataset.introLive){delete h.dataset.intro;if("scrollRestoration" in history)history.scrollRestoration="auto";dispatchEvent(new Event("synaxis:intro-done"))}},8000);
+setTimeout(function(){if(h.dataset.intro&&!h.dataset.introLive){delete h.dataset.intro;if("scrollRestoration" in history)history.scrollRestoration="auto";dispatchEvent(new Event("synaxis:intro-done"))}},8000);
 }catch(e){}})()`;
 
 /** Runs before first paint: stored choice, else system preference. */
